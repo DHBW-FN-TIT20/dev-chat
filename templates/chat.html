@@ -11,6 +11,11 @@
 <body>
     <h1>DEV-CHAT</h1>
 
+    <form action="/insertusername" method="post">
+        <input type="text" name="username" placeholder="Enter a username...">
+    </form>
+
+
     <div class="chat">
         <p>
             {% for message in message_list %}

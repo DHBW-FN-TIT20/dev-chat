@@ -7,6 +7,10 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
+global current_user
+current_user = ""
+
+
 
 state = []
 
@@ -26,22 +30,30 @@ def start_page():
 @app.route('/chat')
 def chat_page():
     message_list = ChatMessage.query.all()
-    print(message_list)
     return render_template('chat.html', message_list=message_list)
+
+
+@app.route("/insertusername", methods=["POST"])
+def insertedUsername():
+    print("insertedUsername()")
+    global current_user
+    current_user = request.form.get("username")
+    print(current_user)
+    return redirect(url_for("chat_page"))
+
 
 @app.route("/send", methods=["POST"])
 def clickedSend():
     # add new message
     text = request.form.get("new_message")
+    print("clickedSend")
     new_message(text)
     return redirect(url_for("chat_page"))
-
-
 
 def new_message(text):
     new_message = ChatMessage(
         chatkey = "TIT20",
-        user = "Johannes",
+        user = current_user,
         text = text,
         timestamp = date.today()
     )
