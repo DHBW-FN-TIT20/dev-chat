@@ -11,19 +11,19 @@
 <body>
     <h1>DEV-CHAT</h1>
 
-    {% for message in message_list %}
-        <p>{{message.id}}, {{message.chatkey}}, {{message.user}}, {{message.text}}, {{message.timestamp}}</p>
-    {% endfor %}
+    <div class="chat">
+        <p>
+            {% for message in message_list %}
+                <p>{{message.id}}, {{message.chatkey}}, {{message.user}}, {{message.text}}, {{message.timestamp}}</p>
+            {% endfor %}
+        </p>
+        
+    </div>
+    
 
 
     <form action="/send" method="post">
-
-        <label for="new_message">new message</label>
-        <input type="text" name="new_message" placeholder="Enter a new message...">
-        <br>
-        <button type="submit">Send</button>
-
-
+        <input autofocus type="text" name="new_message" placeholder="Enter a new message...">
     </form>
 
 

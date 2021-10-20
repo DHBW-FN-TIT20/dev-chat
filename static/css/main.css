@@ -88,6 +88,11 @@ li {
     display: none;
 }
 
+.chat {
+    max-height: 600px;
+    overflow: auto;
+}
+
 
 input[type="text"] {
     width: 50%;
