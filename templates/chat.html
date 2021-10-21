@@ -9,10 +9,7 @@
     <title>Chat</title>
 </head>
 <body>
-    <span style="display: flex">
-        <h1>DEV-CHAT</h1>
-        <h2 style="margin-left: 22px; margin-top: auto">CHAT-KEY: {{session['chat_key']}}</h2>
-    </span>
+    <h2>CHAT-KEY: {{session['chat_key']}}</h2>
     <div id="chatElement" class="chat">
         <div>
             {% for message in message_list %}
