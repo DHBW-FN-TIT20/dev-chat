@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
+
+    <title>Join Room</title>
+</head>
+<body>
+    <h1>JOIN ROOM</h1>
+
+    <form action="/chat_key" method="post">
+        <input type="text" name="chat_key" placeholder="Enter a chat key...">
+        <button>GO!</button>
+    </form>
+
+    <h1>CREATE ROOM</h1>
+    <form action="/chat_key_create" method="post">
+        <button style="width: 50%">GENERATE CHAT KEY</button>
+    </form>
+
+    <h1>LOG OUT</h1>
+    <button style="width: 50%"><a href="/logout">LOG OUT</a></button>
+
+</body>
+</html>

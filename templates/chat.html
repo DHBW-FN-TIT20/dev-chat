@@ -9,8 +9,10 @@
     <title>Chat</title>
 </head>
 <body>
-    <h1>DEV-CHAT</h1>
-
+    <span style="display: flex">
+        <h1>DEV-CHAT</h1>
+        <h2 style="margin-left: 22px; margin-top: auto">CHAT-KEY: {{session['chat_key']}}</h2>
+    </span>
     <div id="chatElement" class="chat">
         <div>
             {% for message in message_list %}
@@ -32,6 +34,9 @@
     <form action="/send" method="post">
         <input autofocus type="text" name="new_message" placeholder="Enter a new message...">
     </form>
+
+    <button style="width: 25%"><a href="/chat_key">EXIT CHAT</a></button>
+    <button style="width: 25%"><a href="/logout">LOG OUT</a></button>
 
     <script>
         var myDiv = document.getElementById("chatElement");
