@@ -5,6 +5,7 @@ from flask import Flask, render_template, url_for, request, redirect, session, f
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from functools import wraps
+from randomThreeName import get_three_random_nouns
 import bcrypt
 
 app = Flask(__name__)
