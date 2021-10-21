@@ -44,11 +44,23 @@ def chat_key_required(f):
 state = []
 
 class ChatMessage(db.Model):
+    __tablename__ = 'chat_message'
     id = db.Column(db.Integer, primary_key=True)
-    chatkey = db.Column(db.String(256))
-    user = db.Column(db.String(256))
+    chatkey = db.Column(db.String(256), db.ForeignKey('chat_key.chatkey'), nullable=False)
+    user = db.Column(db.String(256), db.ForeignKey('chat_user.user'), nullable=False)
     text = db.Column(db.String(256))
     timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
+
+class ChatUser(db.Model):
+    __tablename__ = 'chat_user'
+    id = db.Column(db.Integer, primary_key=True)
+    user = db.Column(db.String(256))
+    password = db.Column(db.String(256), nullable=False)
+
+class ChatKey(db.Model):
+    __tablename__ = 'chat_key'
+    id = db.Column(db.Integer, primary_key=True)
+    chatkey = db.Column(db.String(256))
 
 
 @app.route('/')
@@ -60,12 +72,18 @@ def start_page():
 def login_page():
     error = None
     if request.method == "POST":
-        if request.form["username"] == "admin" and bcrypt.checkpw(request.form["password"], "$2a$12$4CZD2UP.AJlEfSGiMOBZOupjOeVRZ91k2nGxRy/GK5kxAVaIHH0nm"):
-            session['logged_in'] = [request.form["username"], bcrypt.hashpw(request.form["password"], bcrypt.gensalt( 12 ))]
-            print(session['logged_in'])
-            return redirect(url_for("chat_page"))
-        else:
-            error = "Invalid credentials. Please try again."
+        try:
+            if bcrypt.checkpw(request.form["password"], ChatUser.query.filter_by(user = request.form["username"]).all()[1].password):
+            # if True:
+                session['logged_in'] = [request.form["username"], bcrypt.hashpw(request.form["password"], bcrypt.gensalt( 12 ))]
+                print(session['logged_in'])
+                print(ChatUser.query.all())
+                print()
+                return redirect(url_for("chat_page"))
+            else:
+                error = "Invalid credentials. Please try again."
+        except IndexError:
+            print("hi")
     return render_template("login.html")
 
 
@@ -115,14 +133,29 @@ def new_message(text):
 
 
 if __name__ == "__main__":
-    db.create_all()
+    # db.create_all()
 
-    new_message = ChatMessage(
-        chatkey = "TIT20",
-        user = "testuser",
-        text = "testtext",
-    )
-    db.session.add(new_message)
-    db.session.commit()
+    # new_user = ChatUser(
+    #     user = "admin",
+    #     password = bcrypt.hashpw("admin", bcrypt.gensalt( 12 ))
+    # )
+    # db.session.add(new_user)
+    # db.session.commit()
+
+    # new_chat_key = ChatKey(
+    #     chatkey = "TIT20"
+    # )
+    # db.session.add(new_chat_key)
+    # db.session.commit()
+
+    # new_message = ChatMessage(
+    #     chatkey = ChatKey.query.first().chatkey,
+    #     user = ChatUser.query.filter_by(user='admin').first().user,
+    #     text = "testtext",
+    # )
+
+    
+    # db.session.add(new_message)
+    # db.session.commit()
 
     app.run(debug=True)
