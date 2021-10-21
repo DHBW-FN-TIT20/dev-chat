@@ -18,7 +18,7 @@
             {% for message in message_list %}
                 <div class="messageBox">
                     <p class="messageElement" style="color: grey; width: 20px;">{{message.id}}</p>
-                    <p class="messageElement" style="color: grey;">{{message.chatkey}}</p>
+                    <p class="messageElement" style="color: grey; width: 60px;">{{message.chatkey}}</p>
                     <p class="messageElement" style="color: white;">{{message.user}}</p>
                     <p class="messageElement" style="color: grey;">at</p>
                     <p class="messageElement" style="color: grey;">{{message.timestamp}}</p>
@@ -30,18 +30,22 @@
     </div>
     
 
+    <div class="footer">
 
-    <form action="/send" method="post">
-        <input autofocus type="text" name="new_message" placeholder="Enter a new message...">
-    </form>
+        <form action="/send" method="post">
+            <input autofocus type="text" name="new_message" placeholder="Enter a new message...">
+        </form>
+    
+        <button style="width: 25%"><a href="/chat_key">EXIT CHAT</a></button>
+        <button style="width: 25%"><a href="/logout">LOG OUT</a></button>
+    
+        <script>
+            var myDiv = document.getElementById("chatElement");
+            myDiv.scrollTop = myDiv.scrollHeight;   
+        </script>
 
-    <button style="width: 25%"><a href="/chat_key">EXIT CHAT</a></button>
-    <button style="width: 25%"><a href="/logout">LOG OUT</a></button>
-
-    <script>
-        var myDiv = document.getElementById("chatElement");
-        myDiv.scrollTop = myDiv.scrollHeight;   
-    </script>
+    </div>
+    
 
 </body>
 </html>

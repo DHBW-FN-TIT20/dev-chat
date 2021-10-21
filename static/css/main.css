@@ -47,17 +47,20 @@ li {
 
 .messageBox {
     display: flex;
-    
 }
 
 .messageElement {
+    overflow: hidden;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-right: 4px;
 }
 
-
-
+.footer {
+    position:absolute;
+    bottom:0;
+    width:90%;
+ }
 
 .grey {
     display: flex;
@@ -98,8 +101,15 @@ li {
 }
 
 .chat {
-    max-height: 80vh;
+    max-height: 70vh;
     overflow: auto;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.chat::-webkit-scrollbar {
+    display: none;
 }
 
 
