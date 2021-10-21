@@ -1,6 +1,7 @@
 from datetime import date, datetime, time
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
@@ -19,7 +20,7 @@ class ChatMessage(db.Model):
     chatkey = db.Column(db.String(256))
     user = db.Column(db.String(256))
     text = db.Column(db.String(256))
-    timestamp = db.Column(db.Date)
+    timestamp = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow())
 
 
 @app.route('/')
@@ -55,7 +56,6 @@ def new_message(text):
         chatkey = "TIT20",
         user = current_user,
         text = text,
-        timestamp = date.today()
     )
     db.session.add(new_message)
     db.session.commit()
@@ -64,4 +64,13 @@ def new_message(text):
 
 if __name__ == "__main__":
     db.create_all()
+
+    new_message = ChatMessage(
+        chatkey = "TIT20",
+        user = "testuser",
+        text = "testtext",
+    )
+    db.session.add(new_message)
+    db.session.commit()
+
     app.run(debug=True)
