@@ -11,18 +11,20 @@
 <body>
     <h1>DEV-CHAT</h1>
 
-    <form action="/insertusername" method="post">
-        <input type="text" name="username" placeholder="Enter a username...">
-    </form>
-
-
-    <div class="chat">
-        <p>
+    <div id="chatElement" class="chat">
+        <div>
             {% for message in message_list %}
-                <p>{{message.id}}, {{message.chatkey}}, {{message.user}}, {{message.text}}, {{message.timestamp}}</p>
+                <div class="messageBox">
+                    <p class="messageElement" style="color: grey; width: 20px;">{{message.id}}</p>
+                    <p class="messageElement" style="color: grey;">{{message.chatkey}}</p>
+                    <p class="messageElement" style="color: white;">{{message.user}}</p>
+                    <p class="messageElement" style="color: grey;">at</p>
+                    <p class="messageElement" style="color: grey;">{{message.timestamp}}</p>
+                    <p class="messageElement" style="color: white;">-> </p>
+                    <p class="messageElement" style="color: greenyellow;">{{message.text}}</p>
+                </div>
             {% endfor %}
-        </p>
-        
+        </div>
     </div>
     
 
@@ -31,6 +33,10 @@
         <input autofocus type="text" name="new_message" placeholder="Enter a new message...">
     </form>
 
+    <script>
+        var myDiv = document.getElementById("chatElement");
+        myDiv.scrollTop = myDiv.scrollHeight;   
+    </script>
 
 </body>
 </html>

@@ -45,10 +45,19 @@ li {
     margin-bottom:9px;
 }
 
-.box {
+.messageBox {
     display: flex;
-    align-items:center;
- }
+    
+}
+
+.messageElement {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-right: 4px;
+}
+
+
+
 
 .grey {
     display: flex;
@@ -89,7 +98,7 @@ li {
 }
 
 .chat {
-    max-height: 400px;
+    max-height: 80vh;
     overflow: auto;
 }
 
