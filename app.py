@@ -73,7 +73,7 @@ def login_page():
     error = None
     if request.method == "POST":
         try:
-            if bcrypt.checkpw(request.form["password"], ChatUser.query.filter_by(user = request.form["username"]).all()[1].password):
+            if bcrypt.checkpw(request.form["password"], ChatUser.query.filter_by(user = request.form["username"]).all()[0].password):
             # if True:
                 session['logged_in'] = [request.form["username"], bcrypt.hashpw(request.form["password"], bcrypt.gensalt( 12 ))]
                 print(session['logged_in'])
@@ -84,7 +84,33 @@ def login_page():
                 error = "Invalid credentials. Please try again."
         except IndexError:
             print("hi")
+    print(ChatUser.query.all())
+    for user in ChatUser.query.all():
+        print(user.user)
+        print(user.password)
     return render_template("login.html")
+
+
+@app.route("/create_user", methods=["GET", "POST"])
+def create_user_page():
+    error = None
+    if request.method == "POST":
+        if ChatUser.query.filter_by(user = request.form["new_username"]).all() == []:
+            if request.form["new_password"] == request.form["new_password_confirm"]:
+                new_user = ChatUser(
+                    user = request.form["new_username"],
+                    password = bcrypt.hashpw(request.form["new_password"], bcrypt.gensalt( 12 ))
+                )
+                db.session.add(new_user)
+                db.session.commit()
+                print("New User")
+                session['logged_in'] = [new_user.user, new_user.password]
+                return redirect(url_for("chat_page"))
+            else:
+                print("Error 1")
+        else:
+            print("Error 2")
+    return render_template("create_user.html")
 
 
 @app.route("/logout")
