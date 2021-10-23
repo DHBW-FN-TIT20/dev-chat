@@ -184,4 +184,4 @@ if __name__ == "__main__":
     # db.session.add(new_message)
     # db.session.commit()
 
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
