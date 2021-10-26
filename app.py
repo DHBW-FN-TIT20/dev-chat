@@ -56,7 +56,6 @@ def chat_key_required(f):
         if 'chat_key' in session:
             return f(*args, **kwargs)
         else:
-            flash('You need a chat-key first.')
             return redirect(url_for("chat_key_page"))
     return wrap
 
@@ -139,6 +138,7 @@ def chat_key_page():
         if request.form["chat_key"] == "test":
             session['chat_key'] = request.form["chat_key"]
             return redirect(url_for("chat_page"))
+        flash('You need a chat-key first.')
     return render_template("chat_key.html", is_admin=is_admin)
 
 
