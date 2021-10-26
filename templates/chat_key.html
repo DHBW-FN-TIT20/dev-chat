@@ -16,6 +16,10 @@
         <button>GO!</button>
     </form>
 
+    {% for message in get_flashed_messages() %}
+        <div style=""><p style="color: red;">{{ message }}</p></div>
+    {% endfor %}
+
     <h1>CREATE ROOM</h1>
     <form action="/chat_key_create" method="post">
         <button style="width: 50%">GENERATE CHAT KEY</button>
