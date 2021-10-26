@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}"> 
+
+    <title>Admin Settings</title>
+</head>
+<body>
+    <h1>ADMIN SETTINGS</h1>
+
+    <h2>USER LIST</h2>
+
+    <table class=userList>
+        <tr>
+            <th style="font-size: 1.5em;"><p>USER</p></th>
+            <th style="font-size: 1.5em;"><p>ACCESS</p></th>
+            <th></th>
+        </tr>
+        {% for user in user_list %}
+            <tr>
+                <th><p style="color: white;">{{ user.user }}</p></th>
+                <th><p style="color: red;">{{ user.access }}</p></th>
+                <!-- TODO DELETE FUNCTION -->
+                <th><form action="/delete_user" method="post"><button>DELETE</button><input hidden name="user_id" value="{{user.id}}"></form></th>
+            </tr>
+        {% endfor %}
+
+    </table>
+    
+
+    <h1>EXIT SETTINGS</h1>
+    <button style="width: 50%"><a href="/chat_key">BACK TO CHAT KEY SELECTION</a></button>
+
+    <h1>LOG OUT</h1>
+    <button style="width: 50%"><a href="/logout">LOG OUT</a></button>
+
+</body>
+</html>

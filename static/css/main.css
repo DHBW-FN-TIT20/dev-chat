@@ -157,3 +157,27 @@ button{
     border-radius: 3pt;
     text-align: center;
 }
+
+
+.userList {
+    border-collapse: collapse;
+}
+
+.userList th, td {
+    border: 2px solid white;
+}
+
+.userList th {
+    padding: 0 10px 0 10px;
+}
+
+.userList p{
+    margin: 5px;
+    font-weight: normal;
+}
+
+.userList th button {
+    border-style: none;
+    width: 100%;
+    padding: 0;
+}

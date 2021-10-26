@@ -21,6 +21,11 @@
         <button style="width: 50%">GENERATE CHAT KEY</button>
     </form>
 
+    {% if is_admin %}
+    <h1>ADMIN SETTINGS</h1>
+    <button style="width: 50%;"><a href="/admin_settings">ADMIN SETTINGS</a></button>
+    {% endif %}
+
     <h1>LOG OUT</h1>
     <button style="width: 50%"><a href="/logout">LOG OUT</a></button>
 

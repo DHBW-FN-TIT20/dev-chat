@@ -22,5 +22,9 @@
     
     <button style="width: 50%"><a href="/create_user">CREATE USER</a></button>
 
+    {% for message in get_flashed_messages() %}
+        <div style=""><p style="color: red;">{{ message }}</p></div>
+    {% endfor %}
+
 </body>
 </html>
