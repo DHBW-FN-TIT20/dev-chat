@@ -22,7 +22,7 @@
         {% for user in user_list %}
             <tr>
                 <th><p style="color: white;">{{ user.user }}</p></th>
-                <th><p style="color: red;">{{ user.access }}</p></th>
+                <th style="display: flex; align-items: center"><p style="color: red;">{{ user.access }}</p><form action="/change_permission" method="post"><button style="margin-left: 5px;">PRO-/DEMOTE</button><input hidden name="user_id" value="{{user.id}}"></form></th>
                 <!-- TODO DELETE FUNCTION -->
                 <th><form action="/delete_user" method="post"><button>DELETE</button><input hidden name="user_id" value="{{user.id}}"></form></th>
             </tr>

@@ -5,6 +5,8 @@ from flask import Flask, render_template, url_for, request, redirect, session, f
 from flask_sqlalchemy import SQLAlchemy
 import datetime
 from functools import wraps
+
+from sqlalchemy.orm import query
 from randomThreeName import get_three_random_nouns
 import bcrypt
 
@@ -138,7 +140,7 @@ def chat_key_page():
         if request.form["chat_key"] == "test":
             session['chat_key'] = request.form["chat_key"]
             return redirect(url_for("chat_page"))
-        flash('You need a chat-key first.')
+        flash('Chat-key does not exist. Try a different chat-key or create a new one.')
     return render_template("chat_key.html", is_admin=is_admin)
 
 
@@ -185,22 +187,36 @@ def delete_user():
     return redirect(url_for("admin_settings_page"))
 
 
+@app.route('/change_permission', methods=["POST"])
+@login_required
+@admin_required
+def change_permission():
+    if (request.form.get("user_id") != "1"):    # prevent changing admin right for admin user
+        print(request.form.get("user_id"))
+        if (ChatUser.query.filter_by(id=request.form.get("user_id")).first().access == 0):
+            ChatUser.query.filter_by(id=request.form.get("user_id")).first().access = 1
+        else:
+            ChatUser.query.filter_by(id=request.form.get("user_id")).first().access = 0
+    db.session.commit()
+    return redirect(url_for("admin_settings_page"))
+
+
 if __name__ == "__main__":
-    db.create_all()
+    # db.create_all()
 
-    new_user = ChatUser(
-        user = "admin",
-        password = bcrypt.hashpw("admin", bcrypt.gensalt( 12 )),
-        access = 1
-    )
-    db.session.add(new_user)
-    db.session.commit()
+    # new_user = ChatUser(
+    #     user = "admin",
+    #     password = bcrypt.hashpw("admin", bcrypt.gensalt( 12 )),
+    #     access = 1
+    # )
+    # db.session.add(new_user)
+    # db.session.commit()
 
-    new_chat_key = ChatKey(
-        chatkey = "TIT20"
-    )
-    db.session.add(new_chat_key)
-    db.session.commit()
+    # new_chat_key = ChatKey(
+    #     chatkey = "TIT20"
+    # )
+    # db.session.add(new_chat_key)
+    # db.session.commit()
 
     # new_message = ChatMessage(
     #     chatkey = ChatKey.query.first().chatkey,
@@ -209,7 +225,7 @@ if __name__ == "__main__":
     # )
 
     
-    db.session.add(new_message)
-    db.session.commit()
+    # db.session.add(new_message)
+    # db.session.commit()
 
     app.run(host='0.0.0.0', port=80)
