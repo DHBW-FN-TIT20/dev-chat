@@ -29,6 +29,18 @@
         {% endfor %}
 
     </table>
+
+    <h2>CHAT KEY LIST</h2>
+    <table class=userList>
+        <tr>
+            <th style="font-size: 1.5em;"><p>KEY</p></th>
+        </tr>
+        {% for chat_key in chat_key_list %}
+            <tr>
+                <th><p style="color: white;">{{ chat_key.chatkey }}</p></th>
+            </tr>
+        {% endfor %}
+    </table>
     
 
     <h1>EXIT SETTINGS</h1>

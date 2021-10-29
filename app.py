@@ -6,6 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 import datetime
 from functools import wraps
 
+import randomThreeName
+
 from sqlalchemy.orm import query
 from randomThreeName import get_three_random_nouns
 import bcrypt
@@ -137,18 +139,37 @@ def chat_key_page():
     error = None
     session.pop('chat_key', None)
     if request.method == "POST":
-        if request.form["chat_key"] == "test":
+        if ChatKey.query.filter_by(chatkey = request.form["chat_key"]).all() != []:
             session['chat_key'] = request.form["chat_key"]
             return redirect(url_for("chat_page"))
         flash('Chat-key does not exist. Try a different chat-key or create a new one.')
     return render_template("chat_key.html", is_admin=is_admin)
 
 
+@app.route("/chat_key_create", methods=["POST"])
+@login_required
+def chat_key_create():
+    if request.method == "POST":
+        new_chat_key = get_three_random_nouns()
+        if (ChatKey.query.filter_by(chatkey = new_chat_key).all() == []):
+            new_key = ChatKey(
+                chatkey = new_chat_key
+            )
+            db.session.add(new_key)
+            db.session.commit()
+            session['chat_key'] = new_chat_key
+            return redirect(url_for("chat_page"))
+    return redirect(url_for("chat_key_page"))
+    
+
+
 @app.route('/chat')
 @login_required
 @chat_key_required
 def chat_page():
-    message_list = ChatMessage.query.all()
+    message_list = ChatMessage.query.filter_by(chatkey = session['chat_key']).all()
+    print(message_list)
+    print(ChatMessage.query.filter_by(chatkey = session['chat_key']).all())
     return render_template('chat.html', message_list=message_list)
 
 
@@ -174,7 +195,8 @@ def new_message(text):
 @admin_required
 def admin_settings_page():
     user_list = ChatUser.query.all()
-    return render_template("admin_settings.html", user_list=user_list)
+    chat_key_list = ChatKey.query.all()
+    return render_template("admin_settings.html", user_list=user_list, chat_key_list = chat_key_list)
 
 
 @app.route('/delete_user', methods=["POST"])
