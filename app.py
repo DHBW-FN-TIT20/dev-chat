@@ -185,8 +185,6 @@ def chat_key_manual():
 @chat_key_required
 def chat_page():
     message_list = ChatMessage.query.filter_by(chatkey = session['chat_key']).all()
-    print(message_list)
-    print(ChatMessage.query.filter_by(chatkey = session['chat_key']).all())
     return render_template('chat.html', message_list=message_list)
 
 
@@ -202,6 +200,7 @@ def new_message(text):
         chatkey = session["chat_key"],
         user = session["logged_in"][0],
         text = text,
+        timestamp = datetime.datetime.now()
     )
     db.session.add(new_message)
     db.session.commit()
