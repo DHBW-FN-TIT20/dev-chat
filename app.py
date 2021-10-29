@@ -1,6 +1,7 @@
 from abc import abstractproperty
 from datetime import date, datetime, time
-from logging import error
+from logging import error, log
+import re
 from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 import datetime
@@ -160,7 +161,23 @@ def chat_key_create():
             session['chat_key'] = new_chat_key
             return redirect(url_for("chat_page"))
     return redirect(url_for("chat_key_page"))
-    
+
+
+@app.route("/chat_key_manual", methods=["POST", "GET"])
+@login_required
+@admin_required
+def chat_key_manual():
+    if request.method == "POST":
+        if ChatKey.query.filter_by(chatkey = request.form["new_chat_key"]).all() == [] and len(request.form["new_chat_key"]) >= 2:
+            new_key = ChatKey(
+                chatkey = request.form["new_chat_key"]
+            )
+            db.session.add(new_key)
+            db.session.commit()
+            return redirect(url_for("admin_settings_page"))
+        else:
+            flash("Your entered chat key is to short (length < 2) or already existing!!!")
+    return render_template("chat_key_manual.html")    
 
 
 @app.route('/chat')
@@ -206,6 +223,16 @@ def delete_user():
     ChatUser.query.filter_by(id=request.form.get("user_id")).delete()
     db.session.commit()
     # Maybe add confimation
+    return redirect(url_for("admin_settings_page"))
+
+
+@app.route('/delete_chat_key', methods=["POST"])
+@login_required
+@admin_required
+def delete_chat_key():
+    ChatKey.query.filter_by(id=request.form.get("chat_key_id")).delete()
+    db.session.commit()
+    # ADD delete all chat itemes with chat key
     return redirect(url_for("admin_settings_page"))
 
 

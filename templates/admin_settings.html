@@ -34,14 +34,18 @@
     <table class=userList>
         <tr>
             <th style="font-size: 1.5em;"><p>KEY</p></th>
+            <th></th>
         </tr>
         {% for chat_key in chat_key_list %}
             <tr>
                 <th><p style="color: white;">{{ chat_key.chatkey }}</p></th>
+                <th><form action="/delete_chat_key" method="post"><button>DELETE</button><input hidden name="chat_key_id" value="{{chat_key.id}}"></form></th>
             </tr>
         {% endfor %}
     </table>
     
+    <h2>CREATE CHAT KEY</h2>
+    <button style="width: 50%;"><a href="/chat_key_manual">CREATE CHAT KEY BY HAND</a></button>
 
     <h1>EXIT SETTINGS</h1>
     <button style="width: 50%"><a href="/chat_key">BACK TO CHAT KEY SELECTION</a></button>
