@@ -1,5 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap');
 body {
-    font-family:'Courier New', Courier, monospace;
+    /* font-family:'Courier New', Courier, monospace; */
+    font-family: 'Montserrat', sans-serif;
     background-color: #1E1E1E;
     margin-left: 20px;
     margin-top: 20px;

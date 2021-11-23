@@ -4,6 +4,7 @@ from logging import error, log
 import re
 from flask import Flask, render_template, url_for, request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import cast, Date
 import datetime
 from functools import wraps
 
@@ -193,6 +194,7 @@ def clickedSend():
     # add new message
     text = request.form.get("new_message")
     new_message(text)
+    # print(db.session.query(cast(ChatMessage.timestamp, Date)).distinct().all())
     return redirect(url_for("chat_page"))
 
 def new_message(text):
