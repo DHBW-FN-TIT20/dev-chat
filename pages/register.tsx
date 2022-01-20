@@ -8,8 +8,11 @@ export interface RegisterState {
 }
 
 export interface RegisterProps {}
-
-export default class Register extends Component<RegisterProps, RegisterState> {
+/**
+ * @class Class of the register Component
+ * @component
+ */
+class Register extends Component<RegisterProps, RegisterState> {
   username = '';
   password = '';
   constructor(props: RegisterProps) {
@@ -18,9 +21,14 @@ export default class Register extends Component<RegisterProps, RegisterState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div className={styles.container}>
@@ -44,7 +52,11 @@ export default class Register extends Component<RegisterProps, RegisterState> {
       </div>
     )
   }
+  /**
+   * Button Click Event for the Register Button
+   */
   clickedRegister() {
     alert(`username: ${this.username} password: ${this.password}`);
   }
 }
+export default Register

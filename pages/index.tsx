@@ -9,7 +9,9 @@ export interface MainState {
 }
 
 export interface MainProps {}
-
+/**
+ * Component-Class for the main Page
+ */
 export default class Main extends Component<MainProps, MainState> {
 
   constructor(props: MainProps) {
@@ -18,9 +20,14 @@ export default class Main extends Component<MainProps, MainState> {
       count: 0
     }
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div className={styles.container}>

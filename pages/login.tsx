@@ -8,8 +8,11 @@ export interface LoginState {
 }
 
 export interface LoginProps {}
-
-export default class Login extends Component<LoginProps, LoginState> {
+/**
+ * @class Login Componet Class
+ * @component
+ */
+class Login extends Component<LoginProps, LoginState> {
   username = '';
   password = '';
   constructor(props: LoginProps) {
@@ -18,9 +21,14 @@ export default class Login extends Component<LoginProps, LoginState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div className={styles.container}>
@@ -44,7 +52,12 @@ export default class Login extends Component<LoginProps, LoginState> {
       </div>
     )
   }
+  /**
+   * Button Click Event for the Login Button
+   */
   clickedLogin() {
     alert(`username: ${this.username} password: ${this.password}`);
   }
 }
+
+export default Login
