@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
+import { getThreeWords } from '../public/three_words_generator/three_words_generator'
 
 export interface MainState {
   count: number;
