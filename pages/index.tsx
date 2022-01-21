@@ -45,6 +45,12 @@ export default class Main extends Component<MainProps, MainState> {
           <button onClick={() => {
             this.setState({ count: this.state.count + 1 });
           }}> plus 1 </button>
+          <div>
+            <a href={"/input_reset"}>Input Reset</a> instead
+          </div>
+          <div>
+            <a href={"/keylistener"}>Keylistener</a> instead
+          </div>
         </main>
       </div>
     )
