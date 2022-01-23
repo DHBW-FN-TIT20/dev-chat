@@ -1,0 +1,20 @@
+.container {
+    padding: 2rem 0rem;
+  }
+  
+  .h4 {
+    margin: 2rem 0rem 1rem;
+  }
+  
+.table-image .th {
+      vertical-align: middle;
+      outline: 2px green;
+    }
+.table-image .td {
+        vertical-align: middle;
+        outline: 2px red;
+    }
+
+.b3 {
+    background: red;
+}
