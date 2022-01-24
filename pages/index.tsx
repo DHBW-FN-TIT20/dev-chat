@@ -46,10 +46,7 @@ export default class Main extends Component<MainProps, MainState> {
             this.setState({ count: this.state.count + 1 });
           }}> plus 1 </button>
           <div>
-            <a href={"/input_reset"}>Input Reset</a> instead
-          </div>
-          <div>
-            <a href={"/keylistener"}>Keylistener</a> instead
+            <a href={"/chatroom"}>Chatroom</a>
           </div>
         </main>
       </div>
