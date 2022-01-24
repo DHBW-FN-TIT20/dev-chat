@@ -31,10 +31,10 @@ export default class Login extends Component<LoginProps, LoginState> {
   
         <main className={styles.Chat}>
           <div>
-            <div className={styles.errorDiv}> 
+            <div className="error"> 
               Chat here.
             </div>
-            <input className="chat-box" type="text" placeholder="Write a message..."/>
+            <input className={styles.chatBox} type="text" placeholder="Write a message..."/>
           </div>
         </main>
       </div>

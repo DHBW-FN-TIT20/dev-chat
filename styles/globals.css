@@ -1,99 +1,235 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  background-color: #1A1A1A;
-  font-family: 'Montserrat', sans-serif;
-  color: #D7BA7D;
-  font-size: 20pt;
+/** Background */
+
+@media screen and (max-width: 1224px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Montserrat', sans-serif;
+    color: #D7BA7D;
+    font-size: 12pt;
+  }
 }
+
+@media screen and (min-width: 1224px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Montserrat', sans-serif;
+    color: #D7BA7D;
+    font-size: 24pt;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/** Text */
 
 p {
   margin: 2pt;
 }
 
-h1 {
-  color: #D7BA7D;
-  font-size: 40pt;
-  margin: 2pt;
+/** Headlines */
+
+@media screen and (max-width: 1224px) {
+  h1 {
+    color: #7d92d7;
+    font-size: 20pt;
+    margin: 2pt;
+  }
 }
+
+@media screen and (min-width: 1224px) {
+  h1 {
+    color: #D7BA7D;
+    font-size: 40pt;
+    margin: 2pt;
+  }  
+}
+
+/** Links */
 
 a {
   color: #99CCFF;
   text-decoration: underline;
 }
 
+/** Input fields */
+
 input::placeholder {
   color: #CCCCCC;
 }
 
-input {
-  width: 40%;
-  font-size: 24pt;
-  color: white;
-  background-color: transparent;
-  border-style: solid;
-  border-radius: 5pt;
-  border-width: 2pt;
-  border-color: #666666;
-  padding: 10pt;
-  margin: 2pt;
+@media screen and (max-width: 1224px) {
+  input {
+    width: 40%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+  }
 }
 
-.error {
-  background-color: rgb(150, 25, 25);
-  text-align: center;
-  width: 40%;
-  margin: 2pt;
-  padding: 10pt;
-  border-color:  #666666;
-  border-width: 2pt;
-  border-radius: 5pt;
-  border-style: solid;
+@media screen and (min-width: 1224px) {
+  input {
+    width: 40%;
+    font-size: 24pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+  }
 }
 
-button {
-  width: 40%;
-  font-size: 24pt;
-  color: white;
-  background-color: transparent;
-  border-style: solid;
-  border-radius: 5pt;
-  border-width: 2pt;
-  border-color: #FF9933;
-  padding: 10pt;
-  margin: 2pt;
+/** Buttons */
+
+@media screen and (max-width: 1224px) {
+  button {
+    width: 40%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+  }  
 }
 
-img {
-  width: 40%;
+@media screen and (min-width: 1224px) {
+  button {
+    width: 40%;
+    font-size: 24pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+  }  
 }
 
-table {
-  border-color: white;
-  border-style: solid;
-  border-width: 4pt;
-  color: white;
-  border-collapse: collapse;
+/** Images */
+
+@media screen and (max-width: 1224px) {
+  img {
+    width: 100%;
+  }
 }
 
-table th {
-  border-color: #CCCCCC;
-  border-style: solid;
-  border-width: 1pt;
-  font-weight: bold;
-  padding: 2pt 4pt 2pt 4pt;
-  text-align: center;
+@media screen and (min-width: 1224px) {
+  img {
+    width: 40%;
+  }
 }
 
-table td {
-  border-color: #CCCCCC;
-  border-style: solid;
-  border-width: 1pt;
-  padding: 2pt 4pt 2pt 4pt;
-  text-align: center;
-  overflow: auto;
+/** Tables */
+
+@media screen and (max-width: 1224px) {
+  table {
+    border-color: white;
+    border-style: solid;
+    border-width: 2pt;
+    color: white;
+    border-collapse: collapse;
+  }
+  
+  table th {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    font-weight: bold;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+  }
+  
+  table td {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+    overflow: auto;
+  }
 }
+
+@media screen and (min-width: 1224px) {
+  table {
+    border-color: white;
+    border-style: solid;
+    border-width: 4pt;
+    color: white;
+    border-collapse: collapse;
+  }
+  
+  table th {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    font-weight: bold;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+  }
+  
+  table td {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+    overflow: auto;
+  }
+}
+
+/** Custom objects */
+
+@media screen and (max-width: 1224px) {
+  .error {
+    background-color: rgb(150, 25, 25);
+    text-align: center;
+    width: 40%;
+    margin: 2pt;
+    padding: 10pt;
+    border-color:  #666666;
+    border-width: 2pt;
+    border-radius: 5pt;
+    border-style: solid;
+  }
+}
+
+@media screen and (min-width: 1224px) {
+  .error {
+    background-color: rgb(150, 25, 25);
+    text-align: center;
+    width: 40%;
+    margin: 2pt;
+    padding: 10pt;
+    border-color:  #666666;
+    border-width: 2pt;
+    border-radius: 5pt;
+    border-style: solid;
+  }
+}
+
+/** Colors */
 
 .deactivated {
   color: #999999;
@@ -109,26 +245,4 @@ table td {
 
 .orange {
   color: #FF9933;
-}
-
-.chat-box::placeholder {
-  color: #CCCCCC;
-}
-
-.chat-box:focus {
-  outline: none;
-}
-
-.chat-box {
-  background-color: #666666;
-  width: max-content;
-  border-radius: 0pt;
-  width: 100%;
-  font-size: 22pt;
-  padding: 2pt;
-  margin: 0;
-}
-
-* {
-  box-sizing: border-box;
 }
