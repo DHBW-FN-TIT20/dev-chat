@@ -26,6 +26,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <title>Header</title>
           <meta name="description" content="DEV-CHAT-Header" />
           <link rel="icon" href="/favicon.ico" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main className={styles.Header}>

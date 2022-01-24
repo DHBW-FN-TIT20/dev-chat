@@ -26,6 +26,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <title>Password reset</title>
           <meta name="description" content="Change Password" />
           <link rel="icon" href="/favicon.ico" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main className={styles.Login}>
@@ -36,7 +37,7 @@ export default class Login extends Component<LoginProps, LoginState> {
             <input type="password" placeholder="Old password..."/>
             <input type="password" placeholder="New password..."/>
             <input type="password" placeholder="Confirm new password..."/>
-            <div className={styles.errorDiv}> 
+            <div className="error"> 
               Incorrect username or password. 
             </div>
             <button> 

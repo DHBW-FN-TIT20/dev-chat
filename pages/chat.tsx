@@ -26,6 +26,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <title>Chat</title>
           <meta name="description" content="DEV-CHAT" />
           <link rel="icon" href="/favicon.ico" />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main className={styles.Chat}>
@@ -33,7 +34,7 @@ export default class Login extends Component<LoginProps, LoginState> {
             <div className={styles.errorDiv}> 
               Chat here.
             </div>
-            <input type="text" placeholder="Write a message..."/>
+            <input className="chat-box" type="text" placeholder="Write a message..."/>
           </div>
         </main>
       </div>

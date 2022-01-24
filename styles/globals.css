@@ -19,7 +19,7 @@ h1 {
 }
 
 a {
-  color: inherit;
+  color: #99CCFF;
   text-decoration: underline;
 }
 
@@ -41,8 +41,15 @@ input {
 }
 
 .error {
-  background-color: darkred;
+  background-color: rgb(150, 25, 25);
   text-align: center;
+  width: 40%;
+  margin: 2pt;
+  padding: 10pt;
+  border-color:  #666666;
+  border-width: 2pt;
+  border-radius: 5pt;
+  border-style: solid;
 }
 
 button {
@@ -60,6 +67,66 @@ button {
 
 img {
   width: 40%;
+}
+
+table {
+  border-color: white;
+  border-style: solid;
+  border-width: 4pt;
+  color: white;
+  border-collapse: collapse;
+}
+
+table th {
+  border-color: #CCCCCC;
+  border-style: solid;
+  border-width: 1pt;
+  font-weight: bold;
+  padding: 2pt 4pt 2pt 4pt;
+  text-align: center;
+}
+
+table td {
+  border-color: #CCCCCC;
+  border-style: solid;
+  border-width: 1pt;
+  padding: 2pt 4pt 2pt 4pt;
+  text-align: center;
+  overflow: auto;
+}
+
+.deactivated {
+  color: #999999;
+}
+
+.green {
+  color: #00FF00;
+}
+
+.red {
+  columns: #FF0000;
+}
+
+.orange {
+  color: #FF9933;
+}
+
+.chat-box::placeholder {
+  color: #CCCCCC;
+}
+
+.chat-box:focus {
+  outline: none;
+}
+
+.chat-box {
+  background-color: #666666;
+  width: max-content;
+  border-radius: 0pt;
+  width: 100%;
+  font-size: 22pt;
+  padding: 2pt;
+  margin: 0;
 }
 
 * {

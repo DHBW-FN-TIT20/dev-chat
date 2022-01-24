@@ -26,6 +26,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <title>Admin settings</title>
           <meta name='description' content='Admin settings' />
           <link rel='icon' href='/favicon.ico' />
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main className={styles.Main}>
