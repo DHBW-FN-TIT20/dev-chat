@@ -23,8 +23,8 @@ export default class Login extends Component<LoginProps, LoginState> {
     return (
       <div>
         <Head>
-          <title>Log In</title>
-          <meta name="description" content="Log In page" />
+          <title>Login</title>
+          <meta name="description" content="Login page" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
@@ -32,7 +32,7 @@ export default class Login extends Component<LoginProps, LoginState> {
         <main>
           <div>
             <h1>
-              Log In
+              Login
             </h1>
             <input type="text" placeholder="Username..."/>
             <input type="password" placeholder="Password..."/>
@@ -40,7 +40,7 @@ export default class Login extends Component<LoginProps, LoginState> {
               Incorrect username or password. 
             </div>
             <button> 
-              Log In 
+              Login 
             </button>
             <div>
               Or <a href={"/register"}>create Account</a> instead.
