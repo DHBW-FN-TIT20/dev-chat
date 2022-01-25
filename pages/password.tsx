@@ -1,16 +1,16 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Register.module.css'
+import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 
-export interface RegisterState {
+export interface PasswordState {
 }
 
-export interface RegisterProps {}
+export interface PasswordProps {}
 
-export default class Register extends Component<RegisterProps, RegisterState> {
-  constructor(props: RegisterProps) {
+export default class Password extends Component<PasswordProps, PasswordState> {
+  constructor(props: PasswordProps) {
     super(props)
     this.state = {
     }
@@ -23,8 +23,8 @@ export default class Register extends Component<RegisterProps, RegisterState> {
     return (
       <div>
         <Head>
-          <title>Register</title>
-          <meta name="description" content="register" />
+          <title>Change password</title>
+          <meta name="description" content="change password" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
@@ -32,20 +32,17 @@ export default class Register extends Component<RegisterProps, RegisterState> {
         <main>
           <div>
             <h1>
-              Create Account
+              Change Password
             </h1>
-            <input type="text" placeholder="Username..."/>
-            <input type="password" placeholder="Password..."/>
-            <input type="password" placeholder="Confirm Password..."/>
+            <input type="password" placeholder="Old password..."/>
+            <input type="password" placeholder="New password..."/>
+            <input type="password" placeholder="Confirm new password..."/>
             <div> 
-              Username already in use. / Passwords are not correct.
+              Incorrect username or password. 
             </div>
             <button> 
-              Create
+              Log In 
             </button>
-            <div>
-              Or <a href={"/login"}>login</a> instead.
-            </div>
           </div>
           <div>
             <img src="logo.png" alt="DEV-CHAT Logo" />
