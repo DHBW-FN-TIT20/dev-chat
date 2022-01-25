@@ -20,7 +20,7 @@
     background-color: #1A1A1A;
     font-family: 'Montserrat', sans-serif;
     color: #D7BA7D;
-    font-size: 24pt;
+    font-size: 16pt;
   }
 }
 
@@ -38,7 +38,7 @@ p {
 
 @media screen and (max-width: 1224px) {
   h1 {
-    color: #7d92d7;
+    color: #D7BA7D;
     font-size: 20pt;
     margin: 2pt;
   }
@@ -67,7 +67,7 @@ input::placeholder {
 
 @media screen and (max-width: 1224px) {
   input {
-    width: 40%;
+    width: 30%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -82,8 +82,8 @@ input::placeholder {
 
 @media screen and (min-width: 1224px) {
   input {
-    width: 40%;
-    font-size: 24pt;
+    width: 30%;
+    font-size: 16pt;
     color: white;
     background-color: transparent;
     border-style: solid;
@@ -99,7 +99,7 @@ input::placeholder {
 
 @media screen and (max-width: 1224px) {
   button {
-    width: 40%;
+    width: 30%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -114,8 +114,8 @@ input::placeholder {
 
 @media screen and (min-width: 1224px) {
   button {
-    width: 40%;
-    font-size: 24pt;
+    width: 30%;
+    font-size: 16pt;
     color: white;
     background-color: transparent;
     border-style: solid;
@@ -150,6 +150,7 @@ input::placeholder {
     border-width: 2pt;
     color: white;
     border-collapse: collapse;
+    white-space: nowrap;
   }
   
   table th {
@@ -159,6 +160,7 @@ input::placeholder {
     font-weight: bold;
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
+    width: max-content;
   }
   
   table td {
@@ -168,6 +170,20 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
     overflow: auto;
+  }
+
+  table td input {
+    border: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  table td input:focus {
+    outline: none;
   }
 }
 
@@ -195,7 +211,20 @@ input::placeholder {
     border-width: 1pt;
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
-    overflow: auto;
+  }
+
+  table td input {
+    border: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  table td input:focus {
+    outline: none;
   }
 }
 
@@ -205,7 +234,7 @@ input::placeholder {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 40%;
+    width: 30%;
     margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
@@ -219,7 +248,7 @@ input::placeholder {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 40%;
+    width: 30%;
     margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
