@@ -1,23 +1,23 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { IChatMessage } from '../../public/interfaces';
 import { SupabaseConnenction } from './supabaseAPI';
 
 type Data = {
-  wasSuccessfull: boolean
+  chatMessages: IChatMessage[]
 }
 
 const supabaseConnenction = new SupabaseConnenction();
 
 /**
- * This is a api route to remove a user from the database.
- * @param req the request object (body: username, password)
+ * This is a api route get all chat messages with a specific three-word from the database.
+ * @param req the request object (body: threeword)
  * @param res the response object (body: wasSuccessfull)
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let password = req.body.password;
+  let threeword = req.body.threeword;
 
-  let removedSuccessfully = await supabaseConnenction.removeUser(username, password);
+  let messages = await supabaseConnenction.getChatMessages(threeword);
 
-  res.status(200).json({ wasSuccessfull: removedSuccessfully });
+  res.status(200).json({ chatMessages: messages });
 }

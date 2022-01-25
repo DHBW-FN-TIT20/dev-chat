@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let username = req.body.username;
   let password = req.body.password;
 
-  let removedSuccessfully = await supabaseConnenction.removeUser(username, password);
+  let isValid = await supabaseConnenction.isUserValid(username, password);
 
-  res.status(200).json({ wasSuccessfull: removedSuccessfully });
+  res.status(200).json({ wasSuccessfull: isValid });
 }
