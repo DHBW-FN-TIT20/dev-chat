@@ -36,12 +36,16 @@ export default class Chat extends Component<ChatProps, ChatState> {
                 <tbody>
                   <tr>
                     <td>Henry</td>
-                    <td>at 15/01/2022 13:46 -> </td>
+                    <td>at</td>
+                    <td>15/01/2022 13:46</td>
+                    <td>-></td>
                     <td>Hallo</td>
                   </tr>
                   <tr>
                     <td>Phillipp</td>
-                    <td>at 15/01/2022 13:48 -> </td>
+                    <td>at</td>
+                    <td>15/01/2022 13:48</td>
+                    <td>-></td>
                     <td>Hallo, alles klar?</td>
                   </tr>
                 </tbody>
