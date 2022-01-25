@@ -4,13 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/impressum.module.css'
 import React, { Component } from 'react'
 
-export interface HeaderState {
+export interface ImpressumState {
 }
 
-export interface HeaderProps {}
+export interface ImpressumProps {}
 
-export default class Header extends Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps) {
+export default class Impressum extends Component<ImpressumProps, ImpressumState> {
+  constructor(props: ImpressumProps) {
     super(props)
     this.state = {
     }
@@ -24,7 +24,7 @@ export default class Header extends Component<HeaderProps, HeaderState> {
       <div>
         <Head>
           <title>Impressum</title>
-          <meta name="Impressum" content="header" />
+          <meta name="Impressum" content="impressum" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
