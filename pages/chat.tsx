@@ -47,7 +47,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                 </tbody>
               </table>
             </div>
-            <input type="text" placeholder="Write a message..."/>
+            <input className={styles.chatBox} type="text" placeholder="Write a message..."/>
           </div>
         </main>
       </div>
