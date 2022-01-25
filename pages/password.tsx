@@ -23,8 +23,8 @@ export default class Password extends Component<PasswordProps, PasswordState> {
     return (
       <div>
         <Head>
-          <title>Password reset</title>
-          <meta name="description" content="Change Password" />
+          <title>Change password</title>
+          <meta name="description" content="change password" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>

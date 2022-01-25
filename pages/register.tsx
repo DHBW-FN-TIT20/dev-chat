@@ -23,8 +23,8 @@ export default class Register extends Component<RegisterProps, RegisterState> {
     return (
       <div>
         <Head>
-          <title>New account</title>
-          <meta name="description" content="New Account" />
+          <title>Register</title>
+          <meta name="description" content="register" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>

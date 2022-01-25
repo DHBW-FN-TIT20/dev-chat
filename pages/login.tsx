@@ -24,7 +24,7 @@ export default class Login extends Component<LoginProps, LoginState> {
       <div>
         <Head>
           <title>Login</title>
-          <meta name="description" content="Login page" />
+          <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
