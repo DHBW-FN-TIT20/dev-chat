@@ -30,7 +30,38 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
         </Head>
   
         <main>
-        
+          <div>
+            <h1>
+              Verantwortlich
+            </h1>
+            <p>
+              Henry Schuler
+            </p>
+            <h1>
+              Team
+            </h1>
+            <p>
+              Nico Bayer <br />
+              Johannes Brandenburger <br />
+              Lukas Braun <br />
+              Jan Brutscher <br />
+              Phillipp Patzelt <br />
+            </p>
+            <h1>
+              Kontakt
+            </h1>
+            <p>
+              DEV-CHAT <br />
+              STRASSE <br />
+              PLZ ORT <br />
+              <br />
+              TELEFON <br />
+              E-MAIL <br />
+            </p>
+          </div>
+          <div>
+            <img src="logo.png" alt="DEV-CHAT Logo" />
+          </div>
         </main>
       </div>
     )
