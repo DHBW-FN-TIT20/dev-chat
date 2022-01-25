@@ -4,13 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 
-export interface LoginState {
+export interface RegisterState {
 }
 
-export interface LoginProps {}
+export interface RegisterProps {}
 
-export default class Login extends Component<LoginProps, LoginState> {
-  constructor(props: LoginProps) {
+export default class Register extends Component<RegisterProps, RegisterState> {
+  constructor(props: RegisterProps) {
     super(props)
     this.state = {
     }
@@ -21,7 +21,7 @@ export default class Login extends Component<LoginProps, LoginState> {
 
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
           <title>New account</title>
           <meta name="description" content="New Account" />
@@ -29,15 +29,15 @@ export default class Login extends Component<LoginProps, LoginState> {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
-        <main className={styles.Chat}>
-        <div>
-            <h1 className={styles.title}>
+        <main>
+          <div>
+            <h1>
               Create Account
             </h1>
             <input type="text" placeholder="Username..."/>
             <input type="password" placeholder="Password..."/>
             <input type="password" placeholder="Confirm Password..."/>
-            <div className={styles.errorDiv}> 
+            <div> 
               Username already in use. / Passwords are not correct.
             </div>
             <button> 

@@ -4,13 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 
-export interface LoginState {
+export interface PasswordState {
 }
 
-export interface LoginProps {}
+export interface PasswordProps {}
 
-export default class Login extends Component<LoginProps, LoginState> {
-  constructor(props: LoginProps) {
+export default class Password extends Component<PasswordProps, PasswordState> {
+  constructor(props: PasswordProps) {
     super(props)
     this.state = {
     }
@@ -21,7 +21,7 @@ export default class Login extends Component<LoginProps, LoginState> {
 
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
           <title>Password reset</title>
           <meta name="description" content="Change Password" />
@@ -29,15 +29,15 @@ export default class Login extends Component<LoginProps, LoginState> {
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
-        <main className={styles.Login}>
+        <main>
           <div>
-            <h1 className={styles.title}>
+            <h1>
               Change Password
             </h1>
             <input type="password" placeholder="Old password..."/>
             <input type="password" placeholder="New password..."/>
             <input type="password" placeholder="Confirm new password..."/>
-            <div className="error"> 
+            <div> 
               Incorrect username or password. 
             </div>
             <button> 

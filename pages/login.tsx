@@ -21,26 +21,26 @@ export default class Login extends Component<LoginProps, LoginState> {
 
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
-          <title>Log In</title>
-          <meta name="description" content="Log In page" />
+          <title>Login</title>
+          <meta name="description" content="Login page" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
-        <main className={styles.Login}>
+        <main>
           <div>
-            <h1 className={styles.title}>
-              Log In
+            <h1>
+              Login
             </h1>
             <input type="text" placeholder="Username..."/>
             <input type="password" placeholder="Password..."/>
-            <div className={styles.errorDiv}> 
+            <div> 
               Incorrect username or password. 
             </div>
             <button> 
-              Log In 
+              Login 
             </button>
             <div>
               Or <a href={"/register"}>create Account</a> instead.

@@ -4,13 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/Header.module.css'
 import React, { Component } from 'react'
 
-export interface LoginState {
+export interface HeaderState {
 }
 
-export interface LoginProps {}
+export interface HeaderProps {}
 
-export default class Login extends Component<LoginProps, LoginState> {
-  constructor(props: LoginProps) {
+export default class Header extends Component<HeaderProps, HeaderState> {
+  constructor(props: HeaderProps) {
     super(props)
     this.state = {
     }
@@ -21,30 +21,26 @@ export default class Login extends Component<LoginProps, LoginState> {
 
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
           <title>Header</title>
-          <meta name="description" content="DEV-CHAT-Header" />
+          <meta name="description" content="header" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
-        <main className={styles.Header}>
-            <button>
-                Logo
-            </button>
-            <div>
-                DEV-CHAT
-            </div>
-            <div>
-                Room
-            </div>
-            <div>
-                Name
-            </div>
-            <button>
-                Impressum
-            </button>
+        <main>
+          <a href="/">
+            <img src="logo.png" alt="DEV-CHAT Logo" />
+          </a>
+          <div>
+            DEV-CHAT
+          </div>
+          <div>
+            Name
+          </div>
+          <a href="">$</a>
+          <a href=""><img src="" alt="DEV-CHAT Exit" /></a>
         </main>
       </div>
     )
