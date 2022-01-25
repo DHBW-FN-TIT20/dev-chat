@@ -8,7 +8,9 @@ export interface MainState {
 }
 
 export interface MainProps {}
-
+/**
+ * Component-Class for the main Page
+ */
 export default class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
     super(props)
@@ -16,9 +18,14 @@ export default class Main extends Component<MainProps, MainState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div>

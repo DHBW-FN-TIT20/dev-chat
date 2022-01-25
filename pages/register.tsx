@@ -9,6 +9,10 @@ export interface RegisterState {
 
 export interface RegisterProps {}
 
+/**
+ * @class Class of the register Component
+ * @component
+ */
 export default class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {
     super(props)
@@ -16,9 +20,14 @@ export default class Register extends Component<RegisterProps, RegisterState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div>

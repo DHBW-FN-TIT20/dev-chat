@@ -9,6 +9,10 @@ export interface LoginState {
 
 export interface LoginProps {}
 
+/**
+ * @class Login Componet Class
+ * @component
+ */
 export default class Login extends Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props)
@@ -16,9 +20,14 @@ export default class Login extends Component<LoginProps, LoginState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div>
