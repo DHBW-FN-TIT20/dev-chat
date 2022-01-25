@@ -82,7 +82,7 @@ export class SupabaseConnenction {
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
   public getChatMessages = async (threeword: string): Promise<IChatMessage[]> => {
-
+    
     return [];
   };
 

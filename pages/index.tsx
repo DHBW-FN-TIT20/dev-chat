@@ -43,7 +43,7 @@ export default class Main extends Component<MainProps, MainState> {
           </h1>
           <div>Count={this.state.count}</div>
           <button onClick={() => {
-            this.setState({ count: this.state.count + 1 });
+            // DevChatController.deleteUser("asdfvadf");
           }}> plus 1 </button>
         </main>
       </div>
