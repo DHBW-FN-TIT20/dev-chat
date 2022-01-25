@@ -96,13 +96,65 @@ export default class Admin extends Component<AdminProps, AdminState> {
               Survey Settings
             </h1>
             <div> 
-              Table
+              <table>
+                <thead>
+                  <tr>
+                    <th scope='col'>Name</th>
+                    <th scope='col'>Expiration Time</th>
+                    <th scope='col'>Owner</th>
+                    <th scope='col'>Change Time</th>
+                    <th scope='col'>Survey</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Survey 1</td>
+                    <td>16/01/2022 21:23:12</td>
+                    <td>admin</td>
+                    <td><a href="">Set Time</a></td>
+                    <td><a href="">Delete</a></td>
+                  </tr>
+                  <tr>
+                    <td>Survey 2</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>admin</td>
+                    <td><a href="">Set Time</a></td>
+                    <td><a href="">Delete</a></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <h1>
               Tickets
             </h1>
             <div> 
-              Table
+              <table>
+                <thead>
+                  <tr>
+                    <th scope='col'>Submitter</th>
+                    <th scope='col'>Created On</th>
+                    <th scope='col'>State</th>
+                    <th scope='col'>Change State</th>
+                    <th scope='col'>Info</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>admin</td>
+                    <td>16/01/2022 21:23:12</td>
+                    <td>Done</td>
+                    <td><a href="">Set To Do</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
           <div>
