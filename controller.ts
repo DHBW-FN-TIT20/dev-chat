@@ -50,6 +50,22 @@ export class DevChatController {
         console.log("DevChatController.updateChatMessages()");
         
     }
+
+
+    public async userLogsIn(username: string, password: string): Promise<boolean> {
+        console.log("DevChatController.userLogsIn()");
+        var loginWasSuccessful: boolean = false;
+
+        return loginWasSuccessful;
+    }
+
+
+    public async userRegisters(username: string, password: string): Promise<boolean> {
+        console.log("DevChatController.userRegisters()");
+        var registerWasSuccessful: boolean = false;
+        
+        return registerWasSuccessful;
+    }
 }
 
 
