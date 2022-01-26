@@ -10,16 +10,24 @@ export interface MainState {
 
 export interface MainProps {}
 
-export default class Main extends Component<MainProps, MainState> { 
+/**
+ * Component-Class for the main Page
+ */
+export default class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
     super(props)
     this.state = {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div>
