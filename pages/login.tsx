@@ -3,12 +3,17 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface LoginState {
 }
 
 export interface LoginProps {}
 
+/**
+ * @class Login Componet Class
+ * @component
+ */
 export default class Login extends Component<LoginProps, LoginState> {
   constructor(props: LoginProps) {
     super(props)
@@ -16,37 +21,50 @@ export default class Login extends Component<LoginProps, LoginState> {
     }
     
   }
-
+  /**
+   * is always called, if component did mount
+   */
   componentDidMount() {}
-
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
-          <title>Log In</title>
-          <meta name="description" content="Log In page" />
+          <title>Login</title>
+          <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
   
-        <main className={styles.Login}>
+        <main>
           <div>
-            <h1 className={styles.title}>
-              Log In
+            <h1>
+              Login
             </h1>
             <input type="text" placeholder="Username..."/>
             <input type="password" placeholder="Password..."/>
-            <div className={styles.errorDiv}> 
+            <div> 
               Incorrect username or password. 
             </div>
-            <button> 
-              Log In 
+            <button onClick={() => {
+              DevChatController.userLogsIn("", "") // change to state later
+            }}> 
+              Login 
             </button>
             <div>
               Or <a href={"/register"}>create Account</a> instead.
             </div>
           </div>
-          <div>
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>
