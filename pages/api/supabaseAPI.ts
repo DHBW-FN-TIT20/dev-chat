@@ -3,10 +3,13 @@ import { IChatMessage } from '../../public/interfaces';
 
 /**
  * This is the connection to the supabase database.
+ * All the api routes should lead to this class.
+ * The methods of the class are used to get/post data from/to the database.
  */
 export class SupabaseConnenction {
   private static CLIENT: SupabaseClient;
   constructor() {
+    // supabaseUrl and supabaseKey should be replaced by the environment variables
     // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
     // const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY || ''; 
     const supabaseUrl = "https://yffikhrkategkabkunhj.supabase.co"
