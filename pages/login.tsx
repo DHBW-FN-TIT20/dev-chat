@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface LoginState {
 }
@@ -39,7 +40,9 @@ export default class Login extends Component<LoginProps, LoginState> {
             <div> 
               Incorrect username or password. 
             </div>
-            <button> 
+            <button onClick={() => {
+              DevChatController.userLogsIn("", "") // change to state later
+            }}> 
               Login 
             </button>
             <div>

@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface RegisterState {
 }
@@ -40,7 +41,9 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             <div> 
               Username already in use. / Passwords are not correct.
             </div>
-            <button> 
+            <button onClick={() => {
+              DevChatController.userRegisters("", "") // change to state later
+            }}> 
               Create
             </button>
             <div>

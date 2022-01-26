@@ -39,13 +39,17 @@ export default class Main extends Component<MainProps, MainState> {
             <div> 
               Incorrect username or password. 
             </div>
-            <button> 
+            <button onClick={() => {
+              // DevChatController.userJoinsRoom(Chat-Key) // method have to be implemented
+            }}> 
               Join
             </button>
             <h1>
               Create Room
             </h1>
-            <button> 
+            <button onClick={() => {
+              // DevChatController.userCreatsChatRoom() // method have to be implemented
+            }}> 
               Create
             </button>
             <h1>
