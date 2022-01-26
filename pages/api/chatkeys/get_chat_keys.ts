@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { IChatKey, IChatMessage } from '../../../public/interfaces';
+import { IChatKey } from '../../../public/interfaces';
 import { SupabaseConnenction } from '../supabaseAPI';
 
 type Data = {
