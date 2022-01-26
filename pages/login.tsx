@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface LoginState {
 }
 
@@ -39,6 +39,7 @@ export default class Login extends Component<LoginProps, LoginState> {
         </Head>
   
         <main>
+          <Header pageInformation="Welcome" showName={false} />
           <div>
             <h1>
               Login
@@ -53,7 +54,7 @@ export default class Login extends Component<LoginProps, LoginState> {
             }}> 
               Login 
             </button>
-            <div>
+            <div className='test'>
               Or <a href={"/register"}>create Account</a> instead.
             </div>
           </div>

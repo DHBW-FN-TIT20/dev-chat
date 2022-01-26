@@ -8,7 +8,10 @@ import DevChatController from '../controller'
 export interface HeaderState {
 }
 
-export interface HeaderProps {}
+export interface HeaderProps {
+  pageInformation: string,
+  showName: boolean,
+}
 
 export default class Header extends Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
@@ -30,37 +33,40 @@ export default class Header extends Component<HeaderProps, HeaderState> {
         </Head>
   
         <main>
+          <div className={styles.container}>         
           <a href="/">
-            <div className="image">
+            <div className={styles.logo}>
               <Image
                 src={"/logo.png"}
                 alt="DEV-CHAT Logo"
-                width={1000}
-                height={1000}
-                layout="responsive"
+                width={70}
+                height={70}
               />
             </div>
           </a>
-          <div>
-            DEV-CHAT
+          <div className={styles.name}>
+            {this.props.pageInformation}
           </div>
-          <div>
-            Name
-          </div>
-          <a href="">$</a>
+          
+          <div className={styles.space}></div>
+          {
+            this.props.showName && <div className={styles.user}>Name</div>           
+          } 
+          
           <a href="">
-            <div className="image">
+            <div className={styles.exit}>
               <Image
                 src={"/exit.png"}
                 alt="DEV-CHAT Exit"
-                width={1000}
-                height={1000}
-                layout="responsive"
+                width={50}
+                height={50}
               />
             </div>  
           </a>
+          </div>
         </main>
       </div>
     )
   }
 }
+//<a href="">$</a> 
