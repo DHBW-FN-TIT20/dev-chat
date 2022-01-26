@@ -3,13 +3,14 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface MainState {
 }
 
 export interface MainProps {}
 
-export default class Main extends Component<MainProps, MainState> {
+export default class Main extends Component<MainProps, MainState> { 
   constructor(props: MainProps) {
     super(props)
     this.state = {
