@@ -15,10 +15,11 @@ export default class Main extends Component<MainProps, MainState> {
     super(props)
     this.state = {
     }
-    
   }
 
-  componentDidMount() {}
+  async componentDidMount() {
+    console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+  }
 
   render() {
     return (
