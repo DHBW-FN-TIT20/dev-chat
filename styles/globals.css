@@ -130,13 +130,13 @@ input::placeholder {
 /** Images */
 
 @media screen and (max-width: 1224px) {
-  img {
+  .image {
     width: 100%;
   }
 }
 
 @media screen and (min-width: 1224px) {
-  img {
+  .image {
     width: 40%;
   }
 }

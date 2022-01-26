@@ -27,7 +27,6 @@ export default class Register extends Component<RegisterProps, RegisterState> {
           <title>Register</title>
           <meta name="description" content="register" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
@@ -50,8 +49,14 @@ export default class Register extends Component<RegisterProps, RegisterState> {
               Or <a href={"/login"}>login</a> instead.
             </div>
           </div>
-          <div>
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>

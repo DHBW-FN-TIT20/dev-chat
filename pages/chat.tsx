@@ -31,7 +31,6 @@ export default class Chat extends Component<ChatProps, ChatState> {
           <title>Chat</title>
           <meta name="description" content="chat" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>

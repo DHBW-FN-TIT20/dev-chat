@@ -27,12 +27,19 @@ export default class Header extends Component<HeaderProps, HeaderState> {
           <title>Header</title>
           <meta name="description" content="header" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
           <a href="/">
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+            <div className="image">
+              <Image
+                src={"/logo.png"}
+                alt="DEV-CHAT Logo"
+                width={1000}
+                height={1000}
+                layout="responsive"
+              />
+            </div>
           </a>
           <div>
             DEV-CHAT
@@ -41,7 +48,17 @@ export default class Header extends Component<HeaderProps, HeaderState> {
             Name
           </div>
           <a href="">$</a>
-          <a href=""><img src="" alt="DEV-CHAT Exit" /></a>
+          <a href="">
+            <div className="image">
+              <Image
+                src={"/exit.png"}
+                alt="DEV-CHAT Exit"
+                width={1000}
+                height={1000}
+                layout="responsive"
+              />
+            </div>  
+          </a>
         </main>
       </div>
     )

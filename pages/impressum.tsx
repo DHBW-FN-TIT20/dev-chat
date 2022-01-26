@@ -26,7 +26,6 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
           <title>Impressum</title>
           <meta name="Impressum" content="impressum" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
@@ -59,8 +58,14 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
               E-MAIL <br />
             </p>
           </div>
-          <div>
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>
