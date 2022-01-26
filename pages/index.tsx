@@ -3,11 +3,13 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface MainState {
 }
 
 export interface MainProps {}
+
 /**
  * Component-Class for the main Page
  */
@@ -33,7 +35,6 @@ export default class Main extends Component<MainProps, MainState> {
           <title>Main page</title>
           <meta name="description" content="main page" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
@@ -45,13 +46,17 @@ export default class Main extends Component<MainProps, MainState> {
             <div> 
               Incorrect username or password. 
             </div>
-            <button> 
+            <button onClick={() => {
+              // DevChatController.userJoinsRoom(Chat-Key) // method have to be implemented
+            }}> 
               Join
             </button>
             <h1>
               Create Room
             </h1>
-            <button> 
+            <button onClick={() => {
+              // DevChatController.userCreatsChatRoom() // method have to be implemented
+            }}> 
               Create
             </button>
             <h1>
@@ -67,8 +72,14 @@ export default class Main extends Component<MainProps, MainState> {
               Delete Account
             </button>
           </div>
-          <div>
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>

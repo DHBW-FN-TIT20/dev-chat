@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
+import { loadGetInitialProps } from 'next/dist/shared/lib/utils'
 
 export interface AdminState {
 }
@@ -26,7 +28,6 @@ export default class Admin extends Component<AdminProps, AdminState> {
           <title>Admin settings</title>
           <meta name='description' content='admin settings' />
           <link rel='icon' href='/favicon.ico' />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
@@ -157,8 +158,14 @@ export default class Admin extends Component<AdminProps, AdminState> {
               </table>
             </div>
           </div>
-          <div>
-            <img src='logo.png' alt='DEV-CHAT Logo' />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>

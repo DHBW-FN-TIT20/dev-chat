@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface LoginState {
 }
@@ -35,7 +36,6 @@ export default class Login extends Component<LoginProps, LoginState> {
           <title>Login</title>
           <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" />
         </Head>
   
         <main>
@@ -48,15 +48,23 @@ export default class Login extends Component<LoginProps, LoginState> {
             <div> 
               Incorrect username or password. 
             </div>
-            <button> 
+            <button onClick={() => {
+              DevChatController.userLogsIn("", "") // change to state later
+            }}> 
               Login 
             </button>
             <div>
               Or <a href={"/register"}>create Account</a> instead.
             </div>
           </div>
-          <div>
-            <img src="logo.png" alt="DEV-CHAT Logo" />
+          <div className="image">
+            <Image
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
           </div>
         </main>
       </div>
