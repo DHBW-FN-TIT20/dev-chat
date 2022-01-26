@@ -1,4 +1,4 @@
-import { setCookies, getCookies, getCookie, removeCookies, checkCookies} from 'cookies-next';
+import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
 
 /**
  * This is the controller of the DEV-CHAT-APP.
@@ -35,12 +35,29 @@ export class DevChatController {
     }
 
     /**
-     * This method is used to process a new message.
+     * This method is used to process a new message which is entered in the Chat.
      * @param message The input string of the user which should be processed.
      */
     public async enteredNewMessage(message: string) {
         console.log("DevChatController.enteredNewMessage()");
-        console.log("in Controller: ", message);
+        console.log("in Controller: " + message);
+        if(await this.checkMessageForCommands(message) == false)
+        {
+            //Add the Message to the Database
+            //TODO Call Supabase Api Function to add Message to Database
+        }
+    }
+
+    /**
+     * Checks the Message if its a Command
+     * @param message Input Messag zu Check
+     */
+    private async checkMessageForCommands(message: string): Promise<boolean> {
+        var isMessageCommand : boolean = false;
+        console.log("DevChatController.checkMessageForCommands()");
+        console.log("is Command: " + isMessageCommand);
+        //Task in Sprint 2
+        return isMessageCommand;
     }
 
     /**
@@ -48,7 +65,7 @@ export class DevChatController {
      */
     public async updateChatMessages() {
         console.log("DevChatController.updateChatMessages()");
-        
+
     }
 
 
@@ -63,7 +80,7 @@ export class DevChatController {
     public async userRegisters(username: string, password: string): Promise<boolean> {
         console.log("DevChatController.userRegisters()");
         var registerWasSuccessful: boolean = false;
-        
+
         return registerWasSuccessful;
     }
 
@@ -73,19 +90,19 @@ export class DevChatController {
      * @param {string} password the password of the user to be removed
      * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
      **/
-    public verifyUser = async (username: string, password:string): Promise<boolean> => {
-    let response = await fetch('./api/users/verify_user', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-        username: username,
-        password: password
-        })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
+    public verifyUser = async (username: string, password: string): Promise<boolean> => {
+        let response = await fetch('./api/users/verify_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
     }
 
 
