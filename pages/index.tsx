@@ -18,12 +18,15 @@ export default class Main extends Component<MainProps, MainState> {
     super(props)
     this.state = {
     }
-    
   }
+
   /**
    * is always called, if component did mount
    */
-  componentDidMount() {}
+  async componentDidMount() {
+    console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+  }
+
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output

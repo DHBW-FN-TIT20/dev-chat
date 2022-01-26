@@ -20,7 +20,7 @@ export class DevChatController {
      * It is called by the constructor.
      * It is async because it needs to wait for the cookies and the supabase data to be loaded.
      */
-    private async initilize() {
+    public async initilize() {
         console.log("DevChatController.initilize()");
         await this.checkCookies(); // here should the controller check for user cookies and if there are cookies, the user should be logged in.
     }
@@ -66,6 +66,29 @@ export class DevChatController {
         
         return registerWasSuccessful;
     }
+
+    /**
+     * This is a function that removes a user from the database
+     * @param {string} username the username of the user to be removed
+     * @param {string} password the password of the user to be removed
+     * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
+     **/
+    public verifyUser = async (username: string, password:string): Promise<boolean> => {
+    let response = await fetch('./api/users/verify_user', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+        username: username,
+        password: password
+        })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+    }
+
+
 }
 
 
