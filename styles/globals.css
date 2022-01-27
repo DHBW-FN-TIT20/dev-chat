@@ -137,7 +137,10 @@ input::placeholder {
 
 @media screen and (min-width: 1224px) {
   .image {
-    width: 40%;
+    width: 60%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
   }
 }
 

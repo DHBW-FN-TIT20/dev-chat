@@ -11,7 +11,7 @@
     float: left;
     width: auto;
     height: 50pt;
-    padding: 10pt;
+    padding: 12pt;
     background: #666666(39, 32, 104);
     box-sizing: border-box;
     border-right: solid black 3px;
@@ -35,13 +35,15 @@
 .user {
     position: absolute;
     top:0;
-    right:50pt;
+    right:100pt;
     width: auto;
     height: 50pt;
-    padding: 10pt;
+    padding: 12pt;
     background: #666666(69, 219, 55);
     box-sizing: border-box;
-    border: solid black 3px;
+    border-top: solid black 3px;
+    border-bottom: solid black 3px;
+    border-left: solid black 3px;
 }
 .exit {
     
@@ -53,10 +55,23 @@
     padding: 4px;
     background: #666666(69, 219, 55);
     box-sizing: border-box;
-    border-right: solid black 3px;
+    border: solid black 3px;
+}
+.impressum {
+    position: absolute;
+    top:0;
+    right:50pt;
+    width: 50pt;
+    height: 50pt;
+    padding: 6pt;
+    background: #666666(69, 219, 55);
+    font-size: 25pt;
+    color: white;
+    text-align: center;
+    box-sizing: border-box;
     border-top: solid black 3px;
     border-bottom: solid black 3px;
-    
+    border-left: solid black 3px;
 }
 .container {
    height: 50px;

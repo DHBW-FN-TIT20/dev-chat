@@ -1,3 +1,16 @@
-.test {
-    background: red;
+.left {
+    position: absolute;
+    left: 0;
+    top: 50pt;
+    width: 50%;
+    margin: 100pt;
+}
+
+.right {
+    position: relative;
+    right: 0;
+    top: 50pt;
+    width: 60%;
+    margin: auto;
+    
 }

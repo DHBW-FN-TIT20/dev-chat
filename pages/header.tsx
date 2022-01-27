@@ -11,6 +11,8 @@ export interface HeaderState {
 export interface HeaderProps {
   pageInformation: string,
   showName: boolean,
+  title: string,
+  showExit: boolean,
 }
 
 export default class Header extends Component<HeaderProps, HeaderState> {
@@ -22,13 +24,13 @@ export default class Header extends Component<HeaderProps, HeaderState> {
   }
 
   componentDidMount() {}
-
+// noch ne variable für den header name
   render() {
     return (
       <div>
         <Head>
-          <title>Header</title>
-          <meta name="description" content="header" />
+          <title>{this.props.title}</title>
+          <meta name="description" content="header" /> 
           <link rel="icon" href="/favicon.ico" />
         </Head>
   
@@ -52,7 +54,13 @@ export default class Header extends Component<HeaderProps, HeaderState> {
           {
             this.props.showName && <div className={styles.user}>Name</div>           
           } 
-          
+          <a href="">
+            <div className={styles.impressum}>
+              §
+            </div>  
+          </a>
+          {
+            this.props.showExit && 
           <a href="">
             <div className={styles.exit}>
               <Image
@@ -63,6 +71,7 @@ export default class Header extends Component<HeaderProps, HeaderState> {
               />
             </div>  
           </a>
+          }
           </div>
         </main>
       </div>

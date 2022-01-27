@@ -39,33 +39,40 @@ export default class Login extends Component<LoginProps, LoginState> {
         </Head>
   
         <main>
-          <Header pageInformation="Welcome" showName={false} />
-          <div>
-            <h1>
-              Login
-            </h1>
-            <input type="text" placeholder="Username..."/>
-            <input type="password" placeholder="Password..."/>
-            <div> 
-              Incorrect username or password. 
-            </div>
-            <button onClick={() => {
-              DevChatController.userLogsIn("", "") // change to state later
-            }}> 
-              Login 
-            </button>
-            <div className='test'>
-              Or <a href={"/register"}>create Account</a> instead.
+          <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
+          <div className={styles.left}>
+            <div>
+              <h1>
+                Login
+              </h1>
+              <div>
+              <input type="text" placeholder="Username..."/>
+              </div>
+              <div>
+              <input type="password" placeholder="Password..."/>
+              </div>
+              <div className='error'> 
+                Incorrect username or password. 
+              </div>
+              <button onClick={() => {
+                DevChatController.userLogsIn("", "") // change to state later
+              }}> 
+                Login 
+              </button>
+              <div className='create'>
+                Or <a href={"/register"}>create Account</a> instead.
+              </div>
             </div>
           </div>
-          <div className="image">
-            <Image
-              src={"/logo.png"}
-              alt="DEV-CHAT Logo"
-              width={1000}
-              height={1000}
-              layout="responsive"
-            />
+          <div className={styles.right}>
+            <div className="image">
+              <Image
+                src={"/logo.png"}
+                alt="DEV-CHAT Logo"
+                width={1000}
+                height={1000}
+              />
+            </div>
           </div>
         </main>
       </div>
