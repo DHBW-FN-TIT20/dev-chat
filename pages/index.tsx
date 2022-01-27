@@ -48,9 +48,9 @@ export default class Main extends Component<MainProps, MainState> {
             <h1>
               Join Room
             </h1>
-            <input type="text" placeholder="Chat-Key..."/>
-            <div> 
-              Incorrect username or password. 
+            <input type="text" placeholder="Chat-Key..." className='input'/>
+            <div className='error'> 
+              Chat-Key does not exist.
             </div>
             <button onClick={() => {
               // DevChatController.userJoinsRoom(Chat-Key) // method have to be implemented
