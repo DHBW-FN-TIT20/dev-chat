@@ -36,42 +36,62 @@ export default class Header extends Component<HeaderProps, HeaderState> {
   
         <main>
           <div className={styles.container}>         
-          <a href="/">
-            <div className={styles.logo}>
-              <Image
-                src={"/logo.png"}
-                alt="DEV-CHAT Logo"
-                width={70}
-                height={70}
-              />
+          <table className={styles.headertable} >
+            <tbody>
+            <td className={styles.logotd}>
+              <a href="/">
+                <div className={styles.logo}>
+                  <Image
+                    src={"/logo.png"}
+                    alt="DEV-CHAT Logo"
+                    width={70}
+                    height={70}
+                  />
+                </div>
+              </a>
+          </td>
+          <td className={styles.nametd}>
+            <div className={styles.name}>
+              {this.props.pageInformation}
             </div>
-          </a>
-          <div className={styles.name}>
-            {this.props.pageInformation}
-          </div>
+          </td>
+          <td className={styles.spacetd}>
+            <div className={styles.space}></div>
+          </td>
           
-          <div className={styles.space}></div>
           {
-            this.props.showName && <div className={styles.user}>Name</div>           
+            
+            this.props.showName &&
+             <td className={styles.usertd}> 
+              <div className={styles.user}>User</div>           
+            </td>
           } 
-          <a href="">
-            <div className={styles.impressum}>
-              §
-            </div>  
-          </a>
-          {
-            this.props.showExit && 
-          <a href="">
-            <div className={styles.exit}>
-              <Image
-                src={"/exit.png"}
-                alt="DEV-CHAT Exit"
-                width={50}
-                height={50}
-              />
-            </div>  
-          </a>
-          }
+          
+          <td className={styles.imptd}>
+            <a href="">
+              <div className={styles.impressum}>
+                §
+              </div>  
+            </a>
+          </td>
+            {
+              this.props.showExit && 
+            <td className={styles.exittd}>
+            <a href="">
+              <div className={styles.exit}>
+                <Image
+                  src={"/exit.png"}
+                  alt="DEV-CHAT Exit"
+                  width={50}
+                  height={50}
+                />
+              </div>  
+            </a>
+            </td>
+            }
+        
+          </tbody>
+          </table>
           </div>
         </main>
       </div>

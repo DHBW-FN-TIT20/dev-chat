@@ -1,78 +1,78 @@
+.container {
+    width: 100%;
+}
+.headertable {
+    border: 1px solid rgb(0, 0, 0);
+    width: 100%;
+    overflow: hidden;
+}
 .logo {
-    float: left;
     width: 50pt;
     height: 50pt;
     background: #666666(165, 4, 4);
     box-sizing: border-box;
-    border: solid black 3px;
-    
 }
+.logotd {
+    width: 50pt;
+    border: solid black 3px;
+}
+.nametd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+}
+.spacetd {
+    border: solid black 3px;
+}
+.usertd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+}
+.imptd {
+    width: 50pt;
+    border: solid black 3px;
+}
+.exittd {
+    width: 50pt;
+    border: solid black 3px;
+}
+
 .name {
-    float: left;
-    width: auto;
     height: 50pt;
-    padding: 12pt;
+    padding: 14pt;
     background: #666666(39, 32, 104);
-    box-sizing: border-box;
-    border-right: solid black 3px;
-    border-top: solid black 3px;
-    border-bottom: solid black 3px;
-    
+    padding-left: 30pt;
+    padding-right: 30pt;
 }
 .space {
-
     height: 50pt;
     padding: 10pt;
-    
     background: #666666(39, 32, 104);
-    box-sizing: border-box;
-    border-right: solid black 3px;
-    border-top: solid black 3px;
-    border-bottom: solid black 3px;
-    
-    
 }
 .user {
-    position: absolute;
-    top:0;
-    right:100pt;
     width: auto;
     height: 50pt;
-    padding: 12pt;
+    padding: 14pt;
     background: #666666(69, 219, 55);
-    box-sizing: border-box;
-    border-top: solid black 3px;
-    border-bottom: solid black 3px;
-    border-left: solid black 3px;
+   
 }
 .exit {
-    
-    position: absolute;
-    top:0;
-    right:0;
     width: 50pt;
     height: 50pt;
-    padding: 4px;
-    background: #666666(69, 219, 55);
-    box-sizing: border-box;
-    border: solid black 3px;
+    padding: 8px;
 }
+
 .impressum {
-    position: absolute;
-    top:0;
-    right:50pt;
-    width: 50pt;
     height: 50pt;
-    padding: 6pt;
     background: #666666(69, 219, 55);
     font-size: 25pt;
     color: white;
     text-align: center;
-    box-sizing: border-box;
-    border-top: solid black 3px;
-    border-bottom: solid black 3px;
-    border-left: solid black 3px;
+    padding-top: 8pt;
+    
 }
 .container {
    height: 50px;
 }
+
