@@ -87,7 +87,7 @@ input::placeholder {
 
 @media screen and (max-width: 900px) {
   input {
-    width: 80%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -102,7 +102,7 @@ input::placeholder {
 
 @media screen and (min-width: 900px) {
   input {
-    width: 30%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -117,7 +117,7 @@ input::placeholder {
 
 @media screen and (min-width: 1280px) {
   input {
-    width: 30%;
+    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;
@@ -134,7 +134,7 @@ input::placeholder {
 
 @media screen and (max-width: 900px) {
   button {
-    width: 80%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -149,7 +149,7 @@ input::placeholder {
 
 @media screen and (min-width: 900px) {
   button {
-    width: 30%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -164,7 +164,7 @@ input::placeholder {
 
 @media screen and (min-width: 1280px) {
   button {
-    width: 30%;
+    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;
@@ -187,7 +187,7 @@ input::placeholder {
 
 @media screen and (min-width: 900px) {
   .image {
-    width: 60%;
+    width: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -287,7 +287,7 @@ input::placeholder {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 80%;
+    width: 100%;
     margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
@@ -301,7 +301,7 @@ input::placeholder {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 30%;
+    width: 100%;
     margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
