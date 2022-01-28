@@ -44,6 +44,7 @@
     background: #666666(39, 32, 104);
     padding-left: 30pt;
     padding-right: 30pt;
+    color: #FF9933;
 }
 .space {
     height: 50pt;
@@ -55,7 +56,7 @@
     height: 50pt;
     padding: 14pt;
     background: #666666(69, 219, 55);
-   
+   color: #FF9933;
 }
 .exit {
     width: 50pt;
