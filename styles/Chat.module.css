@@ -22,3 +22,11 @@
   margin-top: 40pt;
   margin-left: 10pt;
 }
+
+.tr {
+  border: hidden;
+}
+
+.td {
+  border: hidden;
+}
