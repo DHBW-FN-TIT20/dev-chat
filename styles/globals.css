@@ -1,6 +1,6 @@
 /** Background */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   html,
   body {
     padding: 0;
@@ -12,7 +12,19 @@
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Montserrat', sans-serif;
+    color: #D7BA7D;
+    font-size: 12pt;
+  }
+}
+
+@media screen and (min-width: 1280px) {
   html,
   body {
     padding: 0;
@@ -36,7 +48,7 @@ p {
 
 /** Headlines */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   h1 {
     color: #D7BA7D;
     font-size: 20pt;
@@ -44,7 +56,15 @@ p {
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
+  h1 {
+    color: #D7BA7D;
+    font-size: 30pt;
+    margin: 2pt;
+  }  
+}
+
+@media screen and (min-width: 1280px) {
   h1 {
     color: #D7BA7D;
     font-size: 40pt;
@@ -65,9 +85,9 @@ input::placeholder {
   color: #CCCCCC;
 }
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   input {
-    width: 30%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -80,9 +100,24 @@ input::placeholder {
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
   input {
-    width: 30%;
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  input {
+    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;
@@ -97,9 +132,9 @@ input::placeholder {
 
 /** Buttons */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   button {
-    width: 30%;
+    width: 100%;
     font-size: 12pt;
     color: white;
     background-color: transparent;
@@ -112,9 +147,24 @@ input::placeholder {
   }  
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
   button {
-    width: 30%;
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+  }  
+}
+
+@media screen and (min-width: 1280px) {
+  button {
+    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;
@@ -129,15 +179,15 @@ input::placeholder {
 
 /** Images */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   .image {
     width: 100%;
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
   .image {
-    width: 60%;
+    width: 100%;
     position: absolute;
     left: 50%;
     top: 50%;
@@ -146,7 +196,7 @@ input::placeholder {
 
 /** Tables */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   table {
     border-color: white;
     border-style: solid;
@@ -190,7 +240,7 @@ input::placeholder {
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
   table {
     border-color: white;
     border-style: solid;
@@ -233,11 +283,12 @@ input::placeholder {
 
 /** Custom objects */
 
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 30%;
+    width: 100%;
+    margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
     border-width: 2pt;
@@ -248,11 +299,11 @@ input::placeholder {
   }
 }
 
-@media screen and (min-width: 1224px) {
+@media screen and (min-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
     text-align: center;
-    width: 30%;
+    width: 100%;
     margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
