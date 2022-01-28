@@ -7,6 +7,7 @@ import DevChatController from '../controller'
 import Header from './header'
 export interface ChatState {
   input: string
+
 }
 
 export interface ChatProps {}
@@ -24,6 +25,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
     console.log();
   }
 // in chatdiv den chat einfügen, aktuell noch table drin, vllt mit react tabelle ersetzen
+// title vllt in raumname ändern
   render() {
     return (
       <div>
@@ -34,7 +36,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
   
         <main>
-        <Header pageInformation="Welcome" title="Login" showName={true} showExit={true} />
+        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true} />
           <div>
             <div className={styles.chatdiv}> 
               <table className={styles.chattable}>
