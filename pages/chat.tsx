@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface ChatState {
   input: string
 }
@@ -23,7 +23,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
   componentDidMount() {
     console.log();
   }
-
+// in chatdiv den chat einfügen, aktuell noch table drin, vllt mit react tabelle ersetzen
   render() {
     return (
       <div>
@@ -34,9 +34,10 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
   
         <main>
+        <Header pageInformation="Welcome" title="Login" showName={true} showExit={true} />
           <div>
-            <div> 
-              <table>
+            <div className={styles.chatdiv}> 
+              <table className={styles.chattable}>
                 <tbody>
                   <tr>
                     <td>Henry</td>
