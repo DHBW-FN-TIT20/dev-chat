@@ -42,7 +42,7 @@ export default class Login extends Component<LoginProps, LoginState> {
   
         <main>
           <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
-          <div className={styles.container}>
+          <div className={styles.left}
             <div>
               <h1>
                 Login
@@ -53,12 +53,9 @@ export default class Login extends Component<LoginProps, LoginState> {
               <div>
               <input type="password" placeholder="Password..."/>
               </div>
-              {
-                !this.props.showError && 
-              <div className='error' id={styles.error1}> 
+              <div className='error'> 
                 Incorrect username or password. 
               </div>
-              }
               <button onClick={() => {
                 DevChatController.userLogsIn("", "") // change to state later
               }}> 
@@ -68,7 +65,7 @@ export default class Login extends Component<LoginProps, LoginState> {
                 Or <a href={"/register"}>create Account</a> instead.
               </div>
             </div>
-          
+          </div>
           <div className={styles.right}>
             <div className="image">
               <Image
@@ -78,7 +75,6 @@ export default class Login extends Component<LoginProps, LoginState> {
                 height={1000}
               />
             </div>
-          </div>
           </div>
         </main>
       </div>

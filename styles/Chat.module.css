@@ -13,13 +13,21 @@
   width: 100%;
   font-size: 22pt;
   padding: 2pt;
-  margin: 0;
   position: absolute;
   bottom: 0;
-  border: 3pt solid black;
+  margin: 0;
 }
+
 .chattable {
-  margin-top: 50pt;
-  margin-left: 20pt;
+  margin-top: 40pt;
+  margin-left: 10pt;
+}
+
+.tr {
   border: hidden;
 }
+
+.td {
+  border: hidden;
+}
+
