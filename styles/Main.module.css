@@ -1,0 +1,10 @@
+.bodytable {
+    margin-top: 50pt;
+    border: 0px solid rgb(0, 0, 0);
+}
+.tdleft {
+    border: 0pt solid black;
+}
+.tdright {
+    border: 0px solid rgb(0, 0, 0);
+}

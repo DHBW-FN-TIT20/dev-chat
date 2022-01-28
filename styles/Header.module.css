@@ -16,7 +16,6 @@
 .logotd {
     width: 50pt;
     border: solid black 3px;
-    
 }
 .nametd {
     border: solid black 3px;
@@ -59,7 +58,6 @@
     padding: 14pt;
     background: #666666(69, 219, 55);
     color: #FF9933;
-   
 }
 .exit {
     width: 50pt;
@@ -80,7 +78,6 @@
    height: 50px;
 }
 }
-
 @media screen and (max-width: 1224px) {
     .container {
         width: 100%;

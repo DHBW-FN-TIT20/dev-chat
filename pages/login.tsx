@@ -8,7 +8,9 @@ import Header from './header'
 export interface LoginState {
 }
 
-export interface LoginProps {}
+export interface LoginProps {
+  showError: boolean;
+}
 
 /**
  * @class Login Componet Class
@@ -40,7 +42,7 @@ export default class Login extends Component<LoginProps, LoginState> {
   
         <main>
           <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
-          <div className={styles.left}>
+          <div className={styles.left}
             <div>
               <h1>
                 Login
