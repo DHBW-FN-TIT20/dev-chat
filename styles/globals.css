@@ -238,12 +238,13 @@ input::placeholder {
     background-color: rgb(150, 25, 25);
     text-align: center;
     width: 30%;
-    margin: 2pt;
     padding: 10pt;
     border-color:  #666666;
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
+    margin: 0 auto;
+    
   }
 }
 
