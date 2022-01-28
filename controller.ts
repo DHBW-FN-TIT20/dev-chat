@@ -45,6 +45,8 @@ export class DevChatController {
         {
             //Add the Message to the Database
             //TODO Call Supabase Api Function to add Message to Database
+            //UserId and ChatKeyId not defined
+            //--> No Function Call possible
         }
     }
 
