@@ -55,10 +55,10 @@ export default class Header extends Component<HeaderProps, HeaderState> {
               {this.props.pageInformation}
             </div>
           </td>
+          
           <td className={styles.spacetd}>
             <div className={styles.space}></div>
           </td>
-          
           {
             
             this.props.showName &&

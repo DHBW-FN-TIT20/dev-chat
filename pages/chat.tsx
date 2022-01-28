@@ -26,6 +26,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
   }
 // in chatdiv den chat einfügen, aktuell noch table drin, vllt mit react tabelle ersetzen
 // title vllt in raumname ändern
+//mit react erkennen welches device!
   render() {
     return (
       <div>
@@ -36,7 +37,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
   
         <main>
-        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true} />
+        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true}/>
           <div>
             <div className={styles.chatdiv}> 
               <table className={styles.chattable}>
