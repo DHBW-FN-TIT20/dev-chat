@@ -46,35 +46,37 @@ export class SupabaseConnenction {
 
   /** 
    * API function to remove a user from the database 
-   * @param {string} username the username of the user to remove
-   * @param {string} hashedPassword the hashed password of the user to remove
+   * @param {number} currentUserId the id of the user who is logged in
+   * @param {string} currentUserPassword the hashed password of the user who is logged in
+   * @param {string} usernameToDelete the username of the user to be removed
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
-   public removeUser = async (username: string, hashedPassword: string): Promise<boolean> => {
+   public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
 
-    // check if the user and the password are correct
-    const isValid = await this.isUserValid(username, hashedPassword);
+    // // check if the user and the password are correct
+    // const isValid = await this.isUserValid(username, hashedPassword);
 
-    if (!isValid) {
-      // user and password are not correct -> return false
-      return false;
-    }
+    // if (!isValid) {
+    //   // user and password are not correct -> return false
+    //   return false;
+    // }
 
-    // fetch the supabase database
-    const { data, error } = await SupabaseConnenction.CLIENT
-      .from('User')
-      .delete()
-      .match({ Username: username, Password: hashedPassword });
+    // // fetch the supabase database
+    // const { data, error } = await SupabaseConnenction.CLIENT
+    //   .from('User')
+    //   .delete()
+    //   .match({ Username: username, Password: hashedPassword });
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
+    // // check if data was received
+    // if (data === null || error !== null || data.length === 0) {
 
-      // user was not removed -> return false
-      return false;
-    } else {
-      // user was removed -> return true
-      return true;
-    }
+    //   // user was not removed -> return false
+    //   return false;
+    // } else {
+    //   // user was removed -> return true
+    //   return true;
+    // }
+    return false;
   };
 
 
