@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface ChatState {
   input: string
 }
@@ -34,9 +34,10 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
   
         <main>
+        <Header pageInformation="Welcome" title="Login" showName={true} showExit={true} />
           <div>
             <div> 
-              <table>
+              <table className={styles.chattable}> 
                 <tbody>
                   <tr>
                     <td>Henry</td>

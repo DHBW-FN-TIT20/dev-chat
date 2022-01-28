@@ -294,6 +294,8 @@ input::placeholder {
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
+    margin: 0 auto;
+    
   }
 }
 

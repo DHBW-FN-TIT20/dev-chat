@@ -14,4 +14,12 @@
   font-size: 22pt;
   padding: 2pt;
   margin: 0;
+  position: absolute;
+  bottom: 0;
+  border: 3pt solid black;
+}
+.chattable {
+  margin-top: 50pt;
+  margin-left: 20pt;
+  border: hidden;
 }
