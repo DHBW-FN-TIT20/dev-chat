@@ -39,25 +39,29 @@ export default class Login extends Component<LoginProps, LoginState> {
           <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+
+        <header>
+          <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
+        </header>
   
         <main>
-          <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
-          <div className={styles.container}>
-            <div>
+          
+          <div>
+            <div className={styles.button}>
               <h1>
                 Login
               </h1>
               <div>
-              <input type="text" placeholder="Username..."/>
+                <input type="text" placeholder="Username..."/>
               </div>
               <div>
-              <input type="password" placeholder="Password..."/>
+                <input type="password" placeholder="Password..."/>
               </div>
               {
                 !this.props.showError && 
-              <div className='error' id={styles.error1}> 
-                Incorrect username or password. 
-              </div>
+                <div className='error' id={styles.error1}> 
+                  Incorrect username or password. 
+                </div>
               }
               <button onClick={() => {
                 DevChatController.userLogsIn("", "") // change to state later
