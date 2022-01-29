@@ -6,6 +6,8 @@ import { IChatMessage } from './public/interfaces';
  */
 export class DevChatController {
   private data: any;
+  public chatMessages: IChatMessage[] = [];
+
 
   constructor() {
     console.log("DevChatController.constructor()");
@@ -24,6 +26,14 @@ export class DevChatController {
   public async initilize() {
     console.log("DevChatController.initilize()");
     await this.checkCookies(); // here should the controller check for user cookies and if there are cookies, the user should be logged in.
+    
+    this.chatMessages = await this.fetchChatMessages(5, "johannes", "FatherMotherBread"); 
+
+    setInterval(async () => {
+      this.updateChatMessages();
+      console.table(this.chatMessages);
+    }, 2000);
+
   }
 
   /**
@@ -50,6 +60,21 @@ export class DevChatController {
   public async updateChatMessages() {
     console.log("DevChatController.updateChatMessages()");
     
+    // get the highest id of the chat messages to only get the new messages
+    let lastMessageId: number = 0;
+    if (this.chatMessages.length > 0) {
+      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
+    }
+    
+    // get the new messages
+    let newMessages: IChatMessage[] = await this.fetchChatMessages(5, "johannes", "FatherMotherBread", lastMessageId);
+
+    console.log("newMessages: ");
+    console.table(newMessages);
+
+    // add the new messages to the chat messages
+    this.chatMessages = this.chatMessages.concat(newMessages);
+
   }
 
 
@@ -89,7 +114,17 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
-  public getChatMessages = async (targetID: number, targetPassword: string, chatKey: string): Promise<IChatMessage[]> => {
+
+  /**
+   * 
+   * @param targetID the id of the user who is logged in
+   * @param targetPassword the password of the user who is logged in
+   * @param chatKey the three-word of the chat
+   * @param lastMessageID the id of the last message that was received
+   * @returns 
+   */
+  public fetchChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number = 0): Promise<IChatMessage[]> => {
+    console.log("DevChatController.fetchChatMessages()");
     let chatMessages: IChatMessage[] = [];
     
     let response = await fetch('./api/messages/get_chat_messages', {
@@ -100,7 +135,8 @@ export class DevChatController {
       body: JSON.stringify({
         targetID: targetID,
         targetPassword: targetPassword,
-        chatKey: chatKey
+        chatKey: chatKey,
+        lastMessageID: lastMessageID
       })
     });
 

@@ -111,7 +111,7 @@ export class SupabaseConnection {
    * @param {string} chatKey the chat key of the chat that is currently open
    * @returns {Promise<IChatKeyMessage[]>}
    */
-  public getChatMessages = async (targetID: number, targetPassword: string, chatKey: string): Promise<IChatMessage[]> => {
+  public getChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number): Promise<IChatMessage[]> => {
     
     let chatMessages: IChatMessage[] = [];
 
@@ -142,6 +142,7 @@ export class SupabaseConnection {
       `)
       .eq('ChatKeyID', chatKeyID)
       .or(filterString)
+      .gt('MessageID', lastMessageID)
 
     // check if data was received
     if (data === null || error !== null || data.length === 0) {

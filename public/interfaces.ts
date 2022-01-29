@@ -51,7 +51,7 @@ export var emptySurveyOption: ISurveyOption = {
 // ChatMessage
 
 export interface IChatMessage {
-    id?: number;
+    id: number;
     chatKey?: IChatKey;
     user: IUser; // maybe change to sender
     target?: IUser;
