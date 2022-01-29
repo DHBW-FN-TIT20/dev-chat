@@ -148,28 +148,27 @@ export class DevChatController {
   }
 
 
-    /**
-     * This is a function that removes a user from the database
-     * @param {string} username the username of the user to be removed
-     * @param {string} password the password of the user to be removed
-     * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
-     **/
-    public deleteUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
-        let response = await fetch('./api/delete_user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                currentUserId: currentUserId,
-                currentUserPassword: currentUserPassword,
-                usernameToDelete: usernameToDelete
-            })
-        });
-        let data = await response.json();
-        return data.wasSuccessfull;
-    }
-
+  /**
+   * This is a function that removes a user from the database
+   * @param {string} username the username of the user to be removed
+   * @param {string} password the password of the user to be removed
+   * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
+   **/
+  public deleteUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
+    let response = await fetch('./api/delete_user', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            currentUserId: currentUserId,
+            currentUserPassword: currentUserPassword,
+            usernameToDelete: usernameToDelete
+        })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
 
 }
 
