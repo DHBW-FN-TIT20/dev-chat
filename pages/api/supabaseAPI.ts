@@ -69,6 +69,29 @@ export class SupabaseConnection {
     }
   };
 
+  /**
+   * This helper function is used to get the userID of a user by username
+   * @param username the username of the user
+   * @returns the userID of the user
+   */
+  public getUserIDByUsername = async (username: string): Promise<number> => {
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .delete()
+      .match({ Username: username });
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // user was not found -> return NaN
+      return NaN;
+    } else {
+      // user was removed -> return true
+      return data[0].UserID;
+    }
+  }
+
 
   /** 
    * API function to remove a user from the database 
@@ -77,32 +100,47 @@ export class SupabaseConnection {
    * @param {string} usernameToDelete the username of the user to be removed
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
-   public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
+  public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
+  
+    // check if the user and the password are correct
+    const isValid = await this.isUserValid({id: currentUserId, password: currentUserPassword});
 
-    // // check if the user and the password are correct
-    // const isValid = await this.isUserValid(username, hashedPassword);
+    if (!isValid) {
+      // user and password are not correct -> return false
+      return false;
+    }
 
-    // if (!isValid) {
-    //   // user and password are not correct -> return false
-    //   return false;
-    // }
+    // check if user is allowed to remove the user
+    let isAllowed = (currentUserId === 1 || currentUserId === 2);
 
-    // // fetch the supabase database
-    // const { data, error } = await SupabaseConnenction.CLIENT
-    //   .from('User')
-    //   .delete()
-    //   .match({ Username: username, Password: hashedPassword });
+    if (!isAllowed) {
+      // user is not a super user so it needs to be checkt if the user wants to remove himself
+      let userID = await this.getUserIDByUsername(usernameToDelete);
+      if (userID === currentUserId) {
+        isAllowed = true;
+      }
+    }
 
-    // // check if data was received
-    // if (data === null || error !== null || data.length === 0) {
+    if (!isAllowed) {
+      // user is not allowed to remove the user -> return false
+      return false;
+    }
 
-    //   // user was not removed -> return false
-    //   return false;
-    // } else {
-    //   // user was removed -> return true
-    //   return true;
-    // }
-    return false;
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .delete()
+      .match({ Username: usernameToDelete });
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // user was not removed -> return false
+      return false;
+    } else {
+      // user was removed -> return true
+      return true;
+    }
   };
 
 
