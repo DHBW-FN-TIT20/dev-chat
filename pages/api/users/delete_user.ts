@@ -10,14 +10,15 @@ const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to remove a user from the database.
- * @param req the request object (body: username, password)
+ * @param req the request object (body: currentUserId, currentUserPassword, usernameToDelete)
  * @param res the response object (body: wasSuccessfull)
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let password = req.body.password;
+  let currentUserId = req.body.currentUserId;
+  let currentUserPassword = req.body.currentUserPassword;
+  let usernameToDelete = req.body.usernameToDelete;
 
-  let removedSuccessfully = await supabaseConnection.removeUser(username, password);
+  let removedSuccessfully = await supabaseConnenction.removeUser(currentUserId, currentUserPassword, usernameToDelete);
 
   res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }
