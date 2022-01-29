@@ -1,9 +1,9 @@
 // ChatKey
 
 export interface IChatKey {
-    id: number;
-    threeWord: string;
-    expirationDate: Date; // maybe change later
+    id?: number;
+    threeWord?: string;
+    expirationDate?: Date; // maybe change later
 }
 
 export var emptyChatKey: IChatKey = {
@@ -21,10 +21,10 @@ export interface IUser {
      * user.id=1 -> system
      * user.id=2 -> admin (master-account)
      */
-    id: number;
-    name: string;
-    hashedPassword: string;
-    accessLevel: number;
+    id?: number;
+    name?: string;
+    hashedPassword?: string;
+    accessLevel?: number;
 }
 
 export var emptyUser: IUser = {
@@ -51,10 +51,10 @@ export var emptySurveyOption: ISurveyOption = {
 // ChatMessage
 
 export interface IChatMessage {
-    id: number;
-    chatKey: IChatKey;
+    id?: number;
+    chatKey?: IChatKey;
     user: IUser; // maybe change to sender
-    target: IUser;
+    target?: IUser;
     date: Date; // maybe change later
     message: string;
 }

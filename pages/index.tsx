@@ -26,6 +26,7 @@ export default class Main extends Component<MainProps, MainState> {
    */
   async componentDidMount() {
     console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+    console.log("test of get chat messages", await DevChatController.getChatMessages(5, "johannes", "FatherMotherBread"))
   }
 
   /**

@@ -25,6 +25,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
   }
 
   render() {
+
+
+
     return (
       <div>
         <Head>

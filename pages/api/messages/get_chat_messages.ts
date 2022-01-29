@@ -1,23 +1,27 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IChatMessage } from '../../../public/interfaces';
-import { SupabaseConnenction } from '../supabaseAPI';
+import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
   chatMessages: IChatMessage[]
 }
 
-const supabaseConnenction = new SupabaseConnenction();
+const supabaseConnection = new SupabaseConnection();
 
 /**
- * This is a api route get all chat messages with a specific three-word from the database.
- * @param req the request object (body: threeword)
- * @param res the response object (body: wasSuccessfull)
+ * This is a api route get all chat messages with a specific three-word and a specific target user from the database.
+ * @param req the request object (body: targetID: number, targetPassword: string chatKey: string)
+ * @param res the response object (body: chatMessages: IChatMessage[])
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let threeword = req.body.threeword;
 
-  let messages = await supabaseConnenction.getChatMessages(threeword);
+  let targetID: number = req.body.targetID;
+  let targetPassword: string = req.body.targetPassword;
+  let chatKey: string = req.body.chatKey;
 
-  res.status(200).json({ chatMessages: messages });
+
+  let chatMessages = await supabaseConnection.getChatMessages(targetID, targetPassword, chatKey);
+
+  res.status(200).json({ chatMessages: chatMessages });
 }
