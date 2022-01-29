@@ -134,16 +134,14 @@ export class SupabaseConnection {
     
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
-      .select('*')
+      .select(`
+        DateSend,
+        MessageID,
+        Message,
+        UserID ( Username )
+      `)
       .eq('ChatKeyID', chatKeyID)
       .or(filterString)
-
-    chatMessages = [{
-      date: new Date(), 
-      message: "test", 
-      user: {}, 
-      chatKey: {id: chatKeyID}}];
-
 
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
@@ -151,25 +149,20 @@ export class SupabaseConnection {
       // no messages found -> return empty array
       return [];
     } else {
-      // 
-      console.table(data);
-      /*
+      
+      // map raw data on IChatMessage type
       data.forEach(element => {
         chatMessages.push({
-          user: element.Username,
+          user: element.UserID.Username,
           date: new Date(element.DateSend),
           message: element.Message,
+          id: element.MessageID
         });
       });
-      */
+      
       return chatMessages;
     }
-
-
-
-
-    return chatMessages;
-    };
+  };
 
   private getChatKeyID = async (chatKey: string): Promise<number> => {
 
