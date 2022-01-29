@@ -4,9 +4,11 @@ import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
+import { IChatMessage } from '../public/interfaces'
 
 export interface ChatState {
-  input: string
+  input: string,
+  messages: IChatMessage[],
 }
 
 export interface ChatProps {}
@@ -15,30 +17,19 @@ export default class Chat extends Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
     super(props)
     this.state = {
-      input: ''
+      input: '',
+      messages: [],
     }
     
   }
 
   componentDidMount() {
     console.log();
-  }
 
-  ChatList() {  
-    console.log("DevChatController.chatMessages: ", DevChatController.chatMessages);
-    
-    return (
-      <ol>
-        {DevChatController.chatMessages.map(message => (
-          <li key={message.id}>{message.message} {message.user.name}</li>
-        ))}
-      </ol>
-    );
+    setInterval(() => this.setState({messages: DevChatController.chatMessages}), 500);
   }
 
   render() {
-
-
 
     return (
       <div>
@@ -53,24 +44,18 @@ export default class Chat extends Component<ChatProps, ChatState> {
             <div> 
               <table>
                 <tbody>
-                  <tr>
-                    <td>Henry</td>
-                    <td>at</td>
-                    <td>15/01/2022 13:46</td>
-                    <td>-&gt;</td>
-                    <td>Hallo</td>
-                  </tr>
-                  <tr>
-                    <td>Phillipp</td>
-                    <td>at</td>
-                    <td>15/01/2022 13:48</td>
-                    <td>-&gt;</td>
-                    <td>Hallo, alles klar?</td>
-                  </tr>
+                  {this.state.messages.map(message => (
+                    <tr key={message.id}>
+                      <td>{message.user}</td>
+                      <td>at</td>
+                      <td>{message.date}</td>
+                      <td>-&gt;</td>
+                      <td>{message.message}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <this.ChatList/>
             <input className={styles.chatBox} type="text" onChange={(event) => {this.setState({input: event.target.value})}} placeholder="Write a message..." onKeyDownCapture={(event) => {
               
               // this is a example how to use the controller

@@ -93,6 +93,15 @@ export class DevChatController {
     return registerWasSuccessful;
   }
 
+
+  public async testFunctiion() {
+    console.log("DevChatController.testFunctiion()");
+    
+    
+    
+    
+  }
+
   /**
    * This is a function that removes a user from the database
    * @param {string} username the username of the user to be removed
