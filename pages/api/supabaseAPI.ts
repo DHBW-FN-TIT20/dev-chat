@@ -145,6 +145,7 @@ export class SupabaseConnection {
       .eq('ChatKeyID', chatKeyID)
       .or(filterString)
       .gt('MessageID', lastMessageID)
+      .order('DateSend', { ascending: true })
 
     // check if data was received
     if (data === null || error !== null || data.length === 0) {

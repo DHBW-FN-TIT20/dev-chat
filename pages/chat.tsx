@@ -48,7 +48,11 @@ export default class Chat extends Component<ChatProps, ChatState> {
                     <tr key={message.id}>
                       <td>{message.user}</td>
                       <td>at</td>
-                      <td>{message.date}</td>
+                      <td>{new Date(message.date).toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'numeric',
+            year: 'numeric',
+          })}</td>
                       <td>-&gt;</td>
                       <td>{message.message}</td>
                     </tr>

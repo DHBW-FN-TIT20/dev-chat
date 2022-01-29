@@ -31,7 +31,7 @@ export class DevChatController {
 
     setInterval(async () => {
       this.updateChatMessages();
-      console.table(this.chatMessages);
+      // console.table(this.chatMessages);
     }, 2000);
 
   }
@@ -69,8 +69,8 @@ export class DevChatController {
     // get the new messages
     let newMessages: IChatMessage[] = await this.fetchChatMessages(5, "johannes", "FatherMotherBread", lastMessageId);
 
-    console.log("newMessages: ");
-    console.table(newMessages);
+    // console.log("newMessages: ");
+    // console.table(newMessages);
 
     // add the new messages to the chat messages
     this.chatMessages = this.chatMessages.concat(newMessages);
