@@ -42,17 +42,20 @@ export default class Chat extends Component<ChatProps, ChatState> {
         <main>
           <div>
             <div> 
-              <table>
+              <table className={styles.messageTable}>
                 <tbody>
                   {this.state.messages.map(message => (
                     <tr key={message.id}>
                       <td>{message.user}</td>
                       <td>at</td>
-                      <td>{new Date(message.date).toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'numeric',
-            year: 'numeric',
-          })}</td>
+                      <td>{new Date(message.date).toLocaleDateString('de-DE', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hourCycle: 'h24',
+                          })}</td>
                       <td>-&gt;</td>
                       <td>{message.message}</td>
                     </tr>
