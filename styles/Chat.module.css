@@ -15,3 +15,17 @@
   padding: 2pt;
   margin: 0;
 }
+
+.messageTableDiv {
+  overflow: scroll;
+  min-height: 20vh;
+  max-height: 20vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.messageTableDiv::-webkit-scrollbar {
+  display: none;
+}

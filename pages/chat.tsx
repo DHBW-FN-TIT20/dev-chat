@@ -41,8 +41,8 @@ export default class Chat extends Component<ChatProps, ChatState> {
   
         <main>
           <div>
-            <div> 
-              <table className={styles.messageTable}>
+            <div className={styles.messageTableDiv}> 
+              <table>
                 <tbody>
                   {this.state.messages.map(message => (
                     <tr key={message.id}>
