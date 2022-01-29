@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnenction } from '../supabaseAPI';
+import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnenction = new SupabaseConnenction();
+const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to remove a user from the database.

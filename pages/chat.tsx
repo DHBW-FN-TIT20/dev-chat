@@ -24,7 +24,22 @@ export default class Chat extends Component<ChatProps, ChatState> {
     console.log();
   }
 
+  ChatList() {  
+    console.log("DevChatController.chatMessages: ", DevChatController.chatMessages);
+    
+    return (
+      <ol>
+        {DevChatController.chatMessages.map(message => (
+          <li key={message.id}>{message.message} {message.user.name}</li>
+        ))}
+      </ol>
+    );
+  }
+
   render() {
+
+
+
     return (
       <div>
         <Head>
@@ -55,6 +70,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                 </tbody>
               </table>
             </div>
+            <this.ChatList/>
             <input className={styles.chatBox} type="text" onChange={(event) => {this.setState({input: event.target.value})}} placeholder="Write a message..." onKeyDownCapture={(event) => {
               
               // this is a example how to use the controller
