@@ -8,16 +8,17 @@
 }
 
 .right {
-    position: relative;
+    position: absolute;
     right: 0;
     top: 50pt;
-    width: 60%;
+    width: 50pt;
+    height: 50pt;
     margin: auto;
     
 }
 }
 @media screen and (max-width: 1224px) {
-    .container {
+    .left {
         margin-top: 30pt;
         width: auto;
         text-align: center;
