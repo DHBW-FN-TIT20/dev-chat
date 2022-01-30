@@ -1,22 +1,14 @@
 @media screen and (max-width: 900px) {
-    .left {
-        margin-top: 30pt;
-        width: auto;
-        text-align: center;
-        overflow: hidden;
+    .container {
+        margin-top: 50pt;
     }
 }
 
 @media screen and (min-width: 900px) {
-    .left {
-        margin-top: 30pt;
-        width: auto;
-        text-align: center;
-        overflow: hidden;
-    }
+    
 }
 
-@media screen and (min-width: 1228px) {
+@media screen and (min-width: 1280px) {
 .left {
     position: absolute;
     left: 0;
