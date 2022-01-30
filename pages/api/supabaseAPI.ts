@@ -90,11 +90,8 @@ export class SupabaseConnenction {
     const { data, error } = await SupabaseConnenction.CLIENT
       .from('ChatMessage')
       .insert([
-        {ChatKeyId: chatKeyId, UserId: userId,TargetUserId: '0', Message: message},
+        {ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message},
       ])
-
-    console.log(data);
-    console.log(error);
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
     // Message was not added -> return false

@@ -19,7 +19,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let chatKeyId = req.body.chatKeyId;
 
   let addedSucessfully = await supabaseConnenction.addChatMessage(message, userId, chatKeyId);
-  console.log("addedSucessfully: " +addedSucessfully)
-
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

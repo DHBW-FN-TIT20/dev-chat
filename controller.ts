@@ -42,13 +42,11 @@ export class DevChatController {
         console.log("DevChatController.enteredNewMessage()");
         console.log("in Controller: " + message);
         if(await this.checkMessageForCommands(message) == false)
-        {
-            console.log("Adding Message to DB")
-            this.addChatMessage(message,"0","0");
+        {   
             //Add the Message to the Database
-            //TODO Call Supabase Api Function to add Message to Database
-            //UserId and ChatKeyId not defined
-            //--> No Function Call possible
+            // userId: 2 --> Wildcard
+            // chatKeyId: 2 --> Wildcard
+            this.addChatMessage(message,"2","2");
         }
     }
 
@@ -111,8 +109,9 @@ export class DevChatController {
 
     /**
      * This is a function that removes a user from the database
-     * @param {string} username the username of the user to be removed
-     * @param {string} password the password of the user to be removed
+     * @param {string} message the message of the user to added
+     * @param {string} userId the userId of the user who sends the message
+     * @param {string} chatKeyId the id of the chatroom
      * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
     **/
     public addChatMessage = async (message: string, userId: string, chatKeyId:string ): Promise<boolean> => {
@@ -122,17 +121,16 @@ export class DevChatController {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                messager: message,
+                message: message,
                 userId: userId,
                 chatKeyId: chatKeyId
             })
         });
         let data = await response.json();
+        console.log("addChatMessage("+message+"): "+ data.wasSuccessfull);
         return data.wasSuccessfull;
     }
 
 }
-
-
 // export the controller
 export default new DevChatController();
