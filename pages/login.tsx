@@ -15,6 +15,9 @@ export interface LoginProps {}
  * @component
  */
 export default class Login extends Component<LoginProps, LoginState> {
+  username = '';
+  password = '';
+  loggedInAs = '';
   constructor(props: LoginProps) {
     super(props)
     this.state = {
@@ -31,6 +34,7 @@ export default class Login extends Component<LoginProps, LoginState> {
    */
   render() {
     return (
+      
       <div>
         <Head>
           <title>Login</title>
@@ -43,16 +47,17 @@ export default class Login extends Component<LoginProps, LoginState> {
             <h1>
               Login
             </h1>
-            <input type="text" placeholder="Username..."/>
-            <input type="password" placeholder="Password..."/>
+            <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
+            <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
             <div> 
-              Incorrect username or password. 
+              Incorrect username or password.
             </div>
             <button onClick={() => {
-              DevChatController.userLogsIn("", "") // change to state later
-            }}> 
-              Login 
-            </button>
+              DevChatController.userLogsIn(this.username, this.password) // change to state later
+            }}> Login </button>
+            <button onClick={() => {
+              DevChatController.userLogsOut();
+            }}> Log-Out </button>
             <div>
               Or <a href={"/register"}>create Account</a> instead.
             </div>
