@@ -108,7 +108,7 @@ export class DevChatController {
     }
 
     /**
-     * This is a function that removes a user from the database
+     * This is a function that adds a message to the database
      * @param {string} message the message of the user to added
      * @param {string} userId the userId of the user who sends the message
      * @param {string} chatKeyId the id of the chatroom
