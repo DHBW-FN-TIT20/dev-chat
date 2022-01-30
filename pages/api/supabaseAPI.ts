@@ -104,15 +104,21 @@ export class SupabaseConnenction {
    * API function to insert the username and the password 
    * @param {string} username the username to insert
    * @param {string} password the password to check
+   * @param {number} [accessLevel=0] User AccessLevel.
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
    */
-     public registerUser = async (username: string, hashedPassword: string): Promise<boolean> => {
+     public registerUser = async (username: string, hashedPassword: string, accessLevel: number = 0): Promise<boolean> => {  
+      let userAlreadyExists = await this.userAlreadyExists(username)        
+
+      if(userAlreadyExists) {
+        return false;
+      }
 
       // fetch the data from the supabase database
       const { data, error } = await SupabaseConnenction.CLIENT
         .from('User')
         .insert([
-          {"Username": username, "Password": hashedPassword, "AccessLevel": 0}
+          {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
         ]);
   
       // check if data was received
@@ -123,6 +129,7 @@ export class SupabaseConnenction {
         // user was created -> return true
         return true;
       }
+      
     };
 
   /** 
