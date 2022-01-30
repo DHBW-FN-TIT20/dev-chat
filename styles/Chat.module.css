@@ -1,0 +1,31 @@
+.chatBox::placeholder {
+  color: #CCCCCC;
+}
+
+.chatBox:focus {
+  outline: none;
+}
+
+.chatBox {
+  background-color: #666666;
+  width: max-content;
+  border-radius: 0pt;
+  width: 100%;
+  font-size: 22pt;
+  padding: 2pt;
+  margin: 0;
+}
+
+.messageTableDiv {
+  overflow: scroll;
+  min-height: 20vh;
+  max-height: 20vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.messageTableDiv::-webkit-scrollbar {
+  display: none;
+}
