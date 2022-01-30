@@ -97,6 +97,7 @@ input::placeholder {
     border-color: #666666;
     padding: 10pt;
     margin: 2pt;
+    margin: 0 auto;
   }
 }
 
@@ -144,6 +145,7 @@ input::placeholder {
     border-color: #FF9933;
     padding: 10pt;
     margin: 2pt;
+    margin: 0 auto;
   }  
 }
 

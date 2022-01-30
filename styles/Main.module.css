@@ -1,10 +1,51 @@
-.bodytable {
-    margin-top: 50pt;
-    border: 0px solid rgb(0, 0, 0);
+@media screen and (max-width: 900px) {
+    
+    .container {
+        margin-top: 20pt;
+        overflow-x: hidden;
+    }
 }
-.tdleft {
-    border: 0pt solid black;
+@media screen and (min-width: 900px) {
+    .left {
+        position: absolute;
+        left: 0;
+        top: 50pt;
+        width: 40%;
+        margin: 50pt;
+    }
+    
+    .right {
+        position: absolute;
+        left:35%;
+        top: 50pt;
+        height: 40%;
+        width: 40%;
+    
+    }
+    .container {
+        overflow-x: hidden;
+    }
 }
-.tdright {
-    border: 0px solid rgb(0, 0, 0);
+@media screen and (min-width: 1280px) {
+.left {
+    position: absolute;
+    left: 0;
+    top: 30pt;
+    width: 40%;
+    margin: 50pt;
+}
+
+.right {
+    position: absolute;
+    left: 35%;
+    top: 0pt;
+    height: 40%;
+    width: 40%;
+
+}
+.container {
+    overflow-x: hidden;
+    
+}
+
 }
