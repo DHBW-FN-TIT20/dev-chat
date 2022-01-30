@@ -15,8 +15,8 @@ export class SupabaseConnenction {
     const supabaseUrl = "https://yffikhrkategkabkunhj.supabase.co"
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDUzODUzMywiZXhwIjoxOTU2MTE0NTMzfQ.t0QAIVdegnHXUXQb9XGy2vMItq2KvgcTI6Lk1t-rV5Q"
     SupabaseConnenction.CLIENT = createClient(supabaseUrl, supabaseKey);
-  }  
-  
+  }
+
   /** 
    * API function to check if the username and the password are correct 
    * @param {string} username the username to check
@@ -50,7 +50,7 @@ export class SupabaseConnenction {
    * @param {string} hashedPassword the hashed password of the user to remove
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
-   public removeUser = async (username: string, hashedPassword: string): Promise<boolean> => {
+  public removeUser = async (username: string, hashedPassword: string): Promise<boolean> => {
 
     // check if the user and the password are correct
     const isValid = await this.isUserValid(username, hashedPassword);
@@ -75,8 +75,35 @@ export class SupabaseConnenction {
       // user was removed -> return true
       return true;
     }
+
+
   };
 
+  /** 
+ * API function to add a Chat Message to the database 
+ * @param {string} message the message of the user
+ * @param {string} userId the Id of the User
+ * @param {string} chatKeyId the Id of the Chatroom
+ * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+ */
+  public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
+    const { data, error } = await SupabaseConnenction.CLIENT
+      .from('ChatMessage')
+      .insert([
+        {ChatKeyId: chatKeyId, UserId: userId,TargetUserId: '0', Message: message},
+      ])
+
+    console.log(data);
+    console.log(error);
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+    // Message was not added -> return false
+      return false;
+    } else {
+      // Message was added -> return true
+      return true;
+    }
+  };
 
   /** 
    * API function to remove a user from the database 
@@ -85,12 +112,8 @@ export class SupabaseConnenction {
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
   public getChatMessages = async (threeword: string): Promise<IChatMessage[]> => {
-    
+
     return [];
   };
 
-} 
-
-
-
-
+}

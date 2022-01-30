@@ -43,6 +43,8 @@ export class DevChatController {
         console.log("in Controller: " + message);
         if(await this.checkMessageForCommands(message) == false)
         {
+            console.log("Adding Message to DB")
+            this.addChatMessage(message,"0","0");
             //Add the Message to the Database
             //TODO Call Supabase Api Function to add Message to Database
             //UserId and ChatKeyId not defined
@@ -97,7 +99,7 @@ export class DevChatController {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }, 
             body: JSON.stringify({
                 username: username,
                 password: password
@@ -107,6 +109,27 @@ export class DevChatController {
         return data.wasSuccessfull;
     }
 
+    /**
+     * This is a function that removes a user from the database
+     * @param {string} username the username of the user to be removed
+     * @param {string} password the password of the user to be removed
+     * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
+    **/
+    public addChatMessage = async (message: string, userId: string, chatKeyId:string ): Promise<boolean> => {
+        let response = await fetch('./api/messages/save_chat_message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messager: message,
+                userId: userId,
+                chatKeyId: chatKeyId
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
+    }
 
 }
 

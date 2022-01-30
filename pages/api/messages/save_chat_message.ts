@@ -9,14 +9,17 @@ type Data = {
 const supabaseConnenction = new SupabaseConnenction();
 
 /**
- * This is a api route to add a Message to the Message Database
+ * This is a api route to add a message to the database
  * @param req the request object (body: message, userId, chatKeyId)
  * @param res the response object (body: wasSuccessfull)
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let message = req.body.message;
   let userId = req.body.userId;
-  let ChatKeyId = req.body.chatKeyId;
+  let chatKeyId = req.body.chatKeyId;
 
-  //res.status(200).json({ wasSuccessfull: removedSuccessfully });
+  let addedSucessfully = await supabaseConnenction.addChatMessage(message, userId, chatKeyId);
+  console.log("addedSucessfully: " +addedSucessfully)
+
+  res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
