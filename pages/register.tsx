@@ -6,9 +6,11 @@ import React, { Component } from 'react'
 import DevChatController from '../controller'
 
 export interface RegisterState {
-  isValid: boolean,
-  inputUser: string,
+  userAlreadyExists: boolean,
+  inputUsername: string,
   inputPassword: string,
+  inputConfirmPassword: string,
+  feedbackMessage: string,
 }
 
 export interface RegisterProps {}
@@ -21,9 +23,11 @@ export default class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {
     super(props)
     this.state = {
-      isValid: false,
-      inputUser: "",
+      userAlreadyExists: false,
+      inputUsername: "",
       inputPassword: "",
+      inputConfirmPassword: "",
+      feedbackMessage: "",
     }
     
   }
@@ -49,22 +53,42 @@ export default class Register extends Component<RegisterProps, RegisterState> {
             <h1>
               Create Account
             </h1>
-            <input type="text" placeholder="Username..." onChange={(event) => { this.setState({ inputUser: event.currentTarget.value }) }} value={this.state.inputUser} />
-            <input type="password" placeholder="Password..." onChange={(event) => { this.setState({ inputPassword: event.currentTarget.value }) }} value={this.state.inputPassword} />
-            <input type="password" placeholder="Confirm Password..."/>
-            <div> 
-              Username already in use. / Passwords are not correct.
-            </div>
+            <input type="text" placeholder="Username..." 
+              onChange={(event) => { 
+                this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false}) 
+                this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword); 
+              }} 
+              value={this.state.inputUsername} />
+            <input type="password" placeholder="Password..." 
+              onChange={(event) => { 
+                this.setState({ inputPassword: event.currentTarget.value }) 
+                this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword); 
+              }} 
+              value={this.state.inputPassword} />
+            <input type="password" placeholder="Confirm Password..." 
+              onChange={(event) => { 
+                this.setState({ inputConfirmPassword: event.currentTarget.value }) 
+                this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, this.state.inputPassword, event.currentTarget.value);
+              }} 
+              value={this.state.inputConfirmPassword}/>
+            
+            <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+
             <button onClick={async () => {
+              let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
               this.setState({
-                isValid: await DevChatController.verifyUser(this.state.inputUser,this.state.inputPassword)
+                 userAlreadyExists: userAlreadyExists
               })
-              DevChatController.userRegisters("", "") // change to state later
+              //this.state.inputPassword === "" && this.state.inputConfirmPassword === "" && this.state.inputUsername === "" || this.state.inputConfirmPassword !== this.state.inputPassword
+              //Hier muss Lukas noch die Anforderungen dann einbauen
+              if(!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
+                console.log("Pressed Register Button" )
+                DevChatController.userRegisters(this.state.inputUsername, this.state.inputPassword)
+              }
+              this.updateFeedbackMessage(userAlreadyExists, this.state.inputUsername, this.state.inputPassword, this.state.inputConfirmPassword);
             }}> 
               Create
             </button>
-            {String(this.state.isValid)}
-            {this.state.inputUser}
             <div>
               Or <a href={"/login"}>login</a> instead.
             </div>
@@ -82,4 +106,24 @@ export default class Register extends Component<RegisterProps, RegisterState> {
       </div>
     )
   }
+
+
+  private updateFeedbackMessage(userAlreadyExists: boolean, inputUser: string, inputPassword: string, inputConfirmPassword: string) {
+    console.log("updateFeedbackMessage()");
+    console.table({userAlreadyExists, inputUser, inputPassword, inputConfirmPassword})
+    let feedbackMessage: string = "";
+    
+    if(userAlreadyExists) {
+      feedbackMessage = "Username already exists";
+    } 
+      else if (inputConfirmPassword !== inputPassword) {
+      feedbackMessage = "Passwords are not correct";  
+    } 
+      else if (inputUser === "" || inputPassword === "" || inputConfirmPassword === "") {
+      feedbackMessage = "Please enter all required fields"
+    } 
+
+    this.setState({ feedbackMessage: feedbackMessage });
+  }
+
 }

@@ -43,6 +43,29 @@ export class SupabaseConnenction {
     }
   };
 
+   /** 
+   * API function to check if the username and the password are correct 
+   * @param {string} username the username to check
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username already exists
+   */
+  public userAlreadyExists = async (username: string): Promise<boolean> => {
+
+    // fetch the data from the supabase database
+    const { data, error } = await SupabaseConnenction.CLIENT
+      .from('User')
+      .select()
+      .eq('Username', username);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // no users found -> user does not exist -> return false
+      return false;
+    } else {
+      // user exists -> return true
+      return true;
+    }
+  };
 
   /** 
    * API function to remove a user from the database 
@@ -77,6 +100,30 @@ export class SupabaseConnenction {
     }
   };
 
+    /** 
+   * API function to insert the username and the password 
+   * @param {string} username the username to insert
+   * @param {string} password the password to check
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
+   */
+     public registerUser = async (username: string, hashedPassword: string): Promise<boolean> => {
+
+      // fetch the data from the supabase database
+      const { data, error } = await SupabaseConnenction.CLIENT
+        .from('User')
+        .insert([
+          {"Username": username, "Password": hashedPassword, "AccessLevel": 0}
+        ]);
+  
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // user was not created -> return false
+        return false;
+      } else {
+        // user was created -> return true
+        return true;
+      }
+    };
 
   /** 
    * API function to remove a user from the database 
