@@ -46,8 +46,8 @@ export default class Login extends Component<LoginProps, LoginState> {
   
         <main>
           
-          <div>
-            <div className={styles.button}>
+          <div className={styles.container}>
+            <div className={styles.left}>
               <h1>
                 Login
               </h1>

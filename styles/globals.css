@@ -164,7 +164,6 @@ input::placeholder {
 
 @media screen and (min-width: 1280px) {
   button {
-    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;

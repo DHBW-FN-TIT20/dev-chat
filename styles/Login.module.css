@@ -1,30 +1,40 @@
-@media screen and (min-width: 1224px) {
-.left {
-    position: absolute;
-    left: 0;
-    top: 50pt;
-    width: 100pt;
-    margin: 100pt;
-}
-
-.right {
-    position: absolute;
-    right: 0;
-    top: 50pt;
-    width: 50pt;
-    height: 50pt;
-    margin: auto;
-    
-}
-.button {
-    width: 30%;
-}
-}
-@media screen and (max-width: 1224px) {
+@media screen and (max-width: 900px) {
     .left {
         margin-top: 30pt;
         width: auto;
         text-align: center;
         overflow: hidden;
     }
+}
+
+@media screen and (min-width: 900px) {
+    .left {
+        margin-top: 30pt;
+        width: auto;
+        text-align: center;
+        overflow: hidden;
+    }
+}
+
+@media screen and (min-width: 1228px) {
+.left {
+    position: absolute;
+    left: 0;
+    top: 50pt;
+    width: 40%;
+    margin: 50pt;
+}
+
+.right {
+    position: absolute;
+    left: 40%;
+    top: 50pt;
+    height: 30%;
+    width: 30%;
+
+}
+.container {
+    overflow-x: hidden;
+}
+
 }
