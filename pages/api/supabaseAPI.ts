@@ -1,5 +1,6 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { IChatMessage } from '../../public/interfaces';
+import * as bcrypt from 'bcrypt'
 
 /**
  * This is the connection to the supabase database.
@@ -16,6 +17,27 @@ export class SupabaseConnection {
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDUzODUzMywiZXhwIjoxOTU2MTE0NTMzfQ.t0QAIVdegnHXUXQb9XGy2vMItq2KvgcTI6Lk1t-rV5Q"
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
   }  
+
+  /**
+   * Function to hash a password
+   * @param {string} password password to hash
+   * @returns {Promise<string>} hashed password
+   */
+   private hashPassword = async (password: string): Promise<string> => {
+    const saltOrRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltOrRounds);    
+    return hashedPassword
+  }
+
+  /**
+   * Function to check plain text with hash
+   * @param {string} clearPassword password as plain text
+   * @param {string} hashedpassword password as hash from db
+   * @returns {Promise<boolean>} true if password and hash match, flase if not
+   */
+  private checkPassword = async (clearPassword: string, hashedpassword: string): Promise<boolean> => {
+    return await bcrypt.compare(clearPassword, hashedpassword);
+  }
   
   /** 
    * API function to check if the username/userID and the password are correct 
@@ -35,8 +57,7 @@ export class SupabaseConnection {
       const { data, error } = await SupabaseConnection.CLIENT
         .from('User')
         .select()
-        .eq('UserID', user.id)
-        .eq('Password', user.password);
+        .eq('UserID', user.id);
       
       supabaseData = data;
       supabaseError = error;
@@ -48,8 +69,7 @@ export class SupabaseConnection {
       const { data, error } = await SupabaseConnection.CLIENT
         .from('User')
         .select()
-        .eq('Username', user.name)
-        .eq('Password', user.password);
+        .eq('Username', user.name);
 
       supabaseData = data;
       supabaseError = error;
@@ -64,10 +84,57 @@ export class SupabaseConnection {
       // no users found -> user does not exist or password is wrong -> return false
       return false;
     } else {
+      // user exists
+      return this.checkPassword(user.password, supabaseData[0].Password);
+    }
+  };
+
+   /** 
+   * API function to check if the username and the password are correct 
+   * @param {string} username the username to check
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username already exists
+   */
+  public userAlreadyExists = async (username: string): Promise<boolean> => {
+
+    // fetch the data from the supabase database
+    const { data, error } = await SupabaseConnenction.CLIENT
+      .from('User')
+      .select()
+      .eq('Username', username);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // no users found -> user does not exist -> return false
+      return false;
+    } else {
       // user exists -> return true
       return true;
     }
   };
+
+  /**
+   * This helper function is used to get the userID of a user by username
+   * @param username the username of the user
+   * @returns the userID of the user
+   */
+  public getUserIDByUsername = async (username: string): Promise<number> => {
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .delete()
+      .match({ Username: username });
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // user was not found -> return NaN
+      return NaN;
+    } else {
+      // user was removed -> return true
+      return data[0].UserID;
+    }
+  }
 
 
   /** 
@@ -77,34 +144,106 @@ export class SupabaseConnection {
    * @param {string} usernameToDelete the username of the user to be removed
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
    */
-   public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
+  public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
+  
+    // check if the user and the password are correct
+    const isValid = await this.isUserValid({id: currentUserId, password: currentUserPassword});
 
-    // // check if the user and the password are correct
-    // const isValid = await this.isUserValid(username, hashedPassword);
+    if (!isValid) {
+      // user and password are not correct -> return false
+      return false;
+    }
 
-    // if (!isValid) {
-    //   // user and password are not correct -> return false
-    //   return false;
-    // }
+    // check if user is allowed to remove the user
+    let isAllowed = (currentUserId === 1 || currentUserId === 2);
 
-    // // fetch the supabase database
-    // const { data, error } = await SupabaseConnenction.CLIENT
-    //   .from('User')
-    //   .delete()
-    //   .match({ Username: username, Password: hashedPassword });
+    if (!isAllowed) {
+      // user is not a super user so it needs to be checkt if the user wants to remove himself
+      let userID = await this.getUserIDByUsername(usernameToDelete);
+      if (userID === currentUserId) {
+        isAllowed = true;
+      }
+    }
 
-    // // check if data was received
-    // if (data === null || error !== null || data.length === 0) {
+    if (!isAllowed) {
+      // user is not allowed to remove the user -> return false
+      return false;
+    }
 
-    //   // user was not removed -> return false
-    //   return false;
-    // } else {
-    //   // user was removed -> return true
-    //   return true;
-    // }
-    return false;
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .delete()
+      .match({ Username: usernameToDelete });
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // user was not removed -> return false
+      return false;
+    } else {
+      // user was removed -> return true
+      return true;
+    }
+
+
   };
 
+    /** 
+   * API function to insert the username and the password 
+   * @param {string} username the username to insert
+   * @param {string} password the password to check
+   * @param {number} [accessLevel=0] User AccessLevel.
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
+   */
+     public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
+      let userAlreadyExists = await this.userAlreadyExists(username)        
+
+      if(userAlreadyExists) {
+        return false;
+      }
+
+      let hashedPassword = await this.hashPassword(password);
+
+      // fetch the data from the supabase database
+      const { data, error } = await SupabaseConnenction.CLIENT
+        .from('User')
+        .insert([
+          {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
+        ]);
+  
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // user was not created -> return false
+        return false;
+      } else {
+        // user was created -> return true
+        return true;
+      }
+      
+    };
+  /** 
+ * API function to add a Chat Message to the database 
+ * @param {string} message the message of the user
+ * @param {string} userId the Id of the User
+ * @param {string} chatKeyId the Id of the Chatroom
+ * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+ */
+  public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
+    const { data, error } = await SupabaseConnenction.CLIENT
+      .from('ChatMessage')
+      .insert([
+        {ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message},
+      ])
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+    // Message was not added -> return false
+      return false;
+    } else {
+      // Message was added -> return true
+      return true;
+    }
+  };
 
   /** 
    * API function to get all chat messages from the database 
@@ -182,8 +321,4 @@ export class SupabaseConnection {
     return data[0].ChatKeyID;
   };
 
-} 
-
-
-
-
+}

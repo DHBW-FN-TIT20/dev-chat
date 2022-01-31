@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
+import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
 export interface ChatState {
@@ -11,7 +12,7 @@ export interface ChatState {
   messages: IChatMessage[],
 }
 
-export interface ChatProps {}
+export interface ChatProps { }
 
 export default class Chat extends Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
@@ -20,12 +21,11 @@ export default class Chat extends Component<ChatProps, ChatState> {
       input: '',
       messages: [],
     }
-    
+
   }
 
   componentDidMount() {
     console.log();
-
     setInterval(() => this.setState({messages: DevChatController.chatMessages}), 500);
   }
 
@@ -38,8 +38,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
           <meta name="description" content="chat" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
+
         <main>
+        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true}/>
           <div>
             <div className={styles.messageTableDiv}> 
               <table>
@@ -80,5 +81,27 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </main>
       </div>
     )
+  }
+
+  /**
+  * Handle of the Keypressed-Event from the Input
+  * Checks if Enter was pressed
+  * @param event Occurred Event
+  */
+  handleEnterKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      console.log("Entered new Message: " + this.state.chatLineInput);
+      DevChatController.enteredNewMessage(this.state.chatLineInput);
+      this.setState({ chatLineInput: "" });
+    }
+  }
+
+  /**
+   * Handle of the OnChange-Event from the Input
+   * updates the Value of the Input-Line
+   * @param event Occured Event
+   */
+  handleChatLineInput = (event: any) => {
+    this.setState({ chatLineInput: event.target.value });
   }
 }

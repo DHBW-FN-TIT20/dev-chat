@@ -4,11 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface LoginState {
 }
 
-export interface LoginProps {}
+export interface LoginProps {
+  showError: boolean;
+}
 
 /**
  * @class Login Componet Class
@@ -41,35 +43,41 @@ export default class Login extends Component<LoginProps, LoginState> {
           <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
-        <main>
-          <div>
-            <h1>
+
+        <header>
+          <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
+        </header>
+        <main>          
+          <div className={styles.container}>
+            <div className={styles.left}>
+              <h1>
               Login
             </h1>
             <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
             <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
-            <div> 
-              Incorrect username or password.
-            </div>
-            <button onClick={() => {
-              DevChatController.userLogsIn(this.username, this.password) // change to state later
-            }}> Login </button>
-            <button onClick={() => {
-              DevChatController.userLogsOut();
-            }}> Log-Out </button>
-            <div>
-              Or <a href={"/register"}>create Account</a> instead.
+              {
+                !this.props.showError && 
+                <div className='error' id={styles.error1}> 
+                  Incorrect username or password. 
+                </div>
+              }
+              <button onClick={() => {
+                DevChatController.userLogsIn(this.username, this.password) // change to state later
+              }}> Login </button>
+              <div className='create'>
+                Or <a href={"/register"}>create Account</a> instead.
+              </div>
             </div>
           </div>
-          <div className="image">
-            <Image
-              src={"/logo.png"}
-              alt="DEV-CHAT Logo"
-              width={1000}
-              height={1000}
-              layout="responsive"
-            />
+          <div className={styles.right}>
+            <div className="image">
+              <Image
+                src={"/logo.png"}
+                alt="DEV-CHAT Logo"
+                width={1000}
+                height={1000}
+              />
+            </div>
           </div>
         </main>
       </div>

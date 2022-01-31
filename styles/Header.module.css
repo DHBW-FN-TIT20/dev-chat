@@ -1,0 +1,249 @@
+@media screen and (min-width: 1280px) {
+  .container {
+    width: 100%;
+  }
+  .headertable {
+    border: 1px solid rgb(0, 0, 0);
+    width: 100%;
+    overflow: hidden;
+  }
+  .logo {
+    width: 50pt;
+    height: 50pt;
+    background: #666666(165, 4, 4);
+    box-sizing: border-box;
+  }
+  .logotd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .nametd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+  }
+  .spacetd {
+    border: solid black 3px;
+  }
+  .usertd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+  }
+  .imptd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .exittd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+
+  .name {
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(39, 32, 104);
+    padding-left: 30pt;
+    padding-right: 30pt;
+    color: #FF9933;
+  }
+  .space {
+    height: 50pt;
+    padding: 10pt;
+    background: #666666(39, 32, 104);
+  }
+  .user {
+    width: auto;
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(69, 219, 55);
+    color: #FF9933;
+  }
+  .exit {
+    width: 50pt;
+    height: 50pt;
+    padding: 8px;
+  }
+
+  .impressum {
+    height: 50pt;
+    background: #666666(69, 219, 55);
+    font-size: 25pt;
+    color: white;
+    text-align: center;
+    padding-top: 8pt;
+      
+  }
+  .container {
+    height: 50pt;
+  }
+}
+
+
+@media screen and (max-width: 900px) {
+  .container {
+    width: 100%;
+  }
+  .headertable {
+    border: 1px solid rgb(0, 0, 0);
+    width: 100%;
+    overflow: hidden;
+  }
+  .logo {
+    width: 50pt;
+    height: 50pt;
+    background: #666666(165, 4, 4);
+    box-sizing: border-box;
+  }
+  .logotd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .nametd {
+    border: solid black 3px;
+    width: auto;
+  }
+  .spacetd {
+    border: solid black 3px;
+    display: none;
+  }
+  .usertd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+    display: none;
+  }
+  .imptd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .exittd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .name {
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(39, 32, 104);
+    padding-left: 30pt;
+    padding-right: 30pt;
+    color: #FF9933;
+    font-size: 20pt;
+  }
+  .space {
+    height: 50pt;
+    padding: 10pt;
+    background: #666666(39, 32, 104);
+  }
+  .user {
+    width: auto;
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(69, 219, 55);
+    color: #FF9933;
+      
+  }
+  .exit {
+    width: 50pt;
+    height: 50pt;
+    padding: 8px;
+      
+  }
+  
+  .impressum {
+    height: 50pt;
+    background: #666666(69, 219, 55);
+    font-size: 25pt;
+    color: white;
+    text-align: center;
+    padding-top: 8pt;
+      
+  }
+  .container {
+    height: 50pt;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .container {
+    width: 100%;
+  }
+  .headertable {
+    border: 1px solid rgb(0, 0, 0);
+    width: 100%;
+    overflow: hidden;
+  }
+  .logo {
+    width: 50pt;
+    height: 50pt;
+    background: #666666(165, 4, 4);
+    box-sizing: border-box;
+  }
+  .logotd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .nametd {
+    border: solid black 3px;
+    width: auto;
+  }
+  .spacetd {
+    border: solid black 3px;
+    display: none;
+  }
+  .usertd {
+    border: solid black 3px;
+    width: 1%;
+    white-space: nowrap;
+    display: none;
+  }
+  .imptd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .exittd {
+    width: 50pt;
+    border: solid black 3px;
+  }
+  .name {
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(39, 32, 104);
+    padding-left: 30pt;
+    padding-right: 30pt;
+    color: #FF9933;
+    font-size: 20pt;
+  }
+  .space {
+    height: 50pt;
+    padding: 10pt;
+    background: #666666(39, 32, 104);
+  }
+  .user {
+    width: auto;
+    height: 50pt;
+    padding: 14pt;
+    background: #666666(69, 219, 55);
+    color: #FF9933;
+      
+  }
+  .exit {
+    width: 50pt;
+    height: 50pt;
+    padding: 8px;
+      
+  }
+  
+  .impressum {
+    height: 50pt;
+    background: #666666(69, 219, 55);
+    font-size: 25pt;
+    color: white;
+    text-align: center;
+    padding-top: 8pt;
+      
+  }
+  .container {
+    height: 50pt;
+  }
+}
