@@ -141,8 +141,32 @@ export class SupabaseConnection {
       // user was removed -> return true
       return true;
     }
+
+
   };
 
+  /** 
+ * API function to add a Chat Message to the database 
+ * @param {string} message the message of the user
+ * @param {string} userId the Id of the User
+ * @param {string} chatKeyId the Id of the Chatroom
+ * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+ */
+  public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
+    const { data, error } = await SupabaseConnenction.CLIENT
+      .from('ChatMessage')
+      .insert([
+        {ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message},
+      ])
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+    // Message was not added -> return false
+      return false;
+    } else {
+      // Message was added -> return true
+      return true;
+    }
+  };
 
   /** 
    * API function to get all chat messages from the database 
@@ -219,8 +243,4 @@ export class SupabaseConnection {
     return data[0].ChatKeyID;
   };
 
-} 
-
-
-
-
+}

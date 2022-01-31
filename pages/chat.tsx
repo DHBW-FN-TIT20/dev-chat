@@ -6,18 +6,18 @@ import React, { Component } from 'react'
 import DevChatController from '../controller'
 
 export interface ChatState {
-  input: string
+  chatLineInput: string
 }
 
-export interface ChatProps {}
+export interface ChatProps { }
 
 export default class Chat extends Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
     super(props)
     this.state = {
-      input: ''
+      chatLineInput: ""
     }
-    
+
   }
 
   componentDidMount() {
@@ -47,10 +47,10 @@ export default class Chat extends Component<ChatProps, ChatState> {
           <meta name="description" content="chat" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
+
         <main>
           <div>
-            <div> 
+            <div>
               <table>
                 <tbody>
                   <tr>
@@ -70,23 +70,32 @@ export default class Chat extends Component<ChatProps, ChatState> {
                 </tbody>
               </table>
             </div>
-            <this.ChatList/>
-            <input className={styles.chatBox} type="text" onChange={(event) => {this.setState({input: event.target.value})}} placeholder="Write a message..." onKeyDownCapture={(event) => {
-              
-              // this is a example how to use the controller
-              // the UI-things (here: clear the message after enter) have to be done in this file
-              // the logic-things have to be done in the controller
-              // therefore just call the controller and pass arguments (here: the input string) 
-              
-              if (event.key === 'Enter') {
-                console.log("this.state.input: " + this.state.input)
-                DevChatController.enteredNewMessage(this.state.input); // logic
-                this.setState({input: ''});                             // UI
-              }
-            }}/>
+            <input className={styles.chatBox} value={this.state.chatLineInput} type="text" placeholder="Write a message..." onKeyPress={this.handleEnterKeyPress} onChange={this.handleChatLineInput} />
           </div>
         </main>
       </div>
     )
+  }
+
+  /**
+  * Handle of the Keypressed-Event from the Input
+  * Checks if Enter was pressed
+  * @param event Occurred Event
+  */
+  handleEnterKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      console.log("Entered new Message: " + this.state.chatLineInput);
+      DevChatController.enteredNewMessage(this.state.chatLineInput);
+      this.setState({ chatLineInput: "" });
+    }
+  }
+
+  /**
+   * Handle of the OnChange-Event from the Input
+   * updates the Value of the Input-Line
+   * @param event Occured Event
+   */
+  handleChatLineInput = (event: any) => {
+    this.setState({ chatLineInput: event.target.value });
   }
 }
