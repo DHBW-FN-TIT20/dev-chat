@@ -46,7 +46,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
 
         <header>
-          <Header pageInformation={"chatKey"} showName={true} title={"Hallo"} showExit={true} />
+          <Header pageInformation={"chatKey"} showName={true} title={"Chat"} showExit={true} />
         </header>
 
         <main>
