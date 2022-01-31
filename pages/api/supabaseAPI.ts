@@ -296,7 +296,6 @@ export class SupabaseConnection {
    * @returns {Promise<IChatKeyMessage[]>}
    */
   public getChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number): Promise<IChatMessage[]> => {
-    
     let chatMessages: IChatMessage[] = [];
 
     // check if user is valid

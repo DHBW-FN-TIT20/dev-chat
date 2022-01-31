@@ -8,6 +8,7 @@ import { IChatMessage } from './public/interfaces';
 export class DevChatController {
   private data: any;
   public chatMessages: IChatMessage[] = [];
+  private chatMessageInterval: any;
 
   constructor() {
     console.log("DevChatController.constructor()");
@@ -34,12 +35,17 @@ export class DevChatController {
       this.userLogsIn(String(userName),String(userPass));
       // aktiven User setzen?
     }
+  }
 
+  public async startMessageFetch() {
     // Update chat messages every 2 sec. 
-    // NOTE: This should only me done inside the chat component.
-    setInterval(async () => {
+    this.chatMessageInterval = setInterval(async () => {
       this.updateChatMessages();
     }, 2000);
+  }
+
+  public stopMessageFetch() {
+    clearInterval(this.chatMessageInterval);
   }
   
   /**

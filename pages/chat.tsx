@@ -2,6 +2,7 @@ import Head from 'next/head'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
+import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
 export interface ChatState {
@@ -12,18 +13,26 @@ export interface ChatState {
 export interface ChatProps { }
 
 export default class Chat extends Component<ChatProps, ChatState> {
+  private messageFetchInterval: any = undefined;
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       chatLineInput: '',
       messages: [],
     }
-
   }
 
   componentDidMount() {
     console.log();
-    setInterval(() => this.setState({messages: DevChatController.chatMessages}), 500);
+    DevChatController.startMessageFetch();
+    this.messageFetchInterval = setInterval(() => {
+      this.setState({messages: DevChatController.chatMessages})
+    }, 500);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.messageFetchInterval);
+    DevChatController.stopMessageFetch();
   }
 
   render() {
@@ -35,6 +44,10 @@ export default class Chat extends Component<ChatProps, ChatState> {
           <meta name="description" content="chat" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+
+        <header>
+          <Header pageInformation={"chatKey"} showName={true} title={"Hallo"} showExit={true} />
+        </header>
 
         <main>
           <div>
