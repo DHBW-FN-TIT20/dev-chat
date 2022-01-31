@@ -10,11 +10,8 @@ import * as bcrypt from 'bcrypt'
 export class SupabaseConnection {
   private static CLIENT: SupabaseClient;
   constructor() {
-    // supabaseUrl and supabaseKey should be replaced by the environment variables
-    // const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-    // const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY || ''; 
-    const supabaseUrl = "https://yffikhrkategkabkunhj.supabase.co"
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MDUzODUzMywiZXhwIjoxOTU2MTE0NTMzfQ.t0QAIVdegnHXUXQb9XGy2vMItq2KvgcTI6Lk1t-rV5Q"
+    const supabaseUrl = process.env.SUPABASE_URL || '';
+    const supabaseKey = process.env.SUPABASE_KEY || ''; 
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
   }  
 
