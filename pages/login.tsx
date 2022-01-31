@@ -44,8 +44,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
         </header>
   
-        <main>
-          
+        <main>          
           <div className={styles.container}>
             <div className={styles.left}>
               <h1>
@@ -72,7 +71,7 @@ export default class Login extends Component<LoginProps, LoginState> {
                 Or <a href={"/register"}>create Account</a> instead.
               </div>
             </div>
-          
+          </div>
           <div className={styles.right}>
             <div className="image">
               <Image
@@ -82,7 +81,6 @@ export default class Login extends Component<LoginProps, LoginState> {
                 height={1000}
               />
             </div>
-          </div>
           </div>
         </main>
       </div>
