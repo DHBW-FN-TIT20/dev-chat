@@ -26,20 +26,22 @@ export class DevChatController {
   public async initialize() {
     console.log("DevChatController.initialize()");
     var Cookies = checkCookies('userKey'); // here should the controller check for user cookies and if there are cookies, the user should be logged in.
-    if(Cookies){
-    console.log("Cookies have been set, you are being logged in." + Cookies);
-    var userPass = await getCookie('userKey');
-    var userName = await getCookie('passwordKey');
-    console.log(String(userPass) + "  " + String(userName));
-    this.userLogsIn(String(userName),String(userPass));
-    // aktiven User setzen?
+    if(Cookies) {
+      console.log("Cookies have been set, you are being logged in." + Cookies);
+      var userPass = await getCookie('userKey');
+      var userName = await getCookie('passwordKey');
+      console.log(String(userPass) + "  " + String(userName));
+      this.userLogsIn(String(userName),String(userPass));
+      // aktiven User setzen?
+    }
 
-    // Update chat messages every 2 sec.
+    // Update chat messages every 2 sec. 
+    // NOTE: This should only me done inside the chat component.
     setInterval(async () => {
       this.updateChatMessages();
     }, 2000);
-    }
   }
+  
   /**
    * This method is used to process a new message which is entered in the Chat.
    * @param message The input string of the user which should be processed.
@@ -47,9 +49,9 @@ export class DevChatController {
   public async enteredNewMessage(message: string) {
     console.log("DevChatController.enteredNewMessage()");
     console.log("in Controller: " + message);
-    if(await this.checkMessageForCommands(message) == false)
-    {   
-      //Add the Message to the Database
+    if(await this.checkMessageForCommands(message) == false) {   
+      // NOTE: getCookies function here?!
+      // Add the Message to the Database
       // userId: 2 --> Wildcard
       // chatKeyId: 2 --> Wildcard
       this.addChatMessage(message,"2","2");
@@ -57,6 +59,7 @@ export class DevChatController {
   }
 
   /**
+   * NOTE: Not needed in frontend?!
    * Checks the Message if its a Command
    * @param message Input Messag zu Check
    */
@@ -69,7 +72,7 @@ export class DevChatController {
   }
 
   /**
-   * This method should update the data of the chat.
+   * This method updates the data of the chat.
    */
   public async updateChatMessages() {
     console.log("DevChatController.updateChatMessages()");
@@ -119,7 +122,7 @@ export class DevChatController {
   }
 
   /**
-   * 
+   * This function is used to get the chat messages from the database.
    * @param targetID the id of the user who is logged in
    * @param targetPassword the password of the user who is logged in
    * @param chatKey the three-word of the chat
@@ -149,6 +152,7 @@ export class DevChatController {
     return chatMessages;
   }
 
+  // NOTE: Docstring is missing
   public async userLogsIn(username: string, password: string): Promise<boolean> {
     console.log("DevChatController.userLogsIn()");
     var loginWasSuccessful: boolean = await this.verifyUser(username, password); // Verify User
@@ -163,7 +167,8 @@ export class DevChatController {
     }
     return loginWasSuccessful;
   }
-
+  
+  // NOTE: Docstring is missing
   public async userLogsOut(){
     removeCookies('userKey');
     removeCookies('passwordKey');
@@ -196,10 +201,10 @@ export class DevChatController {
   }
 
   /**
-   * This is a function that removes a user from the database
+   * This is a function that veryfies a user
    * @param {string} username the username of the user to be removed
    * @param {string} password the password of the user to be removed
-   * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
+   * @returns {Promise<boolean>} true if the user was successfully verified, false if the user was not found or the password was wrong
    **/
   public verifyUser = async (username: string, password: string): Promise<boolean> => {
     let response = await fetch('./api/users/verify_user', {
