@@ -4,9 +4,10 @@ import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface ChatState {
   input: string
+
 }
 
 export interface ChatProps {}
@@ -23,7 +24,9 @@ export default class Chat extends Component<ChatProps, ChatState> {
   componentDidMount() {
     console.log();
   }
-
+// in chatdiv den chat einfügen, aktuell noch table drin, vllt mit react tabelle ersetzen
+// title vllt in raumname ändern
+//mit react erkennen welches device!
   render() {
     return (
       <div>
@@ -34,23 +37,24 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
   
         <main>
+        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true}/>
           <div>
-            <div> 
-              <table>
+            <div className={styles.chatdiv}> 
+              <table className={styles.chattable}>
                 <tbody>
-                  <tr>
-                    <td>Henry</td>
-                    <td>at</td>
-                    <td>15/01/2022 13:46</td>
-                    <td>-&gt;</td>
-                    <td>Hallo</td>
+                  <tr className={styles.td}>
+                    <td className={styles.td}>Henry</td>
+                    <td className={styles.td}>at</td>
+                    <td className={styles.td}>15/01/2022 13:46</td>
+                    <td className={styles.td}>-&gt;</td>
+                    <td className={styles.td}>Hallo</td>
                   </tr>
-                  <tr>
-                    <td>Phillipp</td>
-                    <td>at</td>
-                    <td>15/01/2022 13:48</td>
-                    <td>-&gt;</td>
-                    <td>Hallo, alles klar?</td>
+                  <tr className={styles.td}>
+                    <td className={styles.td}>Phillipp</td>
+                    <td className={styles.td}>at</td>
+                    <td className={styles.td}>15/01/2022 13:48</td>
+                    <td className={styles.td}>-&gt;</td>
+                    <td className={styles.td}>Hallo, alles klar?</td>
                   </tr>
                 </tbody>
               </table>

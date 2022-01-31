@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface MainState {
 }
 
@@ -41,13 +41,15 @@ export default class Main extends Component<MainProps, MainState> {
         </Head>
   
         <main>
-          <div>
+        <Header pageInformation="MAIN MENU" title="Rooms" showName={true} showExit={true} />
+        <div className={styles.container}>
+          <div className={styles.left}>
             <h1>
               Join Room
             </h1>
-            <input type="text" placeholder="Chat-Key..."/>
-            <div> 
-              Incorrect username or password. 
+            <input type="text" placeholder="Chat-Key..." className='input'/>
+            <div className='error'> 
+              Chat-Key does not exist.
             </div>
             <button onClick={() => {
               // DevChatController.userJoinsRoom(Chat-Key) // method have to be implemented
@@ -75,6 +77,8 @@ export default class Main extends Component<MainProps, MainState> {
               Delete Account
             </button>
           </div>
+          
+          <div className={styles.right}>
           <div className="image">
             <Image
               src={"/logo.png"}
@@ -83,6 +87,8 @@ export default class Main extends Component<MainProps, MainState> {
               height={1000}
               layout="responsive"
             />
+          </div>
+          </div>
           </div>
         </main>
       </div>

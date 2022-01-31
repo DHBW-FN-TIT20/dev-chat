@@ -4,11 +4,13 @@ import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-
+import Header from './header'
 export interface LoginState {
 }
 
-export interface LoginProps {}
+export interface LoginProps {
+  showError: boolean;
+}
 
 /**
  * @class Login Componet Class
@@ -39,32 +41,40 @@ export default class Login extends Component<LoginProps, LoginState> {
         </Head>
   
         <main>
-          <div>
-            <h1>
-              Login
-            </h1>
-            <input type="text" placeholder="Username..."/>
-            <input type="password" placeholder="Password..."/>
-            <div> 
-              Incorrect username or password. 
-            </div>
-            <button onClick={() => {
-              DevChatController.userLogsIn("", "") // change to state later
-            }}> 
-              Login 
-            </button>
+          <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
+          <div className={styles.left}>
             <div>
-              Or <a href={"/register"}>create Account</a> instead.
+              <h1>
+                Login
+              </h1>
+              <div>
+              <input type="text" placeholder="Username..."/>
+              </div>
+              <div>
+              <input type="password" placeholder="Password..."/>
+              </div>
+              <div className='error'> 
+                Incorrect username or password. 
+              </div>
+              <button onClick={() => {
+                DevChatController.userLogsIn("", "") // change to state later
+              }}> 
+                Login 
+              </button>
+              <div className='create'>
+                Or <a href={"/register"}>create Account</a> instead.
+              </div>
             </div>
           </div>
-          <div className="image">
-            <Image
-              src={"/logo.png"}
-              alt="DEV-CHAT Logo"
-              width={1000}
-              height={1000}
-              layout="responsive"
-            />
+          <div className={styles.right}>
+            <div className="image">
+              <Image
+                src={"/logo.png"}
+                alt="DEV-CHAT Logo"
+                width={1000}
+                height={1000}
+              />
+            </div>
           </div>
         </main>
       </div>
