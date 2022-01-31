@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnenction } from '../supabaseAPI';
+import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnenction = new SupabaseConnenction();
+const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to add a message to the database
@@ -18,6 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userId = req.body.userId;
   let chatKeyId = req.body.chatKeyId;
 
-  let addedSucessfully = await supabaseConnenction.addChatMessage(message, userId, chatKeyId);
+  let addedSucessfully = await supabaseConnection.addChatMessage(message, userId, chatKeyId);
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

@@ -1,13 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Console } from 'console';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnenction } from '../supabaseAPI';
+import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnenction = new SupabaseConnenction();
+const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to check if a user already exists in the database.
@@ -16,7 +16,7 @@ const supabaseConnenction = new SupabaseConnenction();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let username = req.body.username;
-  let userAlreadyExists = await supabaseConnenction.userAlreadyExists(username);
+  let userAlreadyExists = await supabaseConnection.userAlreadyExists(username);
 
   res.status(200).json({ wasSuccessfull: userAlreadyExists });
 }

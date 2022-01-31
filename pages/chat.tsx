@@ -1,14 +1,11 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
-import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
 export interface ChatState {
-  input: string,
+  chatLineInput: string,
   messages: IChatMessage[],
 }
 
@@ -18,7 +15,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
     super(props)
     this.state = {
-      input: '',
+      chatLineInput: '',
       messages: [],
     }
 
@@ -40,7 +37,6 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </Head>
 
         <main>
-        <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true}/>
           <div>
             <div className={styles.messageTableDiv}> 
               <table>
@@ -64,19 +60,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
                 </tbody>
               </table>
             </div>
-            <input className={styles.chatBox} type="text" onChange={(event) => {this.setState({input: event.target.value})}} placeholder="Write a message..." onKeyDownCapture={(event) => {
-              
-              // this is a example how to use the controller
-              // the UI-things (here: clear the message after enter) have to be done in this file
-              // the logic-things have to be done in the controller
-              // therefore just call the controller and pass arguments (here: the input string) 
-              
-              if (event.key === 'Enter') {
-                console.log("this.state.input: " + this.state.input)
-                DevChatController.enteredNewMessage(this.state.input); // logic
-                this.setState({input: ''});                             // UI
-              }
-            }}/>
+            <input className={styles.chatBox} value={this.state.chatLineInput} type="text" placeholder="Write a message..." onKeyPress={this.handleEnterKeyPress} onChange={this.handleChatLineInput} />
           </div>
         </main>
       </div>

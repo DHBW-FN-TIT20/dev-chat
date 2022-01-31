@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnenction } from '../supabaseAPI';
+import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnenction = new SupabaseConnenction();
+const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to create a user in the database.
@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   console.log("Username in handler",  username);
   console.log("Password in handler", password);
-  let registerUserWasSuccessfull = await supabaseConnenction.registerUser(username, password);
+  let registerUserWasSuccessfull = await supabaseConnection.registerUser(username, password);
 
   res.status(200).json({ wasSuccessfull: registerUserWasSuccessfull });
 }

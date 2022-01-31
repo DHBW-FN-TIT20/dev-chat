@@ -1,7 +1,5 @@
-import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/impressum.module.css'
 import React, { Component } from 'react'
 
 export interface ImpressumState {

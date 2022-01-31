@@ -3,8 +3,6 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
-import DevChatController from '../controller'
-import { loadGetInitialProps } from 'next/dist/shared/lib/utils'
 
 export interface AdminState {
 }
@@ -16,7 +14,6 @@ export default class Admin extends Component<AdminProps, AdminState> {
     super(props)
     this.state = {
     }
-    
   }
 
   componentDidMount() {}

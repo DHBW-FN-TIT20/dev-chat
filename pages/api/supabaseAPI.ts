@@ -94,7 +94,7 @@ export class SupabaseConnection {
   public userAlreadyExists = async (username: string): Promise<boolean> => {
 
     // fetch the data from the supabase database
-    const { data, error } = await SupabaseConnenction.CLIENT
+    const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
       .select()
       .eq('Username', username);
@@ -203,7 +203,7 @@ export class SupabaseConnection {
       let hashedPassword = await this.hashPassword(password);
 
       // fetch the data from the supabase database
-      const { data, error } = await SupabaseConnenction.CLIENT
+      const { data, error } = await SupabaseConnection.CLIENT
         .from('User')
         .insert([
           {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
@@ -227,7 +227,7 @@ export class SupabaseConnection {
  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
  */
   public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
-    const { data, error } = await SupabaseConnenction.CLIENT
+    const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
         {ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message},
