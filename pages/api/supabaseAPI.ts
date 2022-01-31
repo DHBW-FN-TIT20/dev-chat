@@ -1,6 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { IChatMessage } from '../../public/interfaces';
 import * as bcrypt from 'bcrypt'
+import { ExampleCommand } from '../../console_commands/example';
+import { Command } from '../../console_commands/baseclass';
 
 /**
  * This is the connection to the supabase database.
@@ -9,12 +11,56 @@ import * as bcrypt from 'bcrypt'
  */
 export class SupabaseConnection {
   private static CLIENT: SupabaseClient;
+  private commands: Command[] = [];
+
   constructor() {
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || ''; 
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
+    this.commands = [
+      // add all command classes here
+      new ExampleCommand,
+    ];
   }  
 
+
+  /**
+   * This function is used to check a new message for commands. 
+   * After the command is found, the command is executed.
+   * The Command.execute() method is called and it returns the answer of the command as an array of strings.
+   * Each string represents one line of the answer and is sent as a message to the user.
+   * @param {string} callString This string should be the first word of the message. It is the trigger for the command.
+   * @param {string[]} callArguments This array of strings are the argments of the command.
+   * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
+   */
+  private async executeCommand(callString: string, callArguments:string[]): Promise<boolean> {
+    this.commands.forEach(async command => {
+      if (command.callString == callString) {
+
+        // a command was found -> execute it
+        const answerLines: string[] = await command.execute(callArguments);
+
+        // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
+        if (answerLines.length === 0 || answerLines === undefined) {
+
+          // no answer -> command was not executed successfully
+          return false;
+        } else {
+
+          // create a message for each line of the answer
+          answerLines.forEach(line => {
+            // this.newMessage(line, target: current user, ...); NOTE: need to be implemented!!
+          });
+
+          return true; // answer -> command was executed successfully
+        }
+      }
+    });
+
+    return false; // command was not found
+  }
+
+  
   /**
    * Function to hash a password
    * @param {string} password password to hash
