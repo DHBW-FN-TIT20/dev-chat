@@ -4,6 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
+import { getThreeWords } from '../shared/threeword_generator'
 
 export interface MainState {
 }
