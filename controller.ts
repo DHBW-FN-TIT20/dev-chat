@@ -151,6 +151,21 @@ export class DevChatController {
   }
 
 
+    public async userRegisters(username: string, password: string): Promise<boolean> {
+        console.log("DevChatController.userRegisters()");
+
+        let response = await fetch('./api/users/register_user', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            username: username,
+            password: password
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
   /**
    * 
    * @param targetID the id of the user who is logged in
@@ -206,13 +221,6 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
-    public async userRegisters(username: string, password: string): Promise<boolean> {
-        console.log("DevChatController.userRegisters()");
-        var registerWasSuccessful: boolean = false;
-
-        return registerWasSuccessful;
-    }
-
     /**
      * This is a function that removes a user from the database
      * @param {string} username the username of the user to be removed
@@ -233,6 +241,23 @@ export class DevChatController {
         let data = await response.json();
         return data.wasSuccessfull;
     }
+
+    public userAlreadyExists = async (username: string): Promise<boolean> => {
+        let response = await fetch('./api/users/user_already_exists', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            username: username,
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
+    }
+}
+
+
 
     /**
      * This is a function that adds a message to the database
