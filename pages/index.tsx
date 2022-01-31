@@ -80,6 +80,7 @@ export default class Main extends Component<MainProps, MainState> {
           <div className={styles.right}>
           <div className="image">
             <Image
+              priority
               src={"/logo.png"}
               alt="DEV-CHAT Logo"
               width={1000}
