@@ -9,10 +9,12 @@
     "doc": "jsdoc -c jsdoc.conf.json"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^1.29.4",
+    "@types/react-dom": "^17.0.11",
     "cookies-next": "^2.0.3",
     "next": "12.0.8",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

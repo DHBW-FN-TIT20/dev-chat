@@ -26,7 +26,7 @@ export default class Main extends Component<MainProps, MainState> {
    * is always called, if component did mount
    */
   async componentDidMount() {
-    console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+   // console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
   }
 
   /**
