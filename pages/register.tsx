@@ -94,6 +94,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
           </div>
           <div className="image">
             <Image
+              priority
               src={"/logo.png"}
               alt="DEV-CHAT Logo"
               width={1000}

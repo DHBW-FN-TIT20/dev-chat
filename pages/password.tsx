@@ -44,6 +44,7 @@ export default class Password extends Component<PasswordProps, PasswordState> {
           </div>
           <div className="image">
             <Image
+              priority
               src={"/logo.png"}
               alt="DEV-CHAT Logo"
               width={1000}

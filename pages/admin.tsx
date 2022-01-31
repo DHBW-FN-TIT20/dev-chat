@@ -157,6 +157,7 @@ export default class Admin extends Component<AdminProps, AdminState> {
           </div>
           <div className="image">
             <Image
+              priority
               src={"/logo.png"}
               alt="DEV-CHAT Logo"
               width={1000}

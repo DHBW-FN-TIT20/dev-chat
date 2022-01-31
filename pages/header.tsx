@@ -69,6 +69,7 @@ export default class Header extends Component<HeaderProps, HeaderState> {
                     <a href="/">
                       <div className={styles.logo}>
                         <Image
+                          priority
                           src={"/logo.png"}
                           alt="DEV-CHAT Logo"
                           width={70}

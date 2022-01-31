@@ -71,6 +71,7 @@ export default class Login extends Component<LoginProps, LoginState> {
           <div className={styles.right}>
             <div className="image">
               <Image
+                priority
                 src={"/logo.png"}
                 alt="DEV-CHAT Logo"
                 width={1000}

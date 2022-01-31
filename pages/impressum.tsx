@@ -58,6 +58,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
           </div>
           <div className="image">
             <Image
+              priority
               src={"/logo.png"}
               alt="DEV-CHAT Logo"
               width={1000}
