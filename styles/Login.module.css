@@ -1,0 +1,26 @@
+@media screen and (min-width: 1224px) {
+.left {
+    position: absolute;
+    left: 0;
+    top: 50pt;
+    width: 50%;
+    margin: 100pt;
+}
+
+.right {
+    position: relative;
+    right: 0;
+    top: 50pt;
+    width: 60%;
+    margin: auto;
+    
+}
+}
+@media screen and (max-width: 1224px) {
+    .container {
+        margin-top: 30pt;
+        width: auto;
+        text-align: center;
+        overflow: hidden;
+    }
+}
