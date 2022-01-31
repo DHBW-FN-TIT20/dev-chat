@@ -24,7 +24,22 @@ export default class Chat extends Component<ChatProps, ChatState> {
     console.log();
   }
 
+  ChatList() {  
+    console.log("DevChatController.chatMessages: ", DevChatController.chatMessages);
+    
+    return (
+      <ol>
+        {DevChatController.chatMessages.map(message => (
+          <li key={message.id}>{message.message} {message.user.name}</li>
+        ))}
+      </ol>
+    );
+  }
+
   render() {
+
+
+
     return (
       <div>
         <Head>
