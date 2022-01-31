@@ -59,12 +59,21 @@ export class DevChatController {
         return loginWasSuccessful;
     }
 
-
     public async userRegisters(username: string, password: string): Promise<boolean> {
         console.log("DevChatController.userRegisters()");
-        var registerWasSuccessful: boolean = false;
-        
-        return registerWasSuccessful;
+
+        let response = await fetch('./api/users/register_user', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            username: username,
+            password: password
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
     }
 
     /**
@@ -74,22 +83,35 @@ export class DevChatController {
      * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
      **/
     public verifyUser = async (username: string, password:string): Promise<boolean> => {
-    let response = await fetch('./api/users/verify_user', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-        username: username,
-        password: password
-        })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
+        let response = await fetch('./api/users/verify_user', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            username: username,
+            password: password
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
     }
 
-
+    public userAlreadyExists = async (username: string): Promise<boolean> => {
+        let response = await fetch('./api/users/user_already_exists', {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+            username: username,
+            })
+        });
+        let data = await response.json();
+        return data.wasSuccessfull;
+    }
 }
+
 
 
 // export the controller
