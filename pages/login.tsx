@@ -17,6 +17,9 @@ export interface LoginProps {
  * @component
  */
 export default class Login extends Component<LoginProps, LoginState> {
+  username = '';
+  password = '';
+  loggedInAs = '';
   constructor(props: LoginProps) {
     super(props)
     this.state = {
@@ -33,34 +36,34 @@ export default class Login extends Component<LoginProps, LoginState> {
    */
   render() {
     return (
+      
       <div>
         <Head>
           <title>Login</title>
           <meta name="description" content="login page" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
-        <main>
+
+        <header>
           <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
-          <div className={styles.left}>
-            <div>
+        </header>
+        <main>          
+          <div className={styles.container}>
+            <div className={styles.left}>
               <h1>
-                Login
-              </h1>
-              <div>
-              <input type="text" placeholder="Username..."/>
-              </div>
-              <div>
-              <input type="password" placeholder="Password..."/>
-              </div>
-              <div className='error'> 
-                Incorrect username or password. 
-              </div>
+              Login
+            </h1>
+            <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
+            <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
+              {
+                !this.props.showError && 
+                <div className='error' id={styles.error1}> 
+                  Incorrect username or password. 
+                </div>
+              }
               <button onClick={() => {
-                DevChatController.userLogsIn("", "") // change to state later
-              }}> 
-                Login 
-              </button>
+                DevChatController.userLogsIn(this.username, this.password) // change to state later
+              }}> Login </button>
               <div className='create'>
                 Or <a href={"/register"}>create Account</a> instead.
               </div>

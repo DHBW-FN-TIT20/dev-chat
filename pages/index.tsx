@@ -5,6 +5,8 @@ import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
 import Header from './header'
+import { getThreeWords } from '../shared/threeword_generator'
+
 export interface MainState {
 }
 
@@ -24,7 +26,7 @@ export default class Main extends Component<MainProps, MainState> {
    * is always called, if component did mount
    */
   async componentDidMount() {
-    console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+   // console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
   }
 
   /**
@@ -42,8 +44,7 @@ export default class Main extends Component<MainProps, MainState> {
   
         <main>
         <Header pageInformation="MAIN MENU" title="Rooms" showName={true} showExit={true} />
-        <table className={styles.bodytable}>
-          <td className={styles.tdleft}>
+        <div className={styles.container}>
           <div className={styles.left}>
             <h1>
               Join Room
@@ -78,8 +79,7 @@ export default class Main extends Component<MainProps, MainState> {
               Delete Account
             </button>
           </div>
-          </td>
-          <td className={styles.tdright}>
+          
           <div className={styles.right}>
           <div className="image">
             <Image
@@ -91,8 +91,7 @@ export default class Main extends Component<MainProps, MainState> {
             />
           </div>
           </div>
-          </td>
-          </table>
+          </div>
         </main>
       </div>
     )

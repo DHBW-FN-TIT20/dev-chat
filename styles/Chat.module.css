@@ -18,16 +18,16 @@
   margin: 0;
 }
 
-.chattable {
-  margin-top: 40pt;
-  margin-left: 10pt;
+.messageTableDiv {
+  overflow: scroll;
+  min-height: 20vh;
+  max-height: 20vh;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
-.tr {
-  border: hidden;
+.messageTableDiv::-webkit-scrollbar {
+  display: none;
 }
-
-.td {
-  border: hidden;
-}
-

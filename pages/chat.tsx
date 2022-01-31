@@ -5,29 +5,32 @@ import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
 import Header from './header'
-export interface ChatState {
-  input: string
+import { IChatMessage } from '../public/interfaces'
 
+export interface ChatState {
+  input: string,
+  messages: IChatMessage[],
 }
 
-export interface ChatProps {}
+export interface ChatProps { }
 
 export default class Chat extends Component<ChatProps, ChatState> {
   constructor(props: ChatProps) {
     super(props)
     this.state = {
-      input: ''
+      input: '',
+      messages: [],
     }
-    
+
   }
 
   componentDidMount() {
     console.log();
+    setInterval(() => this.setState({messages: DevChatController.chatMessages}), 500);
   }
-// in chatdiv den chat einfügen, aktuell noch table drin, vllt mit react tabelle ersetzen
-// title vllt in raumname ändern
-//mit react erkennen welches device!
+
   render() {
+
     return (
       <div>
         <Head>
@@ -35,27 +38,29 @@ export default class Chat extends Component<ChatProps, ChatState> {
           <meta name="description" content="chat" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
+
         <main>
         <Header pageInformation="Welcome" title="Chat" showName={true} showExit={true}/>
           <div>
-            <div className={styles.chatdiv}> 
-              <table className={styles.chattable}>
+            <div className={styles.messageTableDiv}> 
+              <table>
                 <tbody>
-                  <tr className={styles.td}>
-                    <td className={styles.td}>Henry</td>
-                    <td className={styles.td}>at</td>
-                    <td className={styles.td}>15/01/2022 13:46</td>
-                    <td className={styles.td}>-&gt;</td>
-                    <td className={styles.td}>Hallo</td>
-                  </tr>
-                  <tr className={styles.td}>
-                    <td className={styles.td}>Phillipp</td>
-                    <td className={styles.td}>at</td>
-                    <td className={styles.td}>15/01/2022 13:48</td>
-                    <td className={styles.td}>-&gt;</td>
-                    <td className={styles.td}>Hallo, alles klar?</td>
-                  </tr>
+                  {this.state.messages.map(message => (
+                    <tr key={message.id}>
+                      <td>{message.user}</td>
+                      <td>at</td>
+                      <td>{new Date(message.date).toLocaleDateString('de-DE', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hourCycle: 'h24',
+                          })}</td>
+                      <td>-&gt;</td>
+                      <td>{message.message}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -76,5 +81,27 @@ export default class Chat extends Component<ChatProps, ChatState> {
         </main>
       </div>
     )
+  }
+
+  /**
+  * Handle of the Keypressed-Event from the Input
+  * Checks if Enter was pressed
+  * @param event Occurred Event
+  */
+  handleEnterKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      console.log("Entered new Message: " + this.state.chatLineInput);
+      DevChatController.enteredNewMessage(this.state.chatLineInput);
+      this.setState({ chatLineInput: "" });
+    }
+  }
+
+  /**
+   * Handle of the OnChange-Event from the Input
+   * updates the Value of the Input-Line
+   * @param event Occured Event
+   */
+  handleChatLineInput = (event: any) => {
+    this.setState({ chatLineInput: event.target.value });
   }
 }

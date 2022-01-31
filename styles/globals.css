@@ -6,7 +6,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 12pt;
   }
@@ -18,7 +18,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 12pt;
   }
@@ -30,7 +30,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 16pt;
   }
@@ -97,6 +97,7 @@ input::placeholder {
     border-color: #666666;
     padding: 10pt;
     margin: 2pt;
+    margin: 0 auto;
   }
 }
 
@@ -144,6 +145,7 @@ input::placeholder {
     border-color: #FF9933;
     padding: 10pt;
     margin: 2pt;
+    margin: 0 auto;
   }  
 }
 
@@ -164,7 +166,6 @@ input::placeholder {
 
 @media screen and (min-width: 1280px) {
   button {
-    width: 100%;
     font-size: 16pt;
     color: white;
     background-color: transparent;
