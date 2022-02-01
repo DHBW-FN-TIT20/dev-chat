@@ -287,6 +287,64 @@ export class SupabaseConnection {
     }
   };
 
+  
+  /** 
+   * API function to add a Chat Key to the database 
+   * @param {string} chatKey the Id of the new Chatroom
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
+   */
+   public addChatKey= async (chatKey: string): Promise<boolean> => {
+   
+    let chatKeyExists = await this.chatKeyAlreadyExists(chatKey)        
+
+    if(chatKeyExists) {
+      return false;
+    }
+
+    var expirationDate = new Date();
+    // currentDate + 1 Day = ExpirationDate
+    expirationDate.setDate(expirationDate.getDate() + 1); 
+    console.log("Chat Key expires: " + expirationDate);
+    
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .insert([
+        {ChatKey: chatKey, ExpirationDate: expirationDate},
+      ])
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+    // ChatKey was not added -> return false
+      return false;
+    } else {
+      // ChatKey was added -> return true
+      return true;
+    }
+  };
+
+     /** 
+   * API function to check if the chatKey already exists
+   * @param {string} chatKey the chatKey to check
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey already exists
+   */
+      public chatKeyAlreadyExists = async (chatKey: string): Promise<boolean> => {
+
+        // fetch the data from the supabase database
+        const { data, error } = await SupabaseConnection.CLIENT
+          .from('ChatKey')
+          .select()
+          .eq('ChatKey', chatKey);
+    
+        // check if data was received
+        if (data === null || error !== null || data.length === 0) {
+    
+          // no chatKey found -> chatKey does not exist -> return false
+          return false;
+        } else {
+          // chatKey exists -> return true
+          return true;
+        }
+      };
+
   /** 
    * API function to get all chat messages from the database 
    * @param {number} targetID the id of the user who is logged in

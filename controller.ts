@@ -71,6 +71,28 @@ export class DevChatController {
   }
 
   /**
+   * Function to stop fetching messages from the Database
+   */
+   public CreateChatRoom() {
+    this.addChatKey();
+  }
+
+  /**
+   * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
+  **/
+   private addChatKey = async (): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/save_chat_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },      
+    });
+    let data = await response.json();
+    console.log("addChatMessage(): "+ data.wasSuccessfull);
+    return data.wasSuccessfull;
+  }
+
+  /**
    * NOTE: Not needed in frontend?!
    * Checks if the message is a command
    * @param {string} message Input messag to check
