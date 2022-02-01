@@ -2,7 +2,7 @@ import { Command } from "./baseclass";
 
 /**
   * Example how to 
- */
+  */
 export class ExampleCommand extends Command {
     public constructor() {
       super();
@@ -10,7 +10,7 @@ export class ExampleCommand extends Command {
       this.helpText = "This is an example command!";
     }
     
-    public async execute(args: string[]): Promise<string[]> {
+    public async execute(args: string[], currentUsername: string, currentUserPassword: string, currentChatKey: string): Promise<string[]> {
       let answerLines: string[] = [];
       console.log("Executing command: ", this.callString, " with arguments: ", args);
       

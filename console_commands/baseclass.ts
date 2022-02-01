@@ -16,7 +16,7 @@ export class Command {
       this.helpText = "";   // this should be overwritten with the help text for the command
     }
     
-    public async execute(args: string[]): Promise<string[]> {
+    public async execute(args: string[], currentUsername: string, currentUserPassword: string, currentChatKey: string): Promise<string[]> {
       let answerLines: string[] = [];
       console.log("Executing command: ", this.callString, " with arguments: ",  args);
       return answerLines;
