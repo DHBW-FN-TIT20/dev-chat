@@ -37,6 +37,9 @@ export class DevChatController {
     }
   }
 
+  /**
+   * Function to start fetching messages from the Database
+   */
   public async startMessageFetch() {
     // Update chat messages every 2 sec. 
     this.chatMessageInterval = setInterval(async () => {
@@ -44,13 +47,16 @@ export class DevChatController {
     }, 2000);
   }
 
+  /**
+   * Function to stop fetching messages from the Database
+   */
   public stopMessageFetch() {
     clearInterval(this.chatMessageInterval);
   }
   
   /**
    * This method is used to process a new message which is entered in the Chat.
-   * @param message The input string of the user which should be processed.
+   * @param {string} message The input string of the user which should be processed.
    */
   public async enteredNewMessage(message: string) {
     console.log("DevChatController.enteredNewMessage()");
@@ -66,8 +72,9 @@ export class DevChatController {
 
   /**
    * NOTE: Not needed in frontend?!
-   * Checks the Message if its a Command
-   * @param message Input Messag zu Check
+   * Checks if the message is a command
+   * @param {string} message Input messag to check
+   * @returns {Promise<boolean>} True if it is a Command, false if not
    */
   private async checkMessageForCommands(message: string): Promise<boolean> {
     var isMessageCommand : boolean = false;
@@ -109,6 +116,12 @@ export class DevChatController {
     console.table(getCookies());
   }
   
+  /**
+   * This method registers a user.
+   * @param {string} username Username to register
+   * @param {string} password Password for user
+   * @returns {Promise<boolean>} True if registration was successfull, false if not
+   */
   public async userRegisters(username: string, password: string): Promise<boolean> {
     console.log("DevChatController.userRegisters()");
 
@@ -129,11 +142,11 @@ export class DevChatController {
 
   /**
    * This function is used to get the chat messages from the database.
-   * @param targetID the id of the user who is logged in
-   * @param targetPassword the password of the user who is logged in
-   * @param chatKey the three-word of the chat
-   * @param lastMessageID the id of the last message that was received
-   * @returns 
+   * @param {number} targetID the id of the user who is logged in
+   * @param {string} targetPassword the password of the user who is logged in
+   * @param {string} chatKey the three-word of the chat
+   * @param {number} lastMessageID the id of the last message that was received
+   * @returns {Promise<IChatMessage[]>} Fetched messages from database
    */
   public fetchChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number = 0): Promise<IChatMessage[]> => {
     console.log("DevChatController.fetchChatMessages()");
@@ -158,7 +171,12 @@ export class DevChatController {
     return chatMessages;
   }
 
-  // NOTE: Docstring is missing
+  /**
+   * This method logs a user in and creates the necessary cookies.
+   * @param {string} username Username to log in
+   * @param {string} password Password for user
+   * @returns {Promise<boolean>} True if login was successfull, false if not
+   */
   public async userLogsIn(username: string, password: string): Promise<boolean> {
     console.log("DevChatController.userLogsIn()");
     var loginWasSuccessful: boolean = await this.verifyUser(username, password); // Verify User
@@ -174,7 +192,9 @@ export class DevChatController {
     return loginWasSuccessful;
   }
   
-  // NOTE: Docstring is missing
+  /**
+   * This method logs the user out and removes the relating cookies.
+   */
   public async userLogsOut(){
     removeCookies('userKey');
     removeCookies('passwordKey');
@@ -182,7 +202,6 @@ export class DevChatController {
     var loginPage = '/../login';
     window.location.href = loginPage
   }
-
 
   /**
    * This is a function that removes a user from the database
@@ -227,6 +246,11 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+  /**
+   * This method checks the database for a user with the given username
+   * @param {string} username Username to check
+   * @returns {Promise<boolean>} True if user already exists, false if not
+   */
   public userAlreadyExists = async (username: string): Promise<boolean> => {
     let response = await fetch('./api/users/user_already_exists', {
       method: 'POST',

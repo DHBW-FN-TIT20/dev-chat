@@ -60,13 +60,12 @@ export class SupabaseConnection {
     return false; // command was not found
   }
 
-  
   /**
    * Function to hash a password
    * @param {string} password password to hash
    * @returns {Promise<string>} hashed password
    */
-   private hashPassword = async (password: string): Promise<string> => {
+  private hashPassword = async (password: string): Promise<string> => {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);    
     return hashedPassword
@@ -179,7 +178,6 @@ export class SupabaseConnection {
     }
   }
 
-
   /** 
    * API function to remove a user from the database 
    * @param {number} currentUserId the id of the user who is logged in
@@ -232,46 +230,47 @@ export class SupabaseConnection {
 
   };
 
-    /** 
+  /** 
    * API function to insert the username and the password 
    * @param {string} username the username to insert
    * @param {string} password the password to check
    * @param {number} [accessLevel=0] User AccessLevel.
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
    */
-     public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
-      let userAlreadyExists = await this.userAlreadyExists(username)        
+  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
+    let userAlreadyExists = await this.userAlreadyExists(username)        
 
-      if(userAlreadyExists) {
-        return false;
-      }
+    if(userAlreadyExists) {
+      return false;
+    }
 
-      let hashedPassword = await this.hashPassword(password);
+    let hashedPassword = await this.hashPassword(password);
 
-      // fetch the data from the supabase database
-      const { data, error } = await SupabaseConnection.CLIENT
-        .from('User')
-        .insert([
-          {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
-        ]);
-  
-      // check if data was received
-      if (data === null || error !== null || data.length === 0) {
-        // user was not created -> return false
-        return false;
-      } else {
-        // user was created -> return true
-        return true;
-      }
-      
-    };
+    // fetch the data from the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .insert([
+        {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
+      ]);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // user was not created -> return false
+      return false;
+    } else {
+      // user was created -> return true
+      return true;
+    }
+    
+  };
+
   /** 
- * API function to add a Chat Message to the database 
- * @param {string} message the message of the user
- * @param {string} userId the Id of the User
- * @param {string} chatKeyId the Id of the Chatroom
- * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
- */
+   * API function to add a Chat Message to the database 
+   * @param {string} message the message of the user
+   * @param {string} userId the Id of the User
+   * @param {string} chatKeyId the Id of the Chatroom
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
   public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
@@ -349,6 +348,11 @@ export class SupabaseConnection {
     }
   };
 
+  /**
+   * API funciton to get the id of a threeword chatKey
+   * @param {string} chatKey the threeword
+   * @returns {Promise<number>} id of threeword
+   */
   private getChatKeyID = async (chatKey: string): Promise<number> => {
 
     // fetch the data from the supabase database
@@ -362,5 +366,4 @@ export class SupabaseConnection {
     }
     return data[0].ChatKeyID;
   };
-
 }
