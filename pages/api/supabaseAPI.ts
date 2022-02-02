@@ -38,7 +38,7 @@ export class SupabaseConnection {
       if (command.callString == callString) {
 
         // a command was found -> execute it
-        const answerLines: string[] = await command.execute(callArguments, {id: 17, name: "johannes"}, 4);
+        const answerLines: string[] = await command.execute(callArguments, {id: 2, name: "johannes"}, 4); // TODO: change to real values
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
@@ -271,7 +271,7 @@ export class SupabaseConnection {
    * @param {string} chatKeyId the Id of the Chatroom
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
    */
-  public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
+  public addChatMessage = async (message: string, userId: number, chatKeyId: string): Promise<boolean> => {
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
