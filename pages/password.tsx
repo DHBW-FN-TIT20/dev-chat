@@ -28,7 +28,7 @@ export default class Password extends Component<PasswordProps, PasswordState> {
         </Head>
   
         <header>
-          <Header pageInformation="Welcome" title="Login" showName={true} showExit={true} />
+          <Header pageInformation="Change Password" title="Login" showName={true} showExit={true} />
         </header>
         <main>
           <div className={styles.container}>
