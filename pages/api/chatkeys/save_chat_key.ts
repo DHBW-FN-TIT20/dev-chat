@@ -15,7 +15,7 @@ const supabaseConnection = new SupabaseConnection();
  * @param res the response object (body: wasSuccessfull)
  */
  export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {  
- 
+    
     let chatKey = getThreeWords();;  
 
     let addedSucessfully = await supabaseConnection.addChatKey(chatKey);

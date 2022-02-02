@@ -71,13 +71,14 @@ export class DevChatController {
   }
 
   /**
-   * Function to stop fetching messages from the Database
+   * Function to create a Chat Room
    */
    public CreateChatRoom() {
     this.addChatKey();
   }
 
   /**
+   * Function to create a ChatKey
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
   **/
    private addChatKey = async (): Promise<boolean> => {
@@ -88,7 +89,7 @@ export class DevChatController {
       },      
     });
     let data = await response.json();
-    console.log("addChatMessage(): "+ data.wasSuccessfull);
+    console.log("addChatKey(): "+ data.wasSuccessfull);   
     return data.wasSuccessfull;
   }
 
