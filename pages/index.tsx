@@ -4,6 +4,7 @@ import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import splitString from '../shared/splitstring'
+import DevChatController from '../controller'
 
 export interface MainState {
 }
@@ -61,7 +62,8 @@ export default class Main extends Component<MainProps, MainState> {
               Create Room
             </h1>
             <button onClick={() => {
-              // DevChatController.userCreatsChatRoom() // method have to be implemented
+              DevChatController.CreateChatRoom();
+              //Danach weiterleiten zum Chat
             }}> 
               Create
             </button>

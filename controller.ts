@@ -54,6 +54,29 @@ export class DevChatController {
     clearInterval(this.chatMessageInterval);
   }
   
+   /**
+   * Function to create a Chat Room
+   */
+  public CreateChatRoom() {
+    this.addChatKey();
+  }
+
+  /**
+   * Function to create a ChatKey
+   * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
+  **/
+   private addChatKey = async (): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/save_chat_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },      
+    });
+    let data = await response.json();
+    console.log("addChatKey(): "+ data.wasSuccessfull);   
+    return data.wasSuccessfull;
+  }
+
   /**
    * This method updates the data of the chat.
    */
