@@ -20,8 +20,8 @@
 
 .messageTableDiv {
   overflow: scroll;
-  min-height: 20vh;
-  max-height: 20vh;
+  min-height: 80vh;
+  max-height: 80vh;
   scrollbar-width: none;
   -ms-overflow-style: none;
   display: flex;
