@@ -426,10 +426,68 @@ export class SupabaseConnection {
   };
 
 
-  public addNewSurvey = async (survesToAdd: ISurvey): Promise<ISurvey | null> => {
-    // NOTE: not implemented yet
+  public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
+    let addedSurvey: ISurvey | null = null;
+
+    // fetch the supabase database
+    const surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .insert([
+        {
+          Name: surveyToAdd.name,
+          Description: surveyToAdd.description,
+          ExpirationDate: surveyToAdd.expirationDate,
+          OwnerID: surveyToAdd.ownerID,
+        },
+    ])
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0 || surveyResponse.data[0].SurveyID === null || surveyResponse.data[0].SurveyID === undefined) {
+      return null;
+    }
+
+    addedSurvey = {
+      id: surveyResponse.data[0].SurveyID,
+      name: surveyResponse.data[0].Name,
+      description: surveyResponse.data[0].Description,
+      expirationDate: surveyResponse.data[0].ExpirationDate,
+      ownerID: surveyResponse.data[0].OwnerID,
+      options: [],
+    }
+
+    const surveyID = surveyResponse.data[0].SurveyID;
+
+    // the option must be in a array with the following structure:
+    // [{
+    //   OptionID: number, (0, 1, 2, 3, ...)
+    //   OptionName: string,
+    //   SurveyID: number
+    // }]
+
+    const surveyOptions = surveyToAdd.options.map((option, index) => {
+      return {
+        OptionID: index,
+        OptionName: option.name,
+        SurveyID: surveyID
+      }
+    });
+
+    // fetch the supabase database
+    const optionsResponse = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .insert(surveyOptions);
+
+    if (optionsResponse.data === null || optionsResponse.error !== null || optionsResponse.data.length === 0) {
+      return null;
+    }
+
+    addedSurvey.options = optionsResponse.data.map((option) => {
+      return {
+        id: option.OptionID,
+        name: option.OptionName,
+      };
+    });
 
     // fetch the data from the supabase database
-    return null;
+    return addedSurvey;
   }
 }
