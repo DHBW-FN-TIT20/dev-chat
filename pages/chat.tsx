@@ -88,7 +88,7 @@ export default class Chat extends Component<ChatProps, ChatState> {
   handleEnterKeyPress = (event: any) => {
     if (event.key === 'Enter') {
       console.log("Entered new Message: " + this.state.chatLineInput);
-      DevChatController.addChatMessage(this.state.chatLineInput);
+      DevChatController.addChatMessage(this.state.chatLineInput, "Johannes", "FatherMotherBread");
       this.setState({ chatLineInput: "" });
     }
   }

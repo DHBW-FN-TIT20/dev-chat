@@ -263,7 +263,7 @@ export class DevChatController {
    * @param {string} message the message of the user to added
    * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
   **/
-  public addChatMessage = async (message: string): Promise<boolean> => {
+  public addChatMessage = async (message: string, username: string, chatKey: string): Promise<boolean> => {
     // NOTE: add user token and chatKey here!!!
 
     let response = await fetch('./api/messages/save_chat_message', {
@@ -273,8 +273,8 @@ export class DevChatController {
       },
       body: JSON.stringify({
         message: message,
-        // usertoken 
-        // chatKey
+        username: username,
+        chatKey: chatKey,
       })
     });
     let data = await response.json();

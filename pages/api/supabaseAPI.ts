@@ -3,6 +3,7 @@ import { IChatMessage, ISurvey } from '../../public/interfaces';
 import * as bcrypt from 'bcrypt'
 import { SurveyCommand } from '../../console_commands/survey';
 import { Command } from '../../console_commands/baseclass';
+import splitString from '../../shared/splitstring';
 
 /**
  * This is the connection to the supabase database.
@@ -47,10 +48,16 @@ export class SupabaseConnection {
           return false;
         } else {
 
+          console.log(answerLines);
+          
+
           // create a message for each line of the answer
-          answerLines.forEach(line => {
-            // this.newMessage(line, target: current user, ...); NOTE: need to be implemented!!
+          answerLines.forEach(async line => {
+            await this.addChatMessage(line, "System", "FatherMotherBread"); // NOTE: need to be implemented!!
           });
+
+          console.log("Command executed successfully.");
+          
 
           return true; // answer -> command was executed successfully
         }
@@ -271,7 +278,23 @@ export class SupabaseConnection {
    * @param {string} chatKeyId the Id of the Chatroom
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
    */
-  public addChatMessage = async (message: string, userId: number, chatKeyId: string): Promise<boolean> => {
+  public addChatMessage = async (message: string, username: string, chatKey: string): Promise<boolean> => {
+    console.log("addChatMessage(): ", message, username, chatKey);
+    
+    let chatKeyId = await this.getChatKeyID(chatKey);
+    let userId = 5 // await this.getUserIDByUsername(username); //NOTE: implement this later (Henry)
+
+    // let firstWord = message.split(" ")[0].substring(1);  // get the first word of the message and remove the "/" symbol
+
+    // let commandResponse = await this.executeCommand(firstWord, splitString(message.substring(firstWord.length + 2)))
+    
+    // console.log(commandResponse);
+    
+
+    // if (commandResponse === true) {
+    //   return true;
+    // }
+
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
