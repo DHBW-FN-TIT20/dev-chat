@@ -3,6 +3,7 @@ import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
+import Header from './header'
 
 export interface RegisterState {
   userAlreadyExists: boolean,
@@ -46,9 +47,13 @@ export default class Register extends Component<RegisterProps, RegisterState> {
           <meta name="description" content="register" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-  
+
+        <header>
+          <Header pageInformation="Welcome" title="Register" showName={false} showExit={false} />
+        </header>
         <main>
-          <div>
+          <div className={styles.container}>
+          <div className={styles.left}>
             <h1>
               Create Account
             </h1>
@@ -71,7 +76,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
               }} 
               value={this.state.inputConfirmPassword}/>
             
-            <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+            <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
 
             <button onClick={async () => {
               let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
@@ -92,6 +97,7 @@ export default class Register extends Component<RegisterProps, RegisterState> {
               Or <a href={"/login"}>login</a> instead.
             </div>
           </div>
+          <div className={styles.right}>
           <div className="image">
             <Image
               priority
@@ -101,6 +107,8 @@ export default class Register extends Component<RegisterProps, RegisterState> {
               height={1000}
               layout="responsive"
             />
+          </div>
+          </div>
           </div>
         </main>
       </div>
