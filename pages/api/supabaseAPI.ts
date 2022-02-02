@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { IChatMessage, ISurvey } from '../../public/interfaces';
 import * as bcrypt from 'bcrypt'
-import { ExampleCommand } from '../../console_commands/survey';
+import { SurveyCommand } from '../../console_commands/survey';
 import { Command } from '../../console_commands/baseclass';
 
 /**
@@ -19,7 +19,7 @@ export class SupabaseConnection {
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
     this.commands = [
       // add all command classes here
-      new ExampleCommand,
+      new SurveyCommand,
     ];
   }  
 
@@ -38,7 +38,7 @@ export class SupabaseConnection {
       if (command.callString == callString) {
 
         // a command was found -> execute it
-        const answerLines: string[] = await command.execute(callArguments, "Johannes", "johannes", "HalloWeltMoin");
+        const answerLines: string[] = await command.execute(callArguments, {id: 17, name: "johannes"}, 4);
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
@@ -369,9 +369,9 @@ export class SupabaseConnection {
 
 
   public addNewSurvey = async (survesToAdd: ISurvey): Promise<ISurvey | null> => {
+    // NOTE: not implemented yet
 
-
-
+    // fetch the data from the supabase database
     return null;
   }
 }

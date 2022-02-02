@@ -55,36 +55,6 @@ export class DevChatController {
   }
   
   /**
-   * This method is used to process a new message which is entered in the Chat.
-   * @param {string} message The input string of the user which should be processed.
-   */
-  public async enteredNewMessage(message: string) {
-    console.log("DevChatController.enteredNewMessage()");
-    console.log("in Controller: " + message);
-    if(await this.checkMessageForCommands(message) == false) {   
-      // NOTE: getCookies function here?!
-      // Add the Message to the Database
-      // userId: 2 --> Wildcard
-      // chatKeyId: 2 --> Wildcard
-      this.addChatMessage(message,"2","2");
-    }
-  }
-
-  /**
-   * NOTE: Not needed in frontend?!
-   * Checks if the message is a command
-   * @param {string} message Input messag to check
-   * @returns {Promise<boolean>} True if it is a Command, false if not
-   */
-  private async checkMessageForCommands(message: string): Promise<boolean> {
-    var isMessageCommand : boolean = false;
-    console.log("DevChatController.checkMessageForCommands()");
-    console.log("is Command: " + isMessageCommand);
-    //Task in Sprint 2
-    return isMessageCommand;
-  }
-
-  /**
    * This method updates the data of the chat.
    */
   public async updateChatMessages() {
@@ -268,11 +238,11 @@ export class DevChatController {
   /**
    * This is a function that adds a message to the database
    * @param {string} message the message of the user to added
-   * @param {string} userId the userId of the user who sends the message
-   * @param {string} chatKeyId the id of the chatroom
    * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
   **/
-  public addChatMessage = async (message: string, userId: string, chatKeyId:string ): Promise<boolean> => {
+  public addChatMessage = async (message: string): Promise<boolean> => {
+    // NOTE: add user token and chatKey here!!!
+
     let response = await fetch('./api/messages/save_chat_message', {
       method: 'POST',
       headers: {
@@ -280,8 +250,8 @@ export class DevChatController {
       },
       body: JSON.stringify({
         message: message,
-        userId: userId,
-        chatKeyId: chatKeyId
+        // usertoken 
+        // chatKey
       })
     });
     let data = await response.json();

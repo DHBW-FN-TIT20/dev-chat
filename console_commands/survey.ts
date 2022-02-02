@@ -1,5 +1,5 @@
 import { SupabaseConnection } from "../pages/api/supabaseAPI";
-import { ISurvey } from "../public/interfaces";
+import { ISurvey, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
 
 /**
@@ -7,14 +7,14 @@ import { Command } from "./baseclass";
  * It is triggerd by the command "/survey"
  * Pattern: /survey <SurveyName> <"Description"> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]
  */
-export class ExampleCommand extends Command {
+export class SurveyCommand extends Command {
     public constructor() {
       super();
       this.callString = "survey";
       this.helpText = "run '/survey <SurveyName> <''Description''> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]' to start a new survey";
     }
     
-    public async execute(args: string[], currentUsername: string, currentUserPassword: string, currentChatKey: string): Promise<string[]> {
+    public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
       let answerLines: string[] = [];
       
       // check if the arguments are valid 
@@ -40,16 +40,14 @@ export class ExampleCommand extends Command {
       }
 
       // ----------------------------------------------------------------
-
       const supabaseConnection = new SupabaseConnection();
-
 
       let surveyToAdd: ISurvey = {
         name: args[0],
         description: args[1],
         expirationDate: expirationDate,
         options: args.slice(3).map(option => { return { name: option } }),
-        ownerID: await supabaseConnection.getUserIDByUsername(currentUsername),
+        ownerID: currentUser.id,
       };
 
       // add the surves to the database

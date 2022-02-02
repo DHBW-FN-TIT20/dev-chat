@@ -3,6 +3,7 @@ import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import Header from './header'
+import splitString from '../shared/splitstring'
 
 export interface MainState {
 }
@@ -24,6 +25,7 @@ export default class Main extends Component<MainProps, MainState> {
    */
   async componentDidMount() {
    // console.log("this.verifyUser() in controller: ", await DevChatController.verifyUser("Johannes", "johannes"));;
+    // read the console input 
   }
 
   /**
