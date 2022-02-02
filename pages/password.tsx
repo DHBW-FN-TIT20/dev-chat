@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
-
+import Header from './header'
 export interface PasswordState {
 }
 
@@ -27,21 +27,26 @@ export default class Password extends Component<PasswordProps, PasswordState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
   
+        <header>
+          <Header pageInformation="Welcome" title="Login" showName={true} showExit={true} />
+        </header>
         <main>
-          <div>
+          <div className={styles.container}>
+          <div className={styles.left}>
             <h1>
               Change Password
             </h1>
             <input type="password" placeholder="Old password..."/>
             <input type="password" placeholder="New password..."/>
             <input type="password" placeholder="Confirm new password..."/>
-            <div> 
+            <div className='error'> 
               Incorrect username or password. 
             </div>
             <button> 
               Log In 
             </button>
           </div>
+          <div className={styles.right}>
           <div className="image">
             <Image
               priority
@@ -51,6 +56,8 @@ export default class Password extends Component<PasswordProps, PasswordState> {
               height={1000}
               layout="responsive"
             />
+          </div>
+          </div>
           </div>
         </main>
       </div>
