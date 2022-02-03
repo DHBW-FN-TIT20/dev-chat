@@ -1,6 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import * as bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { IChatMessage } from '../../public/interfaces';
-import * as bcrypt from 'bcrypt'
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 
@@ -11,12 +12,14 @@ import { Command } from '../../console_commands/baseclass';
  */
 export class SupabaseConnection {
   private static CLIENT: SupabaseClient;
+  private static KEY: string;
   private commands: Command[] = [];
 
   constructor() {
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || ''; 
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
+    SupabaseConnection.KEY = "Krasser Schlüssel";
     this.commands = [
       // add all command classes here
       new ExampleCommand,
@@ -237,7 +240,7 @@ export class SupabaseConnection {
    * @param {number} [accessLevel=0] User AccessLevel.
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
    */
-  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
+  public registerUserAlt = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
     let userAlreadyExists = await this.userAlreadyExists(username)        
 
     if(userAlreadyExists) {
@@ -326,24 +329,24 @@ export class SupabaseConnection {
    * @param {string} chatKey the chatKey to check
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey already exists
    */
-      public chatKeyAlreadyExists = async (chatKey: string): Promise<boolean> => {
+  public chatKeyAlreadyExists = async (chatKey: string): Promise<boolean> => {
 
-        // fetch the data from the supabase database
-        const { data, error } = await SupabaseConnection.CLIENT
-          .from('ChatKey')
-          .select()
-          .eq('ChatKey', chatKey);
-    
-        // check if data was received
-        if (data === null || error !== null || data.length === 0) {
-    
-          // no chatKey found -> chatKey does not exist -> return false
-          return false;
-        } else {
-          // chatKey exists -> return true
-          return true;
-        }
-      };
+    // fetch the data from the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .select()
+      .eq('ChatKey', chatKey);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // no chatKey found -> chatKey does not exist -> return false
+      return false;
+    } else {
+      // chatKey exists -> return true
+      return true;
+    }
+  };
 
   /** 
    * API function to get all chat messages from the database 
@@ -424,4 +427,108 @@ export class SupabaseConnection {
     }
     return data[0].ChatKeyID;
   };
+
+  //# SECTION USER TOKEN
+
+  public isUsernameValid = (username: string): boolean => {
+    //TODO: Lukas implement task 50
+    return true;
+  }
+
+  public isPasswordValid = (password: string): boolean => {
+    // TODO: Lukas implement task 50
+    return true;
+  }
+
+  /**
+   * This method validates a given token with the current key.
+   * @param {string} token Token to validate
+   * @returns {boolean} True if the token is valid, false if not
+   */
+  public isTokenValid = (token: string): boolean => {
+    try {
+      jwt.verify(token, SupabaseConnection.KEY);
+      return true;
+    } catch (error) {
+      // console.log(error);
+      return false;
+    }
+  }
+
+  /**
+   * This method checks whether a given token is valid and contains an existing user
+   * @param {string} token Token with user credentials
+   * @returns {boolean} True if token contains a valid user, false if not
+   */
+  public isUserTokenValid = async (token: string): Promise<boolean> => {
+    if (this.isTokenValid(token)) {
+      if (await this.userAlreadyExists(this.getUsernameFromToken(token))) {
+        console.log("user exists")
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * This method extracts the username from a token
+   * @param {string} token Token to extract username from
+   * @returns {string} Username if token contains username, empty string if not
+   */
+  public getUsernameFromToken = (token: string): string => {
+    try {
+      let data = jwt.decode(token);
+      if (typeof data === "object" && data !== null) {
+        return data.username
+      }
+    } catch (error) {
+      
+    }
+    return "";
+  }
+
+  /**
+   * This method logs in a user if the given credentials are valid.
+   * @param {string} username Username to log in
+   * @param {string} password Password for the given username
+   * @returns {string} Signed token with username if login was successfull, empty string if not
+   */
+  public loginUser = async (username: string, password: string): Promise<string> => {
+    if (await this.isUserValid({name: username, password: password})) {
+      let token = jwt.sign({
+        username: username,
+      }, SupabaseConnection.KEY, {expiresIn: '1 day'});
+      return token;
+    }
+    return "";
+  }
+
+  /**
+   * API function to register a user
+   * @param user user to register with name and password
+   * @returns {Promise<boolean>} true if registration was successfull, false if not
+   */
+   public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
+
+    let userExists = await this.userAlreadyExists(username);
+
+    if (!this.isUsernameValid(username) || !this.isPasswordValid(password) || userExists) {
+      return false;
+    }
+
+    let hashedPassword = await this.hashPassword(password);
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .insert([
+        { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
+      ]);
+
+    if (data === null || error !== null || data.length === 0) {
+      return false;
+    }
+    return true;
+  }
+
+  //# SECTION USER TOKEN END
 }

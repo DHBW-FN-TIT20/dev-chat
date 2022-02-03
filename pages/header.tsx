@@ -1,3 +1,4 @@
+import withRouter, { WithRouterProps } from 'next/dist/client/with-router'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Header.module.css'
@@ -6,14 +7,14 @@ import React, { Component } from 'react'
 export interface HeaderState {
 }
 
-export interface HeaderProps {
+export interface HeaderProps extends WithRouterProps {
   pageInformation: string,
   showName: boolean,
   title: string,
   showExit: boolean,
 }
 
-export default class Header extends Component<HeaderProps, HeaderState> {
+class Header extends Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
     super(props)
     this.state = {
@@ -23,7 +24,16 @@ export default class Header extends Component<HeaderProps, HeaderState> {
 
   componentDidMount() {}
 // noch ne variable für den header name
+  
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
+    /**
+     * Initialize Router to navigate to other pages
+     */
+    const { router } = this.props
 
     let showName = <></>
 
@@ -39,16 +49,15 @@ export default class Header extends Component<HeaderProps, HeaderState> {
 
     if (this.props.showExit) {
       showExit = <td className={styles.exittd}>
-                  <a href="">
-                    <div className={styles.exit}>
-                      <Image
-                        src={"/exit.png"}
-                        alt="DEV-CHAT Exit"
-                        width={50}
-                        height={50}
-                      />
-                    </div>  
-                  </a>
+                  <div className={styles.exit}>
+                    <Image
+                      src={"/exit.png"}
+                      alt="DEV-CHAT Exit"
+                      width={50}
+                      height={50}
+                      onClick={() => router.push("/")}
+                    />
+                  </div>
                 </td>
     }
 
@@ -66,17 +75,16 @@ export default class Header extends Component<HeaderProps, HeaderState> {
               <tbody>
                 <tr>
                   <td className={styles.logotd}>
-                    <a href="/">
-                      <div className={styles.logo}>
-                        <Image
-                          priority
-                          src={"/logo.png"}
-                          alt="DEV-CHAT Logo"
-                          width={70}
-                          height={70}
-                        />
-                      </div>
-                    </a>
+                    <div className={styles.logo}>
+                      <Image
+                        priority
+                        src={"/logo.png"}
+                        alt="DEV-CHAT Logo"
+                        width={70}
+                        height={70}
+                        onClick={() => router.push("/")}
+                      />
+                    </div>
                   </td>
                   <td className={styles.nametd}>
                     <div className={styles.name}>
@@ -89,11 +97,11 @@ export default class Header extends Component<HeaderProps, HeaderState> {
                   </td>
                   { showName }
                   <td className={styles.imptd}>
-                    <a href="">
-                      <div className={styles.impressum}>
-                        §
-                      </div>  
-                    </a>
+                    <div 
+                      className={styles.impressum}
+                      onClick={() => router.push("/impressum")} >
+                      §
+                    </div>  
                   </td>
                   { showExit }
                 </tr>
@@ -105,3 +113,5 @@ export default class Header extends Component<HeaderProps, HeaderState> {
     )
   }
 }
+
+export default withRouter(Header)

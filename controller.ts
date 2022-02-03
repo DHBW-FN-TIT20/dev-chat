@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies} from 'cookies-next';
 import { IChatMessage } from './public/interfaces';
 
@@ -72,9 +73,12 @@ export class DevChatController {
 
   /**
    * Function to create a Chat Room
+   * @returns {Promise<boolean>} true if the chat key was created, false if not
    */
-   public CreateChatRoom() {
-    this.addChatKey();
+  public CreateChatRoom = async (): Promise<boolean> => {
+    // NOTE: This function needs to add a cookie with the chat key.
+    // NOTE: This function might not be needed because addChatKey could do all of it. (check if needed)
+    return await this.addChatKey()
   }
 
   /**
@@ -311,6 +315,99 @@ export class DevChatController {
     console.log("addChatMessage("+message+"): "+ data.wasSuccessfull);
     return data.wasSuccessfull;
   }
+
+  //# SECTION USER FUNCTIONS
+
+  /**
+   * This method extracts the usernem from the token and returns it.
+   * @param {string | null} token Token with user information
+   * @returns {string} Username if token contains username, else empty string
+   */
+  public getUserFromToken = (token: string | null): string => {
+    if (token !== null) {
+      let content = jwt.decode(token)
+      if (typeof content === "object" && content !== null) {
+        return content.username
+      }
+    }
+    // error case
+    return ""
+  }
+
+  /**
+   * This method checks whether the given token has a valid signature and user
+   * @param {string | null} token token to be verified
+   * @returns {Promise<boolean>} true if signature is valid and user exists, false if not
+   */
+  public verifyUserByToken = async (token: string): Promise<boolean> => {
+    if (token !== null) {
+      let response = await fetch('./api/users/verify_token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          token: token,
+        })
+      });
+      let data = await response.json();
+      return data.isVerified;
+    }
+    return false;
+  }
+
+  /**
+   * This method logs a user in if there is a match with the database. Therfore a token is created which is stored in the browsers local storage.
+   * @param {string} username Username to log in
+   * @param {string} password Password for user
+   * @returns {Promise<boolean>} True if login was successfull, false if not
+   */
+  public loginUser = async (username: string, password: string): Promise<boolean> => {
+    let response = await fetch('./api/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      })
+    });
+    let data = await response.json();
+    if (data.userToken === "") {
+      localStorage.removeItem("pwp.auth.token")
+      return false;
+    }
+    localStorage.setItem("pwp.auth.token", data.userToken)
+    return true;
+  }
+
+  /**
+   * This method registers a user to the database
+   * @param {string} username the username of the user to be created
+   * @param {string} password the password of the user to be created
+   * @returns {Promise<boolean>} true if registration was successfull, false if not
+   */
+  public registerUser = async (username: string, password: string): Promise<boolean> => {
+    let response = await fetch('./api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: username,
+        password: password,
+      })
+    });
+    let data = await response.json();
+    if (data.wasSuccessfull) {
+      let controller = new DevChatController;
+      await controller.loginUser(username, password);
+    }
+    return data.wasSuccessfull;
+  }
+
+  //# SECTION USER END
 
 }
 // export the controller
