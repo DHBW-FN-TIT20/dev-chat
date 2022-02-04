@@ -288,6 +288,25 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+    /**
+   * This method checks the database for a ChatKey with the given ChatKeyName
+   * @param {string} ChatKey ChatKey to check
+   * @returns {Promise<boolean>} True if ChatKey exists, false if not
+   */
+     public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
+      let response = await fetch('./api/chatkeys/does_chat_key_exists', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          chatKey: chatKey,
+        })
+      });
+      let data = await response.json();
+      return data.wasSuccessfull;
+    }
+
   /**
    * This is a function that adds a message to the database
    * @param {string} message the message of the user to added
