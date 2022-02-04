@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
-
+import Header from './header'
 export interface AdminState {
 }
 
@@ -26,8 +26,13 @@ export default class Admin extends Component<AdminProps, AdminState> {
           <link rel='icon' href='/favicon.ico' />
         </Head>
   
+        <header>
+          <Header pageInformation={"chatKey"} showName={true} title={"Chat"} showExit={true} />
+        </header>
+
         <main>
-          <div>
+          <div className={styles.container}>
+          <div className={styles.left}>
             <h1>
               User Settings
             </h1>
@@ -150,19 +155,87 @@ export default class Admin extends Component<AdminProps, AdminState> {
                     <td><a href="">Set Done</a></td>
                     <td><a href="">View</a></td>
                   </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  <tr>
+                    <td>henry</td>
+                    <td>25/01/2022 16:59:59</td>
+                    <td>To Do</td>
+                    <td><a href="">Set Done</a></td>
+                    <td><a href="">View</a></td>
+                  </tr>
+                  
                 </tbody>
               </table>
             </div>
           </div>
-          <div className="image">
-            <Image
-              priority
-              src={"/logo.png"}
-              alt="DEV-CHAT Logo"
-              width={1000}
-              height={1000}
-              layout="responsive"
-            />
+
+          <div className={styles.right}>
+            <div className="image">
+              <Image
+                priority
+                src={"/logo.png"}
+                alt="DEV-CHAT Logo"
+                width={1000}
+                height={1000}
+                layout="responsive"
+              />
+            </div>
+          </div>
           </div>
         </main>
       </div>

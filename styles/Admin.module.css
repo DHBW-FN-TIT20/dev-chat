@@ -1,0 +1,96 @@
+@media screen and (max-width: 900px) {
+    
+    .container {
+        margin-top: 20pt;
+        overflow-x: hidden;
+    }
+}
+@media screen and (min-width: 900px) {
+    .left {
+        position: absolute;
+        left: 0;
+        height: 85%;
+        top: 30pt;
+        margin-top: 50pt;
+        width: 45%;
+        margin-bottom: 100pt;
+        overflow-y: auto;
+        
+    }
+    
+    .right {
+        position: absolute;
+        left: 50%;
+        top: 50pt;
+        height: 100%;
+        width: 50%;
+        
+    }
+    .container {
+        height: 100%;
+    }
+    .left::-webkit-scrollbar {
+        width: 10px;
+        height: 12px;
+        }
+        
+        .left::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 10px black;
+        border-radius: 10px;
+        }
+        
+        .left::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: black; 
+        box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+        }
+        
+        .left::-webkit-scrollbar-thumb:hover {
+        background: black;
+        }
+    
+}
+@media screen and (min-width: 1280px) {
+.left {
+    position: absolute;
+    left: 0;
+    height: 85%;
+    top: 30pt;
+    margin-top: 50pt;
+    width: 45%;
+    margin-bottom: 100pt;
+    overflow-y: auto;
+}
+
+.right {
+    position: absolute;
+    left: 50%;
+    top: 50pt;
+    height: 100%;
+    width: 50%;
+    
+}
+.container {
+    height: 100%;
+}
+.left::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+    }
+    
+    .left::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 10px black;
+    border-radius: 10px;
+    }
+    
+    .left::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: black; 
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    }
+    
+    .left::-webkit-scrollbar-thumb:hover {
+    background: black;
+    }
+
+}
