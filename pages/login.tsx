@@ -87,8 +87,9 @@ class Login extends Component<LoginProps, LoginState> {
           </Head>
 
           <header>
-            <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} />
+            <Header pageInformation="Welcome" title="Login" showName={false} showExit={false} showLogout={false} />
           </header>
+
           <main>          
             <div className={styles.container}>
               <div className={styles.left}>

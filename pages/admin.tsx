@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
+import Header from './header'
 import DevChatController from '../controller'
 
 export interface AdminState {
@@ -72,6 +73,10 @@ class Admin extends Component<AdminProps, AdminState> {
             <meta name='description' content='admin settings' />
             <link rel='icon' href='/favicon.ico' />
           </Head>
+
+          <header>
+            <Header pageInformation={"Admin"} showName={true} title={"Admin settings"} showExit={true} showLogout={false} />
+          </header>
     
           <main>
             <div>

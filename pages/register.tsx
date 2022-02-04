@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
+import Header from './header'
 import DevChatController from '../controller'
 
 export interface RegisterState {
@@ -90,6 +91,10 @@ class Register extends Component<RegisterProps, RegisterState> {
             <meta name="description" content="register" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
+
+          <header>
+            <Header pageInformation={"Register"} showName={false} title={"Register"} showExit={false} showLogout={false} />
+          </header>
     
           <main>
             <div>

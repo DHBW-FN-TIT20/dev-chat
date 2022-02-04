@@ -407,6 +407,15 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+  /**
+   * This mehtod loggs out the current user.
+   * @returns {boolean} True if logout was successfull, false if not
+   */
+   public logoutUser = (): boolean => {
+    localStorage.removeItem("pwp.auth.token")
+    return true;
+  }
+
   //# SECTION USER END
 
 }

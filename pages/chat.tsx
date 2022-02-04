@@ -108,7 +108,7 @@ class Chat extends Component<ChatProps, ChatState> {
           </Head>
 
           <header>
-            <Header pageInformation={"chatKey"} showName={true} title={"Chat"} showExit={true} />
+            <Header pageInformation={"chatKey"} showName={true} title={"Chat"} showExit={true} showLogout={false} />
           </header>
 
           <main>

@@ -81,9 +81,12 @@ class Main extends Component<MainProps, MainState> {
             <meta name="description" content="main page" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
+
+          <header>
+            <Header pageInformation="MAIN MENU" title="Rooms" showName={true} showExit={false} showLogout={true} />
+          </header>
     
           <main>
-          <Header pageInformation="MAIN MENU" title="Rooms" showName={true} showExit={true} />
           <div className={styles.container}>
             <div className={styles.left}>
               <h1>

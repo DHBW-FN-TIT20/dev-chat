@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
+import Header from './header'
 import DevChatController from '../controller'
 
 export interface PasswordState {
@@ -73,6 +74,10 @@ class Password extends Component<PasswordProps, PasswordState> {
             <meta name="description" content="change password" />
             <link rel="icon" href="/favicon.ico" />
           </Head>
+
+          <header>
+            <Header pageInformation={"Change password"} showName={true} title={"Change password"} showExit={true} showLogout={false} />
+          </header>
     
           <main>
             <div>

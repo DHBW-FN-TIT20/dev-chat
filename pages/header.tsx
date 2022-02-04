@@ -3,6 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Header.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface HeaderState {
 }
@@ -12,6 +13,7 @@ export interface HeaderProps extends WithRouterProps {
   showName: boolean,
   title: string,
   showExit: boolean,
+  showLogout: boolean,
 }
 
 class Header extends Component<HeaderProps, HeaderState> {
@@ -61,6 +63,25 @@ class Header extends Component<HeaderProps, HeaderState> {
                 </td>
     }
 
+    let showLogout = <></>
+
+    if (this.props.showLogout) {
+      showLogout = <td className={styles.exittd}>
+                    <div className={styles.exit}>
+                      <Image
+                        src={"/exit.png"}
+                        alt="DEV-CHAT Exit"
+                        width={50}
+                        height={50}
+                        onClick={() => {
+                          DevChatController.logoutUser();
+                          router.reload();
+                        }}
+                      />
+                    </div>
+                  </td>
+    }
+
     return (
       <div>
         <Head>
@@ -104,6 +125,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                     </div>  
                   </td>
                   { showExit }
+                  { showLogout }
                 </tr>
               </tbody>
             </table>
