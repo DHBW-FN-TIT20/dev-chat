@@ -8,6 +8,9 @@ import DevChatController from '../controller'
 
 export interface MainState {
   isLoggedIn: boolean,
+  inputChatKey: string,
+  feedbackMessage: string,
+  doesChatKeyExists: boolean,
 }
 
 export interface MainProps extends WithRouterProps {}
@@ -20,6 +23,9 @@ class Main extends Component<MainProps, MainState> {
     super(props)
     this.state = {
       isLoggedIn: false,
+      inputChatKey: "",
+      feedbackMessage: "",
+      doesChatKeyExists: false
     }
   }
 
@@ -62,6 +68,17 @@ class Main extends Component<MainProps, MainState> {
       router.push("/login")
     }
   }
+
+  private updateFeedbackMessage(doesChatKeyExists: boolean) {
+    console.log("updateFeedbackMessage()");
+    let feedbackMessage: string = "";
+    
+    if(!doesChatKeyExists) {
+      feedbackMessage = "Chat-Key does not exists";
+    } 
+
+    this.setState({ feedbackMessage: feedbackMessage });
+  }
   
   /**
    * Generates the JSX Output for the Client
@@ -92,15 +109,27 @@ class Main extends Component<MainProps, MainState> {
               <h1>
                 Join Room
               </h1>
-              <input type="text" placeholder="Chat-Key..." className='input'/>
-              <div className='error'> 
-                Chat-Key does not exist.
-              </div>
-              <button onClick={() => {
-                // DevChatController.userJoinsRoom(Chat-Key) // method have to be implemented
-                if (true /* Add join room method + cookie creation here */) {
+              <input type="text" placeholder="Chat-Key..." className='input' 
+                onChange={(event) => { 
+                  this.setState({ inputChatKey: event.currentTarget.value})       
+                }} 
+                value={this.state.inputChatKey} />           
+              <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+
+              <button onClick={async() => {
+                let doesChatKeyExists = await DevChatController.doesChatKeyExists(this.state.inputChatKey)
+                this.setState({
+                  doesChatKeyExists: doesChatKeyExists
+                })
+                if(this.state.doesChatKeyExists)
+                {
+                  console.log("EXISTS")
                   router.push("/chat")
                 }
+                else {
+                  console.log("NOT EXISTS")
+                }
+                this.updateFeedbackMessage(this.state.doesChatKeyExists);        
               }}> 
                 Join
               </button>
