@@ -32,7 +32,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
         </Head>
 
         <header>
-          <Header pageInformation={"Impressum"} showName={false} title={"Impressum"} showExit={true} showLogout={false} />
+          <Header pageInformation={"Impressum"} showName={false} showExit={true} showLogout={false} />
         </header>
   
         <main>

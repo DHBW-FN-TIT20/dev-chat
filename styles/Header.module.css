@@ -195,7 +195,7 @@
     border: solid black 3px;
     width: 1%;
     white-space: nowrap;
-    display: none;
+    font-size: 20pt;
   }
   .imptd {
     width: 50pt;

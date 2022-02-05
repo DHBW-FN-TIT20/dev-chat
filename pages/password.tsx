@@ -41,7 +41,7 @@ class Password extends Component<PasswordProps, PasswordState> {
    * @param {any} event Event triggered by an EventListener
    */
   storageTokenListener = async (event: any) => {
-    if (event.key === "pwp.auth.token") {
+    if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
   }
@@ -50,8 +50,8 @@ class Password extends Component<PasswordProps, PasswordState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = localStorage.getItem("pwp.auth.token");
-    if (currentToken !== null && await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = DevChatController.getUserToken();
+    if (await DevChatController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -76,7 +76,7 @@ class Password extends Component<PasswordProps, PasswordState> {
           </Head>
 
           <header>
-            <Header pageInformation={"Change password"} showName={true} title={"Change password"} showExit={true} showLogout={false} />
+            <Header pageInformation={"Change password"} showName={true} showExit={true} showLogout={false} />
           </header>
     
           <main>

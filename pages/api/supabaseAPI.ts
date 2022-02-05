@@ -160,14 +160,14 @@ export class SupabaseConnection {
 
   /**
    * This helper function is used to get the userID of a user by username
-   * @param username the username of the user
-   * @returns the userID of the user
+   * @param {string} username the username of the user
+   * @returns {Promise<number>} the userID of the user
    */
   public getUserIDByUsername = async (username: string): Promise<number> => {
     // fetch the supabase database
     const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
-      .delete()
+      .select()
       .match({ Username: username });
 
     // check if data was received
@@ -182,99 +182,25 @@ export class SupabaseConnection {
   }
 
   /** 
-   * API function to remove a user from the database 
-   * @param {number} currentUserId the id of the user who is logged in
-   * @param {string} currentUserPassword the hashed password of the user who is logged in
-   * @param {string} usernameToDelete the username of the user to be removed
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was removed
-   */
-  public removeUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
-  
-    // check if the user and the password are correct
-    const isValid = await this.isUserValid({id: currentUserId, password: currentUserPassword});
-
-    if (!isValid) {
-      // user and password are not correct -> return false
-      return false;
-    }
-
-    // check if user is allowed to remove the user
-    let isAllowed = (currentUserId === 1 || currentUserId === 2);
-
-    if (!isAllowed) {
-      // user is not a super user so it needs to be checkt if the user wants to remove himself
-      let userID = await this.getUserIDByUsername(usernameToDelete);
-      if (userID === currentUserId) {
-        isAllowed = true;
-      }
-    }
-
-    if (!isAllowed) {
-      // user is not allowed to remove the user -> return false
-      return false;
-    }
-
-    // fetch the supabase database
-    const { data, error } = await SupabaseConnection.CLIENT
-      .from('User')
-      .delete()
-      .match({ Username: usernameToDelete });
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-
-      // user was not removed -> return false
-      return false;
-    } else {
-      // user was removed -> return true
-      return true;
-    }
-
-
-  };
-
-  /** 
-   * API function to insert the username and the password 
-   * @param {string} username the username to insert
-   * @param {string} password the password to check
-   * @param {number} [accessLevel=0] User AccessLevel.
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the user was created
-   */
-  public registerUserAlt = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {  
-    let userAlreadyExists = await this.userAlreadyExists(username)        
-
-    if(userAlreadyExists) {
-      return false;
-    }
-
-    let hashedPassword = await this.hashPassword(password);
-
-    // fetch the data from the supabase database
-    const { data, error } = await SupabaseConnection.CLIENT
-      .from('User')
-      .insert([
-        {"Username": username, "Password": hashedPassword, "AccessLevel": accessLevel}
-      ]);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // user was not created -> return false
-      return false;
-    } else {
-      // user was created -> return true
-      return true;
-    }
-    
-  };
-
-  /** 
    * API function to add a Chat Message to the database 
    * @param {string} message the message of the user
-   * @param {string} userId the Id of the User
-   * @param {string} chatKeyId the Id of the Chatroom
+   * @param {number} chatKeyId the chatKeyId of the Chatroom
+   * @param {string} userToken the token from the logged in user
+   * @param {number} userId the Id of the User
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
    */
-  public addChatMessage = async (message: string, userId: string, chatKeyId: string): Promise<boolean> => {
+  public addChatMessage = async (message: string, chatKeyId: number, userToken?: string, userId?: number): Promise<boolean> => {
+    if (userId === undefined && userToken !== undefined) {
+      if (await this.isUserTokenValid(userToken)) {
+        userId = await this.getUserIDFromToken(userToken);
+      } else {
+        return false;
+      }
+    } else if (userId !== undefined && userToken !== undefined) {
+      return false;
+    } else if (userId === undefined && userToken === undefined) {
+      return false;
+    }
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
@@ -290,7 +216,6 @@ export class SupabaseConnection {
     }
   };
 
-  
   /** 
    * API function to add a Chat Key to the database 
    * @param {string} chatKey the Id of the new Chatroom
@@ -350,16 +275,16 @@ export class SupabaseConnection {
 
   /** 
    * API function to get all chat messages from the database 
-   * @param {number} targetID the id of the user who is logged in
-   * @param {string} targetPassword the password of the user who is logged in
+   * @param {string} token the token of the logged in user
    * @param {string} chatKey the chat key of the chat that is currently open
+   * @param {number} lastMessageID the last message id point to start fetching new messages
    * @returns {Promise<IChatKeyMessage[]>}
    */
-  public getChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number): Promise<IChatMessage[]> => {
+  public getChatMessages = async (token: string, chatKey: string, lastMessageID: number): Promise<IChatMessage[]> => {
     let chatMessages: IChatMessage[] = [];
 
     // check if user is valid
-    let userIsValid: boolean = await this.isUserValid({id: targetID, password: targetPassword});
+    let userIsValid: boolean = await this.isUserTokenValid(token);
 
     if (!userIsValid) {
       return chatMessages;
@@ -371,6 +296,8 @@ export class SupabaseConnection {
     if (chatKeyID === null || chatKeyID === undefined) {
       return chatMessages;
     }
+
+    let targetID = await this.getUserIDFromToken(token);
 
     let filterString = "TargetUserID.eq." + String(targetID) + ",TargetUserID.eq.0";
 
@@ -414,7 +341,7 @@ export class SupabaseConnection {
    * @param {string} chatKey the threeword
    * @returns {Promise<number>} id of threeword
    */
-  private getChatKeyID = async (chatKey: string): Promise<number> => {
+  public getChatKeyID = async (chatKey: string): Promise<number> => {
 
     // fetch the data from the supabase database
     const { data, error } = await SupabaseConnection.CLIENT
@@ -430,11 +357,21 @@ export class SupabaseConnection {
 
   //# SECTION USER TOKEN
 
+  /**
+   * This mehtod checks a username for requirements
+   * @param {string} username username to check
+   * @returns {boolean} true if the username meets the requirements, false if not
+   */
   public isUsernameValid = (username: string): boolean => {
     //TODO: Lukas implement task 50
     return true;
   }
 
+  /**
+   * This method checks a password for requirements
+   * @param {string} password password to check
+   * @returns {boolean} true if the password meets the requirements, false if not
+   */
   public isPasswordValid = (password: string): boolean => {
     // TODO: Lukas implement task 50
     return true;
@@ -488,10 +425,20 @@ export class SupabaseConnection {
   }
 
   /**
+   * This method returns the userID of the user extracted from the token
+   * @param {string} token Token to extract userID from
+   * @returns {Promise<number>} UserID if token contains username, NaN if not
+   */
+  public getUserIDFromToken = async (token: string): Promise<number> => {
+    let username = this.getUsernameFromToken(token);
+    return await this.getUserIDByUsername(username);
+  }
+
+  /**
    * This method logs in a user if the given credentials are valid.
    * @param {string} username Username to log in
    * @param {string} password Password for the given username
-   * @returns {string} Signed token with username if login was successfull, empty string if not
+   * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
    */
   public loginUser = async (username: string, password: string): Promise<string> => {
     if (await this.isUserValid({name: username, password: password})) {
@@ -505,7 +452,9 @@ export class SupabaseConnection {
 
   /**
    * API function to register a user
-   * @param user user to register with name and password
+   * @param {string} user username to register
+   * @param {string} password password for the user
+   * @param {number} accessLevel access level for the user
    * @returns {Promise<boolean>} true if registration was successfull, false if not
    */
    public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
@@ -528,6 +477,48 @@ export class SupabaseConnection {
       return false;
     }
     return true;
+  }
+
+  /**
+   * This method removes a target user from the database
+   * @param {string} userToken user token to verificate delete process
+   * @param {string} usernameToDelete username of user to delete
+   * @returns {Promise<boolean>} true if user was deleted, false if not
+   */
+  public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
+    // check if the user and the password are correct
+    const isValid = await this.isUserTokenValid(userToken);
+
+    if (!isValid) {
+      // user and password are not correct -> return false
+      return false;
+    }
+
+    const currentUserId = await this.getUserIDFromToken(userToken);
+    const targetUserId = await this.getUserIDByUsername(usernameToDelete);
+
+    // check if user is allowed to remove the user (either admin user or target is the user himself)
+    let isAllowed = (currentUserId === 1 || currentUserId === 2 || currentUserId === targetUserId);
+
+    if (!isAllowed) {
+      // user is not allowed to remove the user -> return false
+      return false;
+    }
+
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .delete()
+      .match({ UserID: targetUserId });
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // user was not removed -> return false
+      return false;
+    } else {
+      // user was removed -> return true
+      return true;
+    }
   }
 
   //# SECTION USER TOKEN END

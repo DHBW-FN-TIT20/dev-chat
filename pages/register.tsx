@@ -55,7 +55,7 @@ class Register extends Component<RegisterProps, RegisterState> {
    * @param {any} event Event triggered by an EventListener
    */
   storageTokenListener = async (event: any) => {
-    if (event.key === "pwp.auth.token") {
+    if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
   }
@@ -64,8 +64,8 @@ class Register extends Component<RegisterProps, RegisterState> {
    * This method checks and verifys the current user-token. If valid, it routes to root, if not, the isNotLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = localStorage.getItem("pwp.auth.token");
-    if (currentToken !== null && await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = DevChatController.getUserToken();
+    if (await DevChatController.verifyUserByToken(currentToken)) {
       const { router } = this.props
       router.push("/")
     } else {
@@ -93,7 +93,7 @@ class Register extends Component<RegisterProps, RegisterState> {
           </Head>
 
           <header>
-            <Header pageInformation={"Register"} showName={false} title={"Register"} showExit={false} showLogout={false} />
+            <Header pageInformation={"Register"} showName={false} showExit={false} showLogout={false} />
           </header>
     
           <main>

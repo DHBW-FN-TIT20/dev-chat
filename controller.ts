@@ -16,26 +16,6 @@ export class DevChatController {
     this.data = {
       message: 'Hello, this is the controller of the DEV-CHAT-APP.'
     };
-
-    this.initialize(); // call the async method to initialize the controller
-  }
-
-  /**
-   * This method is used to initialize the controller.
-   * It is called by the constructor.
-   * It is async because it needs to wait for the cookies and the supabase data to be loaded.
-   */
-  public async initialize() {
-    console.log("DevChatController.initialize()");
-    var Cookies = checkCookies('userKey'); // here should the controller check for user cookies and if there are cookies, the user should be logged in.
-    if(Cookies) {
-      console.log("Cookies have been set, you are being logged in." + Cookies);
-      var userPass = await getCookie('userKey');
-      var userName = await getCookie('passwordKey');
-      console.log(String(userPass) + "  " + String(userName));
-      this.userLogsIn(String(userName),String(userPass));
-      // aktiven User setzen?
-    }
   }
 
   /**
@@ -67,7 +47,7 @@ export class DevChatController {
       // Add the Message to the Database
       // userId: 2 --> Wildcard
       // chatKeyId: 2 --> Wildcard
-      this.addChatMessage(message,"2","2");
+      this.addChatMessage(message, this.getUserFromToken(this.getUserToken()),"FatherMotherBread");
     }
   }
 
@@ -123,8 +103,10 @@ export class DevChatController {
       lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
     }
     
+    let userToken = this.getUserToken();
+
     // get the new messages
-    let newMessages: IChatMessage[] = await this.fetchChatMessages(5, "johannes", "FatherMotherBread", lastMessageId);
+    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , "FatherMotherBread", lastMessageId);
 
     // console.log("newMessages: ");
     // console.table(newMessages);
@@ -144,38 +126,13 @@ export class DevChatController {
   }
   
   /**
-   * This method registers a user.
-   * @param {string} username Username to register
-   * @param {string} password Password for user
-   * @returns {Promise<boolean>} True if registration was successfull, false if not
-   */
-  public async userRegisters(username: string, password: string): Promise<boolean> {
-    console.log("DevChatController.userRegisters()");
-
-    let response = await fetch('./api/users/register_user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    });
-
-    let data = await response.json();
-    return data.wasSuccessfull;
-  }
-
-  /**
    * This function is used to get the chat messages from the database.
-   * @param {number} targetID the id of the user who is logged in
-   * @param {string} targetPassword the password of the user who is logged in
+   * @param {string} token userToken from logged in user
    * @param {string} chatKey the three-word of the chat
    * @param {number} lastMessageID the id of the last message that was received
    * @returns {Promise<IChatMessage[]>} Fetched messages from database
    */
-  public fetchChatMessages = async (targetID: number, targetPassword: string, chatKey: string, lastMessageID: number = 0): Promise<IChatMessage[]> => {
+  public fetchChatMessages = async (token: string, chatKey: string, lastMessageID: number = 0): Promise<IChatMessage[]> => {
     console.log("DevChatController.fetchChatMessages()");
     let chatMessages: IChatMessage[] = [];
     
@@ -185,8 +142,7 @@ export class DevChatController {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        targetID: targetID,
-        targetPassword: targetPassword,
+        userToken: token,
         chatKey: chatKey,
         lastMessageID: lastMessageID
       })
@@ -196,81 +152,6 @@ export class DevChatController {
     chatMessages = data.chatMessages;
 
     return chatMessages;
-  }
-
-  /**
-   * This method logs a user in and creates the necessary cookies.
-   * @param {string} username Username to log in
-   * @param {string} password Password for user
-   * @returns {Promise<boolean>} True if login was successfull, false if not
-   */
-  public async userLogsIn(username: string, password: string): Promise<boolean> {
-    console.log("DevChatController.userLogsIn()");
-    var loginWasSuccessful: boolean = await this.verifyUser(username, password); // Verify User
-    if(loginWasSuccessful){
-      console.log("Login was successful. (Operation: userLogsIn)");
-      setCookies('userKey', username); //  set Cookie for login session, if user login was successful
-      setCookies('passwordKey', password);
-      console.log("Cookies have been set");
-    }
-    else {
-      console.log("Login was not successful. (Operation: userLogsIn)");
-    }
-    return loginWasSuccessful;
-  }
-  
-  /**
-   * This method logs the user out and removes the relating cookies.
-   */
-  public async userLogsOut(){
-    removeCookies('userKey');
-    removeCookies('passwordKey');
-    console.log("Cookies have been removed");
-    var loginPage = '/../login';
-    window.location.href = loginPage
-  }
-
-  /**
-   * This is a function that removes a user from the database
-   * @param {string} username the username of the user to be removed
-   * @param {string} password the password of the user to be removed
-   * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
-   **/
-  public deleteUser = async (currentUserId: number, currentUserPassword: string, usernameToDelete: string): Promise<boolean> => {
-    let response = await fetch('./api/delete_user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        currentUserId: currentUserId,
-        currentUserPassword: currentUserPassword,
-        usernameToDelete: usernameToDelete
-      })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
-  }
-
-  /**
-   * This is a function that veryfies a user
-   * @param {string} username the username of the user to be removed
-   * @param {string} password the password of the user to be removed
-   * @returns {Promise<boolean>} true if the user was successfully verified, false if the user was not found or the password was wrong
-   **/
-  public verifyUser = async (username: string, password: string): Promise<boolean> => {
-    let response = await fetch('./api/users/verify_user', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }, 
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
   }
 
   /**
@@ -295,11 +176,11 @@ export class DevChatController {
   /**
    * This is a function that adds a message to the database
    * @param {string} message the message of the user to added
-   * @param {string} userId the userId of the user who sends the message
-   * @param {string} chatKeyId the id of the chatroom
-   * @returns {Promise<boolean>} true if the user was removed, false if the user was not found or the password was wrong
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {string} chatKey the chat key of the chatroom
+   * @returns {Promise<boolean>} true if the message was send, false if not
   **/
-  public addChatMessage = async (message: string, userId: string, chatKeyId:string ): Promise<boolean> => {
+  public addChatMessage = async (message: string, userToken: string, chatKey:string ): Promise<boolean> => {
     let response = await fetch('./api/messages/save_chat_message', {
       method: 'POST',
       headers: {
@@ -307,8 +188,8 @@ export class DevChatController {
       },
       body: JSON.stringify({
         message: message,
-        userId: userId,
-        chatKeyId: chatKeyId
+        userToken: userToken,
+        chatKey: chatKey
       })
     });
     let data = await response.json();
@@ -319,16 +200,26 @@ export class DevChatController {
   //# SECTION USER FUNCTIONS
 
   /**
+   * This mehtod returns the current user token safed in local storage
+   * @returns {string} token of the currently logged in user
+   */
+  public getUserToken = (): string => {
+    let userToken = localStorage.getItem("DevChat.auth.token");
+    if (userToken === null) {
+      return ""
+    }
+    return userToken;
+  }
+
+  /**
    * This method extracts the usernem from the token and returns it.
-   * @param {string | null} token Token with user information
+   * @param {string} token Token with user information
    * @returns {string} Username if token contains username, else empty string
    */
-  public getUserFromToken = (token: string | null): string => {
-    if (token !== null) {
-      let content = jwt.decode(token)
-      if (typeof content === "object" && content !== null) {
-        return content.username
-      }
+  public getUserFromToken = (token: string): string => {
+    let content = jwt.decode(token)
+    if (typeof content === "object" && content !== null) {
+      return content.username
     }
     // error case
     return ""
@@ -336,24 +227,21 @@ export class DevChatController {
 
   /**
    * This method checks whether the given token has a valid signature and user
-   * @param {string | null} token token to be verified
+   * @param {string} token token to be verified
    * @returns {Promise<boolean>} true if signature is valid and user exists, false if not
    */
   public verifyUserByToken = async (token: string): Promise<boolean> => {
-    if (token !== null) {
-      let response = await fetch('./api/users/verify_token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          token: token,
-        })
-      });
-      let data = await response.json();
-      return data.isVerified;
-    }
-    return false;
+    let response = await fetch('./api/users/verify_token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: token,
+      })
+    });
+    let data = await response.json();
+    return data.isVerified;
   }
 
   /**
@@ -375,10 +263,10 @@ export class DevChatController {
     });
     let data = await response.json();
     if (data.userToken === "") {
-      localStorage.removeItem("pwp.auth.token")
+      localStorage.removeItem("DevChat.auth.token")
       return false;
     }
-    localStorage.setItem("pwp.auth.token", data.userToken)
+    localStorage.setItem("DevChat.auth.token", data.userToken)
     return true;
   }
 
@@ -412,8 +300,29 @@ export class DevChatController {
    * @returns {boolean} True if logout was successfull, false if not
    */
    public logoutUser = (): boolean => {
-    localStorage.removeItem("pwp.auth.token")
+    localStorage.removeItem("DevChat.auth.token")
     return true;
+  }
+
+  /**
+   * This method deletes a target user.
+   * @param {string} userToken token for user verification
+   * @param {string} targetUsername username of user that should be deleted
+   * @returns {Promise<boolean>} true if target user was deleted, false if not
+   */
+  public deleteUser = async (userToken: string, targetUsername: string): Promise<boolean> => {
+    let response = await fetch('./api/users/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        targetUsername: targetUsername,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
   }
 
   //# SECTION USER END

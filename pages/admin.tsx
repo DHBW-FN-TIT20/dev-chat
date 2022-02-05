@@ -40,7 +40,7 @@ class Admin extends Component<AdminProps, AdminState> {
    * @param {any} event Event triggered by an EventListener
    */
   storageTokenListener = async (event: any) => {
-    if (event.key === "pwp.auth.token") {
+    if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
   }
@@ -49,8 +49,8 @@ class Admin extends Component<AdminProps, AdminState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = localStorage.getItem("pwp.auth.token");
-    if (currentToken !== null && await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = DevChatController.getUserToken();
+    if (await DevChatController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -75,7 +75,7 @@ class Admin extends Component<AdminProps, AdminState> {
           </Head>
 
           <header>
-            <Header pageInformation={"Admin"} showName={true} title={"Admin settings"} showExit={true} showLogout={false} />
+            <Header pageInformation={"Admin"} showName={true} showExit={true} showLogout={false} />
           </header>
     
           <main>

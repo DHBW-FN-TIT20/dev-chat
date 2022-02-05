@@ -51,7 +51,7 @@ class Chat extends Component<ChatProps, ChatState> {
    * @param {any} event Event triggered by an EventListener
    */
   storageTokenListener = async (event: any) => {
-    if (event.key === "pwp.auth.token") {
+    if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
   }
@@ -60,8 +60,8 @@ class Chat extends Component<ChatProps, ChatState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = localStorage.getItem("pwp.auth.token");
-    if (currentToken !== null && await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = DevChatController.getUserToken();
+    if (await DevChatController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -108,7 +108,7 @@ class Chat extends Component<ChatProps, ChatState> {
           </Head>
 
           <header>
-            <Header pageInformation={"chatKey"} showName={true} title={"Chat"} showExit={true} showLogout={false} />
+            <Header pageInformation={"chatKey"} showName={true} showExit={true} showLogout={false} />
           </header>
 
           <main>

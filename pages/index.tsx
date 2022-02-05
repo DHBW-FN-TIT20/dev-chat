@@ -43,7 +43,7 @@ class Main extends Component<MainProps, MainState> {
    * @param {any} event Event triggered by an EventListener
    */
   storageTokenListener = async (event: any) => {
-    if (event.key === "pwp.auth.token") {
+    if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
   }
@@ -52,8 +52,8 @@ class Main extends Component<MainProps, MainState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = localStorage.getItem("pwp.auth.token");
-    if (currentToken !== null && await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = DevChatController.getUserToken();
+    if (await DevChatController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -83,7 +83,7 @@ class Main extends Component<MainProps, MainState> {
           </Head>
 
           <header>
-            <Header pageInformation="MAIN MENU" title="Rooms" showName={true} showExit={false} showLogout={true} />
+            <Header pageInformation="MAIN MENU" showName={true} showExit={false} showLogout={true} />
           </header>
     
           <main>
@@ -123,7 +123,11 @@ class Main extends Component<MainProps, MainState> {
               <button onClick={() => router.push("/password")}> 
                 Change Password
               </button>
-              <button onClick={() => DevChatController.deleteUser(1, "", "")}> 
+              <button onClick={async () => {
+                if (await DevChatController.deleteUser(DevChatController.getUserToken(), DevChatController.getUserFromToken(DevChatController.getUserToken()))) {
+                  router.push("/login")
+                }
+              }}> 
                 Delete Account
               </button>
             </div>

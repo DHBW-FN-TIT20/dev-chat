@@ -15,9 +15,9 @@ const supabaseConnection = new SupabaseConnection();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let message = req.body.message;
-  let userId = req.body.userId;
-  let chatKeyId = req.body.chatKeyId;
+  let userToken = req.body.userToken;
+  let chatKey = req.body.chatKey;
 
-  let addedSucessfully = await supabaseConnection.addChatMessage(message, userId, chatKeyId);
+  let addedSucessfully = await supabaseConnection.addChatMessage(message, await supabaseConnection.getChatKeyID(chatKey), userToken = userToken);
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

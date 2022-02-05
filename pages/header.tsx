@@ -11,7 +11,6 @@ export interface HeaderState {
 export interface HeaderProps extends WithRouterProps {
   pageInformation: string,
   showName: boolean,
-  title: string,
   showExit: boolean,
   showLogout: boolean,
 }
@@ -42,7 +41,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     if (this.props.showName) {
       showName = <td className={styles.usertd}> 
                   <div className={styles.user}>
-                    User
+                    { DevChatController.getUserFromToken(DevChatController.getUserToken()) }
                   </div>           
                 </td>
     }
@@ -83,13 +82,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     }
 
     return (
-      <div>
-        <Head>
-          <title>{this.props.title}</title>
-          <meta name="description" content="header" /> 
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-  
+      <div>  
         <main>
           <div className={styles.container}>         
             <table className={styles.headertable} >
