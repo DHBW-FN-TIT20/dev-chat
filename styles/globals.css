@@ -9,6 +9,7 @@
     font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 12pt;
+    
   }
 }
 
@@ -33,7 +34,6 @@
     font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 16pt;
-    overflow: hidden;
   }
 }
 
@@ -190,11 +190,9 @@ input::placeholder {
 @media screen and (min-width: 900px) {
   .image {
     width: 100%;
-    margin: auto;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute;
+    left: 50%;
+    top:50%;
   }
 }
 

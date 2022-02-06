@@ -37,7 +37,7 @@ export default class Admin extends Component<AdminProps, AdminState> {
               User Settings
             </h1>
             <div> 
-              <table>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th scope='col'>Username</th>
@@ -69,7 +69,7 @@ export default class Admin extends Component<AdminProps, AdminState> {
               Room Settings
             </h1>
             <div> 
-              <table>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th scope='col'>Key</th>
@@ -98,7 +98,7 @@ export default class Admin extends Component<AdminProps, AdminState> {
               Survey Settings
             </h1>
             <div> 
-              <table>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th scope='col'>Name</th>
@@ -130,7 +130,7 @@ export default class Admin extends Component<AdminProps, AdminState> {
               Tickets
             </h1>
             <div> 
-              <table>
+              <table className={styles.table}>
                 <thead>
                   <tr>
                     <th scope='col'>Submitter</th>
@@ -224,18 +224,6 @@ export default class Admin extends Component<AdminProps, AdminState> {
             </div>
           </div>
 
-          <div className={styles.right}>
-            <div className="image">
-              <Image
-                priority
-                src={"/logo.png"}
-                alt="DEV-CHAT Logo"
-                width={1000}
-                height={1000}
-                layout="responsive"
-              />
-            </div>
-          </div>
           </div>
         </main>
       </div>
