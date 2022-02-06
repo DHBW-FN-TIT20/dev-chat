@@ -158,6 +158,30 @@ export class SupabaseConnection {
     }
   };
 
+     /** 
+   * API function to check if the input ChatKey exists
+   * @param {string} chatKey the chatKey to check
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatkey exists
+   */
+      public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
+
+        // fetch the data from the supabase database
+        const { data, error } = await SupabaseConnection.CLIENT
+          .from('ChatKey')
+          .select()
+          .eq('ChatKey', chatKey);
+    
+        // check if data was received
+        if (data === null || error !== null || data.length === 0) {
+    
+          // no chatkeys found -> chatkey does not exist -> return false
+          return false;
+        } else {
+          // chatkey exists -> return true
+          return true;
+        }
+      };
+      
   /**
    * This helper function is used to get the userID of a user by username
    * @param {string} username the username of the user
