@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage } from '../../public/interfaces';
+import { IChatMessage, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 
@@ -178,6 +178,29 @@ export class SupabaseConnection {
     } else {
       // user was removed -> return true
       return data[0].UserID;
+    }
+  }
+
+  /**
+   * This method returns all user informations for the given username
+   * @param username the username of the user
+   * @returns {Promise<IUser>} the user object containing all information
+   */
+  public getIUserByUsername = async (username: string): Promise<IUser> => {
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .select()
+      .match({ Username: username });
+
+    let user: IUser = {};
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // user was not found -> return empty IUser
+      return user;
+    } else {
+      // user was found -> return IUser
+      user = {id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel};
+      return user;
     }
   }
 
@@ -442,8 +465,11 @@ export class SupabaseConnection {
    */
   public loginUser = async (username: string, password: string): Promise<string> => {
     if (await this.isUserValid({name: username, password: password})) {
+      let user = await this.getIUserByUsername(username);
+      console.log(user)
       let token = jwt.sign({
         username: username,
+        isAdmin: (user.accessLevel === 1)
       }, SupabaseConnection.KEY, {expiresIn: '1 day'});
       return token;
     }

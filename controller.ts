@@ -219,10 +219,18 @@ export class DevChatController {
   public getUserFromToken = (token: string): string => {
     let content = jwt.decode(token)
     if (typeof content === "object" && content !== null) {
-      return content.username
+      return content.username;
     }
     // error case
-    return ""
+    return "";
+  }
+
+  public getAdminValueFromToken = (token: string): boolean => {
+    let content = jwt.decode(token)
+    if (typeof content === "object" && content !== null) {
+      return content.isAdmin;
+    }
+    return false;
   }
 
   /**

@@ -50,7 +50,7 @@ class Admin extends Component<AdminProps, AdminState> {
    */
   async checkLoginState() {
     let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    if (await DevChatController.verifyUserByToken(currentToken) && DevChatController.getAdminValueFromToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
