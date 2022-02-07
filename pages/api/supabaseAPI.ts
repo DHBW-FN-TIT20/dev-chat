@@ -315,7 +315,7 @@ export class SupabaseConnection {
     //   OptionName: string,
     //   SurveyID: number
     // }]
-
+    
     const surveyOptions = surveyToAdd.options.map((option, index) => {
       return {
         OptionID: index,
@@ -340,7 +340,6 @@ export class SupabaseConnection {
       };
     });
 
-    // fetch the data from the supabase database
     return addedSurvey;
   }
 
