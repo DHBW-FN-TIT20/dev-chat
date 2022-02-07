@@ -16,13 +16,12 @@ const supabaseConnection = new SupabaseConnection();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
-  let targetID: number = req.body.targetID;
-  let targetPassword: string = req.body.targetPassword;
+  let userToken: string = req.body.userToken;
   let chatKey: string = req.body.chatKey;
   let lastMessageID: number = req.body.lastMessageID;
 
 
-  let chatMessages = await supabaseConnection.getChatMessages(targetID, targetPassword, chatKey, lastMessageID);
+  let chatMessages = await supabaseConnection.getChatMessages(userToken, chatKey, lastMessageID);
 
   res.status(200).json({ chatMessages: chatMessages });
 }

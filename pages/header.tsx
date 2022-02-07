@@ -1,19 +1,21 @@
+import withRouter, { WithRouterProps } from 'next/dist/client/with-router'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Header.module.css'
 import React, { Component } from 'react'
+import DevChatController from '../controller'
 
 export interface HeaderState {
 }
 
-export interface HeaderProps {
+export interface HeaderProps extends WithRouterProps {
   pageInformation: string,
   showName: boolean,
-  title: string,
   showExit: boolean,
+  showLogout: boolean,
 }
 
-export default class Header extends Component<HeaderProps, HeaderState> {
+class Header extends Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
     super(props)
     this.state = {
@@ -23,14 +25,23 @@ export default class Header extends Component<HeaderProps, HeaderState> {
 
   componentDidMount() {}
 // noch ne variable für den header name
+  
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
+    /**
+     * Initialize Router to navigate to other pages
+     */
+    const { router } = this.props
 
     let showName = <></>
 
     if (this.props.showName) {
       showName = <td className={styles.usertd}> 
                   <div className={styles.user}>
-                    User
+                    { DevChatController.getUserFromToken(DevChatController.getUserToken()) }
                   </div>           
                 </td>
     }
@@ -39,44 +50,55 @@ export default class Header extends Component<HeaderProps, HeaderState> {
 
     if (this.props.showExit) {
       showExit = <td className={styles.exittd}>
-                  <a href="">
+                  <div className={styles.exit}>
+                    <Image
+                      src={"/exit.png"}
+                      alt="DEV-CHAT Exit"
+                      width={50}
+                      height={50}
+                      onClick={() => router.push("/")}
+                    />
+                  </div>
+                </td>
+    }
+
+    let showLogout = <></>
+
+    if (this.props.showLogout) {
+      showLogout = <td className={styles.exittd}>
                     <div className={styles.exit}>
                       <Image
                         src={"/exit.png"}
                         alt="DEV-CHAT Exit"
                         width={50}
                         height={50}
+                        onClick={() => {
+                          DevChatController.logoutUser();
+                          router.reload();
+                        }}
                       />
-                    </div>  
-                  </a>
-                </td>
+                    </div>
+                  </td>
     }
 
     return (
-      <div>
-        <Head>
-          <title>{this.props.title}</title>
-          <meta name="description" content="header" /> 
-          <link rel="icon" href="/favicon.ico" />
-        </Head>
-  
+      <div>  
         <main>
           <div className={styles.container}>         
             <table className={styles.headertable} >
               <tbody>
                 <tr>
                   <td className={styles.logotd}>
-                    <a href="/">
-                      <div className={styles.logo}>
-                        <Image
-                          priority
-                          src={"/logo.png"}
-                          alt="DEV-CHAT Logo"
-                          width={70}
-                          height={70}
-                        />
-                      </div>
-                    </a>
+                    <div className={styles.logo}>
+                      <Image
+                        priority
+                        src={"/logo.png"}
+                        alt="DEV-CHAT Logo"
+                        width={70}
+                        height={70}
+                        onClick={() => router.push("/")}
+                      />
+                    </div>
                   </td>
                   <td className={styles.nametd}>
                     <div className={styles.name}>
@@ -89,13 +111,14 @@ export default class Header extends Component<HeaderProps, HeaderState> {
                   </td>
                   { showName }
                   <td className={styles.imptd}>
-                    <a href="">
-                      <div className={styles.impressum}>
-                        §
-                      </div>  
-                    </a>
+                    <div 
+                      className={styles.impressum}
+                      onClick={() => router.push("/impressum")} >
+                      §
+                    </div>  
                   </td>
                   { showExit }
+                  { showLogout }
                 </tr>
               </tbody>
             </table>
@@ -105,3 +128,5 @@ export default class Header extends Component<HeaderProps, HeaderState> {
     )
   }
 }
+
+export default withRouter(Header)
