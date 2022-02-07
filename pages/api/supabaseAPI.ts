@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { IChatMessage, ISurvey } from '../../public/interfaces';
+import { IChatMessage, ISurvey, IUser } from '../../public/interfaces';
 import * as bcrypt from 'bcrypt'
 import { SurveyCommand } from '../../console_commands/survey';
 import { Command } from '../../console_commands/baseclass';
@@ -34,8 +34,14 @@ export class SupabaseConnection {
    * @param {string[]} callArguments This array of strings are the argments of the command.
    * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
    */
-  private async executeCommand(callString: string, callArguments:string[]): Promise<boolean> {
-    this.commands.forEach(async command => {
+  private async executeCommand(userInput: string, currentUser: IUser): Promise<boolean> {
+
+    // split the user input into the command and the arguments
+    let callString: string = splitString(userInput)[0].slice(1);
+    let callArguments: string[] = splitString(userInput).slice(1); 
+
+    for (let i = 0; i < this.commands.length; i++) {
+      let command = this.commands[i];
       if (command.callString == callString) {
 
         // a command was found -> execute it
@@ -57,11 +63,10 @@ export class SupabaseConnection {
 
           console.log("Command executed successfully.");
           
-
           return true; // answer -> command was executed successfully
         }
       }
-    });
+    };
 
     return false; // command was not found
   }
