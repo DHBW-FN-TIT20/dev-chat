@@ -30,8 +30,8 @@ export class SupabaseConnection {
    * After the command is found, the command is executed.
    * The Command.execute() method is called and it returns the answer of the command as an array of strings.
    * Each string represents one line of the answer and is sent as a message to the user.
-   * @param {string} callString This string should be the first word of the message. It is the trigger for the command.
-   * @param {string[]} callArguments This array of strings are the argments of the command.
+   * @param {string} userInput the message typed in by the user
+   * @param {IUser} currentUser the user who fired the command
    * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
    */
   private async executeCommand(userInput: string, currentUser: IUser): Promise<boolean> {
