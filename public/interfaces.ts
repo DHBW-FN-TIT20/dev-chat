@@ -35,18 +35,6 @@ export var emptyUser: IUser = {
 };
 
 
-// SurveyOption
-
-export interface ISurveyOption {
-    id: number;
-    name: string;
-}
-
-export var emptySurveyOption: ISurveyOption = {
-    id: 0,
-    name: "",
-};
-
 
 // ChatMessage
 
@@ -69,6 +57,19 @@ export var emptyChatMessage: IChatMessage = {
 };
 
 
+// SurveyOption
+
+export interface ISurveyOption {
+    id?: number;
+    name?: string;
+}
+
+export var emptySurveyOption: ISurveyOption = {
+    id: 0,
+    name: "",
+};
+
+
 // SurveyVote
 
 export interface ISurveyVote {
@@ -85,24 +86,13 @@ export var emptySurveyVote: ISurveyVote = {
 // Survey
 
 export interface ISurvey {
-    id: number;
+    id?: number;
     name: string;
     description: string;
     expirationDate: Date;
-    owner: IUser;
+    ownerID?: number;
     options: ISurveyOption[];
-    votes: ISurveyVote[];
 }
-
-export var emptySurvey: ISurvey = {
-    id: 0,
-    name: "",
-    description: "",
-    expirationDate: new Date(0), // maybe change later
-    owner: emptyUser,
-    options: [],
-    votes: [],
-};
 
 
 // BugTicket

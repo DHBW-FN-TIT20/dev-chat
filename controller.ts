@@ -48,7 +48,7 @@ export class DevChatController {
       // Add the Message to the Database
       // userId: 2 --> Wildcard
       // chatKeyId: 2 --> Wildcard
-      this.addChatMessage(message, this.getUserFromToken(this.getUserToken()), this.getChatKeyFromCookie());
+      this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
     }
   }
 

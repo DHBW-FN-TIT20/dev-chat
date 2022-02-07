@@ -11,10 +11,12 @@ export class SurveyCommand extends Command {
     public constructor() {
       super();
       this.callString = "survey";
-      this.helpText = "run '/survey <SurveyName> <''Description''> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]' to start a new survey";
+      this.helpText = "run '/survey <SurveyName> <\"Description\"> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]' to start a new survey";
     }
     
     public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
+      console.log("SurveyCommand.execute()");
+      
       let answerLines: string[] = [];
       
       // check if the arguments are valid 

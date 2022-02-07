@@ -1,10 +1,11 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
+import { SurveyCommand } from '../../console_commands/survey';
 
 /**
  * This is the connection to the supabase database.
@@ -24,6 +25,7 @@ export class SupabaseConnection {
     this.commands = [
       // add all command classes here
       new ExampleCommand,
+      new SurveyCommand
     ];
   }
 
@@ -35,17 +37,25 @@ export class SupabaseConnection {
   * Each string represents one line of the answer and is sent as a message to the user.
   * @param {string} userInput the message typed in by the user
   * @param {IUser} currentUser the user who fired the command
+  * @param {number} currentChatKeyID the id of the chat the user is in
   * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
   */
-  private async executeCommand(userInput: string, currentUser: IUser): Promise<boolean> {
+  private async executeCommand(userInput: string, currentUser: IUser, currentChatKeyID: number): Promise<boolean> {
 
     // split the user input into the command and the arguments
     let callString: string = splitString(userInput)[0].slice(1);
     let callArguments: string[] = splitString(userInput).slice(1);
 
+    console.log("SupabaseConnection.executeCommand()", callString, callArguments);
+    
+
     for (let i = 0; i < this.commands.length; i++) {
       let command = this.commands[i];
+      console.log(command.callString, callString);
+      
       if (command.callString == callString) {
+        console.log("command found");
+        
 
         // a command was found -> execute it
         const answerLines: string[] = await command.execute(callArguments, { id: 2, name: "johannes" }, 4); // TODO: change to real values
@@ -54,6 +64,9 @@ export class SupabaseConnection {
         if (answerLines.length === 0 || answerLines === undefined) {
 
           // no answer -> command was not executed successfully
+
+          this.addChatMessage(command.helpText, currentChatKeyID, undefined, currentUser.id );
+
           return false;
         } else {
 
@@ -61,7 +74,7 @@ export class SupabaseConnection {
 
           // create a message for each line of the answer
           for (let i = 0; i < answerLines.length; i++) {
-            await this.addChatMessage(answerLines[i], 3, "FatherMotherBread"); // NOTE: need to be implemented!!
+            await this.addChatMessage(answerLines[i], currentChatKeyID, undefined, currentUser.id );
           }
 
           console.log("Command executed successfully.");
@@ -241,6 +254,97 @@ export class SupabaseConnection {
     }
   }
 
+
+  /**
+   * This method returns all user informations for the given userID 
+   * @param userID the userID of the user
+   * @returns {Promise<IUser>} the user object containing all information
+   */
+   public getIUserByUserID = async (userID: number): Promise<IUser> => {
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('User')
+      .select()
+      .match({ UserID: userID });
+
+    let user: IUser = {};
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // user was not found -> return empty IUser
+      return user;
+    } else {
+      // user was found -> return IUser
+      user = { id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel };
+      return user;
+    }
+  }
+
+
+  public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
+    let addedSurvey: ISurvey | null = null;
+
+    // fetch the supabase database
+    const surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .insert([
+        {
+          Name: surveyToAdd.name,
+          Description: surveyToAdd.description,
+          ExpirationDate: surveyToAdd.expirationDate,
+          OwnerID: surveyToAdd.ownerID,
+        },
+    ])
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0 || surveyResponse.data[0].SurveyID === null || surveyResponse.data[0].SurveyID === undefined) {
+      return null;
+    }
+
+    addedSurvey = {
+      id: surveyResponse.data[0].SurveyID,
+      name: surveyResponse.data[0].Name,
+      description: surveyResponse.data[0].Description,
+      expirationDate: surveyResponse.data[0].ExpirationDate,
+      ownerID: surveyResponse.data[0].OwnerID,
+      options: [],
+    }
+
+    const surveyID = surveyResponse.data[0].SurveyID;
+
+    // the option must be in a array with the following structure:
+    // [{
+    //   OptionID: number, (0, 1, 2, 3, ...)
+    //   OptionName: string,
+    //   SurveyID: number
+    // }]
+
+    const surveyOptions = surveyToAdd.options.map((option, index) => {
+      return {
+        OptionID: index,
+        OptionName: option.name,
+        SurveyID: surveyID
+      }
+    });
+
+    // fetch the supabase database
+    const optionsResponse = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .insert(surveyOptions);
+
+    if (optionsResponse.data === null || optionsResponse.error !== null || optionsResponse.data.length === 0) {
+      return null;
+    }
+
+    addedSurvey.options = optionsResponse.data.map((option) => {
+      return {
+        id: option.OptionID,
+        name: option.OptionName,
+      };
+    });
+
+    // fetch the data from the supabase database
+    return addedSurvey;
+  }
+
+
   /** 
    * API function to add a Chat Message to the database 
    * @param {string} message the message of the user
@@ -260,12 +364,21 @@ export class SupabaseConnection {
       return false;
     } else if (userId === undefined && userToken === undefined) {
       return false;
+    } else if (userId === undefined) {
+      return false;
     }
+    
     const { data, error } = await SupabaseConnection.CLIENT
-      .from('ChatMessage')
-      .insert([
-        { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
-      ])
+    .from('ChatMessage')
+    .insert([
+      { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
+    ])
+
+    if(message[0] === "/") {
+      console.log("Command detected");
+      await this.executeCommand(message, await this.getIUserByUserID(userId), chatKeyId);
+    }
+
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
       // Message was not added -> return false
@@ -274,6 +387,7 @@ export class SupabaseConnection {
       // Message was added -> return true
       return true;
     }
+
   };
 
   /** 
@@ -459,7 +573,7 @@ export class SupabaseConnection {
    */
   public isUserTokenValid = async (token: string): Promise<boolean> => {
     if (this.isTokenValid(token) && await this.userAlreadyExists(this.getUsernameFromToken(token))) {
-      console.log("user exists")
+      // console.log("user exists")
       return true;
     }
     return false;
