@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { IChatMessage, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
+import splitString from '../../shared/splitstring';
 
 /**
  * This is the connection to the supabase database.
@@ -17,63 +18,63 @@ export class SupabaseConnection {
 
   constructor() {
     const supabaseUrl = process.env.SUPABASE_URL || '';
-    const supabaseKey = process.env.SUPABASE_KEY || ''; 
+    const supabaseKey = process.env.SUPABASE_KEY || '';
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
     SupabaseConnection.KEY = "Krasser Schlüssel";
     this.commands = [
       // add all command classes here
       new ExampleCommand,
     ];
-  }  
+  }
 
 
-   /**
-   * This function is used to check a new message for commands. 
-   * After the command is found, the command is executed.
-   * The Command.execute() method is called and it returns the answer of the command as an array of strings.
-   * Each string represents one line of the answer and is sent as a message to the user.
-   * @param {string} userInput the message typed in by the user
-   * @param {IUser} currentUser the user who fired the command
-   * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
-   */
+  /**
+  * This function is used to check a new message for commands. 
+  * After the command is found, the command is executed.
+  * The Command.execute() method is called and it returns the answer of the command as an array of strings.
+  * Each string represents one line of the answer and is sent as a message to the user.
+  * @param {string} userInput the message typed in by the user
+  * @param {IUser} currentUser the user who fired the command
+  * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
+  */
   private async executeCommand(userInput: string, currentUser: IUser): Promise<boolean> {
 
-      // split the user input into the command and the arguments
-      let callString: string = splitString(userInput)[0].slice(1);
-      let callArguments: string[] = splitString(userInput).slice(1); 
-  
-      for (let i = 0; i < this.commands.length; i++) {
-        let command = this.commands[i];
-        if (command.callString == callString) {
-  
-          // a command was found -> execute it
-          const answerLines: string[] = await command.execute(callArguments, {id: 2, name: "johannes"}, 4); // TODO: change to real values
-  
-          // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
-          if (answerLines.length === 0 || answerLines === undefined) {
-  
-            // no answer -> command was not executed successfully
-            return false;
-          } else {
-  
-            console.log(answerLines);
-  
-            // create a message for each line of the answer
-            for (let i = 0; i < answerLines.length; i++) {
-              await this.addChatMessage(answerLines[i], 3, "FatherMotherBread"); // NOTE: need to be implemented!!
-            }
-  
-            console.log("Command executed successfully.");
-            
-            return true; // answer -> command was executed successfully
+    // split the user input into the command and the arguments
+    let callString: string = splitString(userInput)[0].slice(1);
+    let callArguments: string[] = splitString(userInput).slice(1);
+
+    for (let i = 0; i < this.commands.length; i++) {
+      let command = this.commands[i];
+      if (command.callString == callString) {
+
+        // a command was found -> execute it
+        const answerLines: string[] = await command.execute(callArguments, { id: 2, name: "johannes" }, 4); // TODO: change to real values
+
+        // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
+        if (answerLines.length === 0 || answerLines === undefined) {
+
+          // no answer -> command was not executed successfully
+          return false;
+        } else {
+
+          console.log(answerLines);
+
+          // create a message for each line of the answer
+          for (let i = 0; i < answerLines.length; i++) {
+            await this.addChatMessage(answerLines[i], 3, "FatherMotherBread"); // NOTE: need to be implemented!!
           }
+
+          console.log("Command executed successfully.");
+
+          return true; // answer -> command was executed successfully
         }
-      };
-  
-      return false; // command was not found
-    }
-  
-  
+      }
+    };
+
+    return false; // command was not found
+  }
+
+
 
   /**
    * Function to hash a password
@@ -82,7 +83,7 @@ export class SupabaseConnection {
    */
   private hashPassword = async (password: string): Promise<string> => {
     const saltOrRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltOrRounds);    
+    const hashedPassword = await bcrypt.hash(password, saltOrRounds);
     return hashedPassword
   }
 
@@ -95,7 +96,7 @@ export class SupabaseConnection {
   private checkPassword = async (clearPassword: string, hashedpassword: string): Promise<boolean> => {
     return await bcrypt.compare(clearPassword, hashedpassword);
   }
-  
+
   /** 
    * API function to check if the username/userID and the password are correct 
    * @param {string} username the username to check
@@ -103,7 +104,7 @@ export class SupabaseConnection {
    * @param {string} password the password to check
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username and password are correct
    */
-  public isUserValid = async (user: {id?: number, name?: string, password: string}): Promise<boolean> => {
+  public isUserValid = async (user: { id?: number, name?: string, password: string }): Promise<boolean> => {
     let supabaseData: any;
     let supabaseError: any;
 
@@ -115,7 +116,7 @@ export class SupabaseConnection {
         .from('User')
         .select()
         .eq('UserID', user.id);
-      
+
       supabaseData = data;
       supabaseError = error;
 
@@ -146,11 +147,11 @@ export class SupabaseConnection {
     }
   };
 
-   /** 
-   * API function to check if the username and the password are correct 
-   * @param {string} username the username to check
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username already exists
-   */
+  /** 
+  * API function to check if the username and the password are correct 
+  * @param {string} username the username to check
+  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username already exists
+  */
   public userAlreadyExists = async (username: string): Promise<boolean> => {
 
     // fetch the data from the supabase database
@@ -170,30 +171,30 @@ export class SupabaseConnection {
     }
   };
 
-     /** 
-   * API function to check if the input ChatKey exists
-   * @param {string} chatKey the chatKey to check
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatkey exists
-   */
-      public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
+  /** 
+* API function to check if the input ChatKey exists
+* @param {string} chatKey the chatKey to check
+* @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatkey exists
+*/
+  public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
 
-        // fetch the data from the supabase database
-        const { data, error } = await SupabaseConnection.CLIENT
-          .from('ChatKey')
-          .select()
-          .eq('ChatKey', chatKey);
-    
-        // check if data was received
-        if (data === null || error !== null || data.length === 0) {
-    
-          // no chatkeys found -> chatkey does not exist -> return false
-          return false;
-        } else {
-          // chatkey exists -> return true
-          return true;
-        }
-      };
-      
+    // fetch the data from the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .select()
+      .eq('ChatKey', chatKey);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+
+      // no chatkeys found -> chatkey does not exist -> return false
+      return false;
+    } else {
+      // chatkey exists -> return true
+      return true;
+    }
+  };
+
   /**
    * This helper function is used to get the userID of a user by username
    * @param {string} username the username of the user
@@ -235,7 +236,7 @@ export class SupabaseConnection {
       return user;
     } else {
       // user was found -> return IUser
-      user = {id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel};
+      user = { id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel };
       return user;
     }
   }
@@ -263,11 +264,11 @@ export class SupabaseConnection {
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
-        {ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message},
+        { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
       ])
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
-    // Message was not added -> return false
+      // Message was not added -> return false
       return false;
     } else {
       // Message was added -> return true
@@ -280,27 +281,27 @@ export class SupabaseConnection {
    * @param {string} chatKey the Id of the new Chatroom
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
    */
-   public addChatKey= async (chatKey: string): Promise<boolean> => {
-   
-    let chatKeyExists = await this.chatKeyAlreadyExists(chatKey)        
+  public addChatKey = async (chatKey: string): Promise<boolean> => {
 
-    if(chatKeyExists) {
+    let chatKeyExists = await this.chatKeyAlreadyExists(chatKey)
+
+    if (chatKeyExists) {
       return false;
     }
 
     var expirationDate = new Date();
     // currentDate + 1 Day = ExpirationDate
-    expirationDate.setDate(expirationDate.getDate() + 1); 
+    expirationDate.setDate(expirationDate.getDate() + 1);
     console.log("Chat Key expires: " + expirationDate);
-    
+
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatKey')
       .insert([
-        {ChatKey: chatKey, ExpirationDate: expirationDate},
+        { ChatKey: chatKey, ExpirationDate: expirationDate },
       ])
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
-    // ChatKey was not added -> return false
+      // ChatKey was not added -> return false
       return false;
     } else {
       // ChatKey was added -> return true
@@ -308,11 +309,11 @@ export class SupabaseConnection {
     }
   };
 
-     /** 
-   * API function to check if the chatKey already exists
-   * @param {string} chatKey the chatKey to check
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey already exists
-   */
+  /** 
+* API function to check if the chatKey already exists
+* @param {string} chatKey the chatKey to check
+* @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey already exists
+*/
   public chatKeyAlreadyExists = async (chatKey: string): Promise<boolean> => {
 
     // fetch the data from the supabase database
@@ -360,7 +361,7 @@ export class SupabaseConnection {
 
     let filterString = "TargetUserID.eq." + String(targetID) + ",TargetUserID.eq.0";
 
-    
+
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .select(`
@@ -380,7 +381,7 @@ export class SupabaseConnection {
       // no messages found -> return empty array
       return [];
     } else {
-      
+
       // map raw data on IChatMessage type
       data.forEach(element => {
         chatMessages.push({
@@ -390,7 +391,7 @@ export class SupabaseConnection {
           id: element.MessageID
         });
       });
-      
+
       return chatMessages;
     }
   };
@@ -476,7 +477,7 @@ export class SupabaseConnection {
         return data.username
       }
     } catch (error) {
-      
+
     }
     return "";
   }
@@ -498,14 +499,14 @@ export class SupabaseConnection {
    * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
    */
   public loginUser = async (username: string, password: string): Promise<string> => {
-    if (await this.isUserValid({name: username, password: password})) {
+    if (await this.isUserValid({ name: username, password: password })) {
       let user = await this.getIUserByUsername(username);
       if (user !== {}) {
         console.log(user)
         let token = jwt.sign({
           username: username,
           isAdmin: (user.accessLevel === 1)
-        }, SupabaseConnection.KEY, {expiresIn: '1 day'});
+        }, SupabaseConnection.KEY, { expiresIn: '1 day' });
         return token;
       }
     }
@@ -519,7 +520,7 @@ export class SupabaseConnection {
    * @param {number} accessLevel access level for the user
    * @returns {Promise<boolean>} true if registration was successfull, false if not
    */
-   public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
+  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
 
     let userExists = await this.userAlreadyExists(username);
 
