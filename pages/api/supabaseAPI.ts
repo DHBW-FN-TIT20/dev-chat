@@ -445,11 +445,9 @@ export class SupabaseConnection {
    * @returns {boolean} True if token contains a valid user, false if not
    */
   public isUserTokenValid = async (token: string): Promise<boolean> => {
-    if (this.isTokenValid(token)) {
-      if (await this.userAlreadyExists(this.getUsernameFromToken(token))) {
-        console.log("user exists")
-        return true;
-      }
+    if (this.isTokenValid(token) && await this.userAlreadyExists(this.getUsernameFromToken(token))) {
+      console.log("user exists")
+      return true;
     }
     return false;
   }
@@ -490,12 +488,14 @@ export class SupabaseConnection {
   public loginUser = async (username: string, password: string): Promise<string> => {
     if (await this.isUserValid({name: username, password: password})) {
       let user = await this.getIUserByUsername(username);
-      console.log(user)
-      let token = jwt.sign({
-        username: username,
-        isAdmin: (user.accessLevel === 1)
-      }, SupabaseConnection.KEY, {expiresIn: '1 day'});
-      return token;
+      if (user !== {}) {
+        console.log(user)
+        let token = jwt.sign({
+          username: username,
+          isAdmin: (user.accessLevel === 1)
+        }, SupabaseConnection.KEY, {expiresIn: '1 day'});
+        return token;
+      }
     }
     return "";
   }
