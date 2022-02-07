@@ -49,12 +49,11 @@ export class SupabaseConnection {
         } else {
 
           console.log(answerLines);
-          
 
           // create a message for each line of the answer
-          answerLines.forEach(async line => {
-            await this.addChatMessage(line, "System", "FatherMotherBread"); // NOTE: need to be implemented!!
-          });
+          for (let i = 0; i < answerLines.length; i++) {
+            await this.addChatMessage(answerLines[i], "System", "FatherMotherBread"); // NOTE: need to be implemented!!
+          }
 
           console.log("Command executed successfully.");
           
