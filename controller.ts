@@ -212,7 +212,7 @@ export class DevChatController {
   }
 
   /**
-   * This method extracts the usernem from the token and returns it.
+   * This method extracts the username from the token and returns it.
    * @param {string} token Token with user information
    * @returns {string} Username if token contains username, else empty string
    */
@@ -328,16 +328,19 @@ export class DevChatController {
    */
    public logoutUser = (): boolean => {
     localStorage.removeItem("DevChat.auth.token")
-    return true;
+    if (localStorage.getItem("DevChat.auth.token") == null) {
+      return true;
+    }
+    return false;
   }
 
   /**
    * This method deletes a target user.
    * @param {string} userToken token for user verification
-   * @param {string} targetUsername username of user that should be deleted
+   * @param {string} usernameTodelete username of user that should be deleted
    * @returns {Promise<boolean>} true if target user was deleted, false if not
    */
-  public deleteUser = async (userToken: string, targetUsername: string): Promise<boolean> => {
+  public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
     let response = await fetch('./api/users/delete', {
       method: 'POST',
       headers: {
@@ -345,7 +348,7 @@ export class DevChatController {
       },
       body: JSON.stringify({
         userToken: userToken,
-        targetUsername: targetUsername,
+        usernameToDelete: usernameToDelete,
       })
     });
     let data = await response.json();
