@@ -124,6 +124,7 @@ class Main extends Component<MainProps, MainState> {
                 if(this.state.doesChatKeyExists)
                 {
                   console.log("EXISTS")
+                  DevChatController.setChatKeyCookie(this.state.inputChatKey);
                   router.push("/chat")
                 }
                 else {

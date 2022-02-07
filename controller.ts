@@ -10,6 +10,7 @@ export class DevChatController {
   private data: any;
   public chatMessages: IChatMessage[] = [];
   private chatMessageInterval: any;
+  private chatKeyCookieName: string = "DevChat.ChatKey";
 
   constructor() {
     console.log("DevChatController.constructor()");
@@ -47,7 +48,7 @@ export class DevChatController {
       // Add the Message to the Database
       // userId: 2 --> Wildcard
       // chatKeyId: 2 --> Wildcard
-      this.addChatMessage(message, this.getUserFromToken(this.getUserToken()),"FatherMotherBread");
+      this.addChatMessage(message, this.getUserFromToken(this.getUserToken()), this.getChatKeyFromCookie());
     }
   }
 
@@ -106,7 +107,7 @@ export class DevChatController {
     let userToken = this.getUserToken();
 
     // get the new messages
-    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , "FatherMotherBread", lastMessageId);
+    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
 
     // console.log("newMessages: ");
     // console.table(newMessages);
@@ -117,12 +118,30 @@ export class DevChatController {
   }
 
   /**
-   * This method is used to check if there are cookies.
-   * If there are cookies, the user should be logged in.
+   * This method creates a cookie with the given chat key as value
+   * @param {string} chatKey Value for cookie
    */
-  private async checkCookies() {
-    console.log("DevChatController.checkCookies()");
-    console.table(getCookies());
+  public setChatKeyCookie(chatKey: string) {
+    setCookies(this.chatKeyCookieName, chatKey);
+  }
+
+  /**
+   * This method removes the chat key cookie if it exists
+   */
+  public clearChatKeyCookie() {
+    removeCookies(this.chatKeyCookieName);
+  }
+
+  /**
+   * This method returns the value of the chat key cookie
+   * @returns {string} Chat key if exits, empty string if not
+   */
+  public getChatKeyFromCookie(): string {
+    let chatKey = getCookie(this.chatKeyCookieName);
+    if (typeof chatKey === 'string') {
+      return chatKey;
+    }
+    return ""
   }
   
   /**

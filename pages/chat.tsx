@@ -8,6 +8,7 @@ import { IChatMessage } from '../public/interfaces'
 
 export interface ChatState {
   isLoggedIn: boolean,
+  isChatKeyValid: boolean,
   chatLineInput: string,
   messages: IChatMessage[],
 }
@@ -16,10 +17,12 @@ export interface ChatProps extends WithRouterProps { }
 
 class Chat extends Component<ChatProps, ChatState> {
   private messageFetchInterval: any = undefined;
+  private currentChatKeyCookie: string = "";
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       isLoggedIn: false,
+      isChatKeyValid: false,
       chatLineInput: '',
       messages: [],
     }
@@ -28,13 +31,29 @@ class Chat extends Component<ChatProps, ChatState> {
   /**
    * is always called, if component did mount
    */
-   componentDidMount() {
-    this.checkLoginState();
+   async componentDidMount() {
+    await this.checkLoginState();
+    // Check for changes in local state -> reevaluate login
     window.addEventListener('storage', this.storageTokenListener);
+    // Logged in -> Check if current chat key cookie is valid
+    if (await DevChatController.doesChatKeyExists(DevChatController.getChatKeyFromCookie())) {
+      this.currentChatKeyCookie = DevChatController.getChatKeyFromCookie();
+      this.setState({isChatKeyValid: true});
+    } else {
+      const { router } = this.props;
+      router.push("/")
+    }
+    // Login validated
     DevChatController.startMessageFetch();
     this.messageFetchInterval = setInterval(() => {
+      // Check for chat key cookie changes, if changed, exit chat
+      if (DevChatController.getChatKeyFromCookie() !== this.currentChatKeyCookie) {
+        const { router } = this.props;
+        router.push("/")
+      }
       this.setState({messages: DevChatController.chatMessages})
     }, 500);
+
   }
   
   /**
@@ -44,6 +63,7 @@ class Chat extends Component<ChatProps, ChatState> {
     window.removeEventListener('storage', this.storageTokenListener);
     clearInterval(this.messageFetchInterval);
     DevChatController.stopMessageFetch();
+    DevChatController.clearChatKeyCookie();
   }
 
   /**
@@ -98,7 +118,7 @@ class Chat extends Component<ChatProps, ChatState> {
    * @returns JSX Output
    */
   render() {
-    if (this.state.isLoggedIn) {
+    if (this.state.isLoggedIn && this.state.isChatKeyValid) {
       return (
         <div>
           <Head>
@@ -108,7 +128,7 @@ class Chat extends Component<ChatProps, ChatState> {
           </Head>
 
           <header>
-            <Header pageInformation={"chatKey"} showName={true} showExit={true} showLogout={false} />
+            <Header pageInformation={DevChatController.getChatKeyFromCookie()} showName={true} showExit={true} showLogout={false} />
           </header>
 
           <main>
