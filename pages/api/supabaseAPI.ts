@@ -58,7 +58,7 @@ export class SupabaseConnection {
         
 
         // a command was found -> execute it
-        const answerLines: string[] = await command.execute(callArguments, { id: 2, name: "johannes" }, 4); // TODO: change to real values
+        const answerLines: string[] = await command.execute(callArguments, currentUser, currentChatKeyID);
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
