@@ -1,11 +1,12 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, ISurveyVote, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
 import { SurveyCommand } from '../../console_commands/survey';
+import { VoteCommand } from '../../console_commands/vote';
 
 /**
  * This is the connection to the supabase database.
@@ -25,7 +26,8 @@ export class SupabaseConnection {
     this.commands = [
       // add all command classes here
       new ExampleCommand,
-      new SurveyCommand
+      new SurveyCommand,
+      new VoteCommand
     ];
   }
 
@@ -342,6 +344,35 @@ export class SupabaseConnection {
 
     return addedSurvey;
   }
+
+
+  public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
+    let addedVote: ISurveyVote | null = null;
+
+    // fetch the supabase database
+    const voteResponse = await SupabaseConnection.CLIENT
+      .from('SurveyVote')
+      .insert([
+        {
+          UserID: voteToAdd.userID,
+          SurveyID: voteToAdd.surveyID,
+          OptionID: voteToAdd.optionID,
+        },
+    ])
+
+    if (voteResponse.data === null || voteResponse.error !== null || voteResponse.data.length === 0) {
+      return null;
+    }
+
+    addedVote = {
+      userID: voteResponse.data[0].UserID,
+      surveyID: voteResponse.data[0].SurveyID,
+      optionID: voteResponse.data[0].OptionID,
+    }
+
+    return addedVote;
+  }
+
 
 
   /** 
