@@ -1,4 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { SupabaseConnection } from '../supabaseAPI';
 
@@ -10,14 +9,17 @@ const supabaseConnection = new SupabaseConnection();
 
 /**
  * This is a api route to remove a user from the database.
- * @param req the request object (body: username, password)
+ * @param req the request object (body: userToken, usernameToDelete)
  * @param res the response object (body: wasSuccessfull)
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let password = req.body.password;
+  let userToken = req.body.userToken;
+  let usernameToDelete = req.body.usernameToDelete;
 
-  let isValid = await supabaseConnection.isUserValid({ name: username, password: password });
+  let removedSuccessfully = await supabaseConnection.deleteUser(userToken, usernameToDelete);
 
-  res.status(200).json({ wasSuccessfull: isValid });
+  console.log("Hallo")
+  console.log(String(removedSuccessfully))
+
+  res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import React, { Component } from 'react'
+import Header from './header'
 
 export interface ImpressumState {
 }
@@ -17,6 +18,10 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
   componentDidMount() {}
 
+  /**
+   * Generates the JSX Output for the Client
+   * @returns JSX Output
+   */
   render() {
     return (
       <div>
@@ -25,6 +30,10 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
           <meta name="Impressum" content="impressum" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+
+        <header>
+          <Header pageInformation={"Impressum"} showName={false} showExit={true} showLogout={false} />
+        </header>
   
         <main>
           <div>
