@@ -79,6 +79,18 @@ a {
   text-decoration: underline;
 }
 
+a:hover {
+  color: #0077ff;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.clickable:hover {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
 /** Input fields */
 
 input::placeholder {
@@ -147,6 +159,16 @@ input::placeholder {
     margin: 2pt;
     margin: 0 auto;
   }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
 }
 
 @media screen and (min-width: 900px) {
@@ -162,6 +184,16 @@ input::placeholder {
     padding: 10pt;
     margin: 2pt;
   }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
 }
 
 @media screen and (min-width: 1280px) {
@@ -176,6 +208,16 @@ input::placeholder {
     padding: 10pt;
     margin: 2pt;
   }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
 }
 
 /** Images */

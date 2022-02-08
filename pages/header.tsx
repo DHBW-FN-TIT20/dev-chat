@@ -49,7 +49,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     let showExit = <></>
 
     if (this.props.showExit) {
-      showExit = <td className={styles.exittd}>
+      showExit = <td className={styles.exittd + " clickable"}>
                   <div className={styles.exit}>
                     <Image
                       src={"/exit.png"}
@@ -65,7 +65,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     let showLogout = <></>
 
     if (this.props.showLogout) {
-      showLogout = <td className={styles.exittd}>
+      showLogout = <td className={styles.exittd + " clickable"}>
                     <div className={styles.exit}>
                       <Image
                         src={"/exit.png"}
@@ -88,7 +88,7 @@ class Header extends Component<HeaderProps, HeaderState> {
             <table className={styles.headertable} >
               <tbody>
                 <tr>
-                  <td className={styles.logotd}>
+                  <td className={styles.logotd + " clickable"}>
                     <div className={styles.logo}>
                       <Image
                         priority
@@ -110,7 +110,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                     <div className={styles.space}></div>
                   </td>
                   { showName }
-                  <td className={styles.imptd}>
+                  <td className={styles.imptd + " clickable"}>
                     <div 
                       className={styles.impressum}
                       onClick={() => router.push("/impressum")} >
