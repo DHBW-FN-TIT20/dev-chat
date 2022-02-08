@@ -373,6 +373,7 @@ export class SupabaseConnection {
 
 
   /** 
+   * //TODO adding the cmd messages in the executeCommand Function
    * API function to add a Chat Message to the database 
    * @param {string} message the message of the user
    * @param {number} chatKeyId the chatKeyId of the Chatroom
@@ -394,11 +395,17 @@ export class SupabaseConnection {
     } else if (userId === undefined) {
       return false;
     }
-    
+    let targetUserId : any;
+    if(message[0] === "/"){
+      targetUserId = userId;
+    }
+    else{
+       targetUserId = '0';
+    }
     const { data, error } = await SupabaseConnection.CLIENT
     .from('ChatMessage')
     .insert([
-      { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
+      { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetUserId, Message: message },
     ])
 
     if(message[0] === "/") {
