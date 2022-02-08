@@ -5,6 +5,7 @@ import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
+import Header from './header'
 
 export interface RegisterState {
   isNotLoggedIn: boolean,
@@ -97,7 +98,8 @@ class Register extends Component<RegisterProps, RegisterState> {
           </header>
     
           <main>
-            <div>
+            <div className={styles.container}>
+            <div className={styles.left}>
               <h1>
                 Create Account
               </h1>
@@ -147,19 +149,23 @@ class Register extends Component<RegisterProps, RegisterState> {
                 &nbsp;instead.
               </div>
             </div>
-            <div className="image">
-              <Image
-                priority
-                src={"/logo.png"}
-                alt="DEV-CHAT Logo"
-                width={1000}
-                height={1000}
-                layout="responsive"
-              />
-            </div>
-          </main>
-        </div>
-      )
+          </div>
+          <div className={styles.right}>
+          <div className="image">
+            <Image
+              priority
+              src={"/logo.png"}
+              alt="DEV-CHAT Logo"
+              width={1000}
+              height={1000}
+              layout="responsive"
+            />
+          </div>
+          </div>
+          </div>
+        </main>
+      </div>
+    )
     } else {
       return (
         <div>
