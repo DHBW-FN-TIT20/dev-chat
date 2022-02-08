@@ -4,6 +4,8 @@
         margin-top: 20pt;
         overflow-x: hidden;
     }
+    
+    
 }
 @media screen and (min-width: 900px) {
     .left {
@@ -20,7 +22,6 @@
         top: 50pt;
         height: 40%;
         width: 40%;
-    
     }
     .container {
         overflow-x: hidden;

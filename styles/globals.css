@@ -9,6 +9,7 @@
     font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 12pt;
+    
   }
 }
 
@@ -191,7 +192,7 @@ input::placeholder {
     width: 100%;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top:50%;
   }
 }
 

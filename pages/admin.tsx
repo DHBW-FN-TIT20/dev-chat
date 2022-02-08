@@ -79,12 +79,13 @@ class Admin extends Component<AdminProps, AdminState> {
           </header>
     
           <main>
-            <div>
+            <div className={styles.container}>
+            <div className={styles.left}>
               <h1>
                 User Settings
               </h1>
               <div> 
-                <table>
+                <table className={styles.table}>
                   <thead>
                     <tr>
                       <th scope='col'>Username</th>
@@ -116,7 +117,7 @@ class Admin extends Component<AdminProps, AdminState> {
                 Room Settings
               </h1>
               <div> 
-                <table>
+                <table className={styles.table}>
                   <thead>
                     <tr>
                       <th scope='col'>Key</th>
@@ -145,7 +146,7 @@ class Admin extends Component<AdminProps, AdminState> {
                 Survey Settings
               </h1>
               <div> 
-                <table>
+                <table className={styles.table}>
                   <thead>
                     <tr>
                       <th scope='col'>Name</th>
@@ -177,7 +178,7 @@ class Admin extends Component<AdminProps, AdminState> {
                 Tickets
               </h1>
               <div> 
-                <table>
+                <table className={styles.table}>
                   <thead>
                     <tr>
                       <th scope='col'>Submitter</th>
@@ -206,15 +207,6 @@ class Admin extends Component<AdminProps, AdminState> {
                 </table>
               </div>
             </div>
-            <div className="image">
-              <Image
-                priority
-                src={"/logo.png"}
-                alt="DEV-CHAT Logo"
-                width={1000}
-                height={1000}
-                layout="responsive"
-              />
             </div>
           </main>
         </div>
