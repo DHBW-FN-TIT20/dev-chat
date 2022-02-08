@@ -19,10 +19,7 @@ export class VoteCommand extends Command {
       
       let answerLines: string[] = [];
       
-      // check if the arguments are valid 
-      let argsValid: boolean = true;
-
-      // check if there are at least 4 arguments and the ids are numbers
+      // check if there are 2 arguments and the ids are numbers
       if (args.length !== 2 || isNaN(Number(args[0])) || isNaN(Number(args[1])) || currentUser.id === undefined) {
         return ["Error: Invalid arguments."];
       }

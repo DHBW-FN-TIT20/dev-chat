@@ -1,12 +1,13 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, ISurveyVote, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
 import { SurveyCommand } from '../../console_commands/survey';
 import { VoteCommand } from '../../console_commands/vote';
+import { ShowCommand } from '../../console_commands/show';
 
 /**
  * This is the connection to the supabase database.
@@ -27,7 +28,8 @@ export class SupabaseConnection {
       // add all command classes here
       new ExampleCommand,
       new SurveyCommand,
-      new VoteCommand
+      new VoteCommand,
+      new ShowCommand
     ];
   }
 
@@ -277,6 +279,62 @@ export class SupabaseConnection {
     }
   }
 
+  public getCurrentSurveyState = async (surveyID: number): Promise<ISurveyState | null> => {
+    let survey: ISurveyState;
+
+    let surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return null;
+    }
+
+    let optionResponse = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (optionResponse.data === null || optionResponse.error !== null) {
+      return null;
+    }
+
+    let voteResponse = await SupabaseConnection.CLIENT
+      .from('SurveyVote')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (voteResponse.data === null || voteResponse.error !== null) {
+      return null;
+    }
+    
+    // console.log(surveyResponse, optionResponse, voteResponse);
+    
+    // assemble the survey object
+    survey = {
+      id: surveyResponse.data[0].SurveyID,
+      name: surveyResponse.data[0].Name,
+      description: surveyResponse.data[0].Description,
+      expirationDate: surveyResponse.data[0].ExpirationDate,
+      ownerID: surveyResponse.data[0].OwnerID,
+      options: optionResponse.data.map(option => {
+        let countVotes = 0;
+        if (voteResponse.data !== null && voteResponse.data.length > 0) {
+          countVotes = voteResponse.data.filter(vote => vote.OptionID === option.OptionID).length
+        }
+        return {
+          option: {
+            id: option.OptionID,
+            name: option.OptionName,
+          },
+          votes: countVotes
+        };
+      })
+    }
+
+    return survey;
+  }
 
   public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
     let addedSurvey: ISurvey | null = null;
