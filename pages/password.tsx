@@ -92,7 +92,8 @@ class Password extends Component<PasswordProps, PasswordState> {
           </header>
     
           <main>
-            <div>
+            <div className={styles.container}>
+            <div className={styles.left}>
               <h1>
                 Change Password
               </h1>
@@ -130,6 +131,7 @@ class Password extends Component<PasswordProps, PasswordState> {
                 Change Password 
               </button>
             </div>
+            <div className={styles.right}>
             <div className="image">
               <Image
                 priority
@@ -139,6 +141,8 @@ class Password extends Component<PasswordProps, PasswordState> {
                 height={1000}
                 layout="responsive"
               />
+            </div>
+            </div>
             </div>
           </main>
         </div>
