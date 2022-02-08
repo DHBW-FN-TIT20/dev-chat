@@ -73,14 +73,10 @@ export var emptySurveyOption: ISurveyOption = {
 // SurveyVote
 
 export interface ISurveyVote {
-    user: IUser;
-    option: ISurveyOption;
+    userID: number;
+    optionID: number;
+    surveyID: number;
 }
-
-export var emptySurveyVote: ISurveyVote = {
-    user: emptyUser,
-    option: emptySurveyOption,
-};
 
 
 // Survey
