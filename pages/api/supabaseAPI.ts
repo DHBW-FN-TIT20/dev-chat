@@ -346,6 +346,16 @@ export class SupabaseConnection {
   public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
     let addedVote: ISurveyVote | null = null;
 
+    // check if the survey and the option exist
+    const optionResponse = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .select()
+      .match({ SurveyID: voteToAdd.surveyID, OptionID: voteToAdd.optionID });
+
+    if (optionResponse.data === null || optionResponse.error !== null || optionResponse.data.length === 0) {
+      return null;
+    }
+
     // fetch the supabase database
     const voteResponse = await SupabaseConnection.CLIENT
       .from('SurveyVote')
