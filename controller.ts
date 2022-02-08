@@ -196,7 +196,7 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
-  //# SECTION USER FUNCTIONS
+  //#region User Methods
 
   /**
    * This mehtod returns the current user token safed in local storage
@@ -354,7 +354,30 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
-  //# SECTION USER END
+  /**
+   * This method changes the password from the current user.
+   * @param {string} userToken current UserToken
+   * @param {string} oldPassword old Password from the user
+   * @param {string} newPassword new Password for the user
+   * @returns {Promise<boolean>} true if password was succesfully changed
+   */
+   public changePassword = async (userToken: string, oldPassword: string, newPassword: string): Promise<boolean> => {
+    let response = await fetch('./api/users/changePassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  //#endregion
 
 }
 // export the controller

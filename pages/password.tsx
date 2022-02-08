@@ -8,6 +8,11 @@ import DevChatController from '../controller'
 
 export interface PasswordState {
   isLoggedIn: boolean,
+  inputOldPassword: string,
+  inputNewPassword: string,
+  inputConfirmPassword: string,
+  feedBackMessage: string,
+  oldPasswordIsCorrect: boolean,
 }
 
 export interface PasswordProps extends WithRouterProps {}
@@ -17,6 +22,11 @@ class Password extends Component<PasswordProps, PasswordState> {
     super(props)
     this.state = {
       isLoggedIn: false,
+      inputOldPassword: "",
+      inputNewPassword: "",
+      inputConfirmPassword: "",
+      feedBackMessage: "",
+      oldPasswordIsCorrect: true,
     }
     
   }
@@ -66,6 +76,8 @@ class Password extends Component<PasswordProps, PasswordState> {
    * @returns JSX Output
    */
   render() {
+    const { router } = this.props
+
     if (this.state.isLoggedIn) {
       return (
         <div>
@@ -84,14 +96,38 @@ class Password extends Component<PasswordProps, PasswordState> {
               <h1>
                 Change Password
               </h1>
-              <input type="password" placeholder="Old password..."/>
-              <input type="password" placeholder="New password..."/>
-              <input type="password" placeholder="Confirm new password..."/>
-              <div> 
-                Incorrect username or password. 
-              </div>
-              <button> 
-                Log In 
+              <input type="password" placeholder="Old password..."
+              onChange={(event) => { 
+                this.setState({inputOldPassword: event.currentTarget.value}) 
+                this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, event.currentTarget.value, this.state.inputNewPassword, this.state.inputConfirmPassword); 
+              }} 
+              value={this.state.inputOldPassword}/>
+              <input type="password" placeholder="New Password..." 
+                onChange={(event) => { 
+                  this.setState({inputNewPassword: event.currentTarget.value }) 
+                  this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, event.currentTarget.value, this.state.inputConfirmPassword); 
+                }} 
+                value={this.state.inputNewPassword} />
+              <input type="password" placeholder="Confirm New Password..." 
+                onChange={(event) => { 
+                  this.setState({ inputConfirmPassword: event.currentTarget.value }) 
+                  this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, event.currentTarget.value);
+                }} 
+                value={this.state.inputConfirmPassword}/>
+              <div className='error' hidden={this.state.feedBackMessage === ""}>{this.state.feedBackMessage}</div>
+              <button onClick={async() => {
+                let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
+                this.setState({
+                  oldPasswordIsCorrect: oldPasswordIsCorrect
+                })
+                if (oldPasswordIsCorrect) {
+                  router.push("/")
+                }
+                else {
+                  this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
+                }
+              }}> 
+                Change Password 
               </button>
             </div>
             <div className="image">
@@ -118,6 +154,28 @@ class Password extends Component<PasswordProps, PasswordState> {
         </div>
       )
     }
+  }
+  
+  private updateFeedbackMessage(oldPasswordIsCorrect: boolean, inputOldPassword: string, inputNewPassword: string, inputConfirmPassword: string) {
+    console.log("updateFeedbackMessage()");
+    console.table({inputNewPassword, inputConfirmPassword})
+    let feedBackMessage: string = "";
+    
+    if(!oldPasswordIsCorrect) {
+      feedBackMessage = "Old password is incorrect or the new password doesn't match the requirements"
+    }
+
+    if(inputOldPassword === inputNewPassword) {
+      feedBackMessage = "Old password cannot be new password"
+    }
+    else if (inputConfirmPassword !== inputNewPassword) {
+      feedBackMessage = "Passwords are not correct";  
+    } 
+      else if (inputOldPassword === "" || inputNewPassword === "" || inputConfirmPassword === "") {
+      feedBackMessage = "Please enter all required fields"
+    } 
+
+    this.setState({ feedBackMessage: feedBackMessage });
   }
 }
 

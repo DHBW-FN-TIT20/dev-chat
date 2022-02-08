@@ -556,7 +556,7 @@ export class SupabaseConnection {
     return data[0].ChatKeyID;
   };
 
-  //# SECTION USER TOKEN
+  //#region User Token Methods
 
   /**
    * This mehtod checks a username for requirements
@@ -725,5 +725,34 @@ export class SupabaseConnection {
     }
   }
 
-  //# SECTION USER TOKEN END
+  /**
+   * This method changes the password from the current user
+   * @param {string} token Token to extract username from
+   * @param {string} oldPassword contains the old User Password
+   * @param {string} newPassword contains the new User Password
+   * @returns {Promise<boolean>} if password was changed -> return true
+   */
+     public changeUserPassword = async (token: string, oldPassword: string, newPassword: string): Promise<boolean> => {
+      let userName: string = "" 
+      let currentUser: IUser
+
+      if(await this.isUserTokenValid(token)) {
+          userName = this.getUsernameFromToken(token);
+          if(userName !== null && userName !== "") {
+            currentUser = await this.getIUserByUsername(userName);        
+            if(currentUser !== null && this.isPasswordValid(newPassword) && currentUser.hashedPassword !== undefined && await this.checkPassword(oldPassword, currentUser.hashedPassword)) {
+              //first hash then Save
+              let hashedPassword = await this.hashPassword(newPassword);
+
+              const { data, error } = await SupabaseConnection.CLIENT
+              .from('User')
+              .update({ Password: hashedPassword})
+              .eq('UserID', currentUser.id);
+              return true;            
+            }
+          }
+      }
+      return false;
+    }
+  //#endregion
 }
