@@ -43,13 +43,7 @@ export class DevChatController {
   public async enteredNewMessage(message: string) {
     console.log("DevChatController.enteredNewMessage()");
     console.log("in Controller: " + message);
-    if(await this.checkMessageForCommands(message) == false) {   
-      // NOTE: getCookies function here?!
-      // Add the Message to the Database
-      // userId: 2 --> Wildcard
-      // chatKeyId: 2 --> Wildcard
-      this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
-    }
+    this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
   }
 
   /**
@@ -76,20 +70,6 @@ export class DevChatController {
     let data = await response.json();
     console.log("addChatKey(): "+ data.wasSuccessfull);   
     return data.wasSuccessfull;
-  }
-
-  /**
-   * NOTE: Not needed in frontend?!
-   * Checks if the message is a command
-   * @param {string} message Input messag to check
-   * @returns {Promise<boolean>} True if it is a Command, false if not
-   */
-  private async checkMessageForCommands(message: string): Promise<boolean> {
-    var isMessageCommand : boolean = false;
-    console.log("DevChatController.checkMessageForCommands()");
-    console.log("is Command: " + isMessageCommand);
-    //Task in Sprint 2
-    return isMessageCommand;
   }
 
   /**

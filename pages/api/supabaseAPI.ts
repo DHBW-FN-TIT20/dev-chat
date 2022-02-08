@@ -64,11 +64,8 @@ export class SupabaseConnection {
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
-
           // no answer -> command was not executed successfully
-
-          this.addChatMessage(command.helpText, currentChatKeyID, undefined, currentUser.id );
-
+          this.addChatMessage(command.helpText, currentChatKeyID, undefined, 1 );
           return false;
         } else {
 
@@ -76,7 +73,7 @@ export class SupabaseConnection {
 
           // create a message for each line of the answer
           for (let i = 0; i < answerLines.length; i++) {
-            await this.addChatMessage(answerLines[i], currentChatKeyID, undefined, currentUser.id );
+            await this.addChatMessage(answerLines[i], currentChatKeyID, undefined, 1 );
           }
 
           console.log("Command executed successfully.");
