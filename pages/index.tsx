@@ -138,7 +138,7 @@ class Main extends Component<MainProps, MainState> {
                 Create Room
               </h1>
               <button onClick={async () => {
-                if (await DevChatController.CreateChatRoom()) {
+                if (await DevChatController.addChatKey()) {
                   router.push("/chat");
                 }
               }}> 
