@@ -42,22 +42,27 @@ export class SupabaseConnection {
   * @param {number} currentChatKeyID the id of the chat the user is in
   * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
   */
-  private async executeCommand(userInput: string, currentUser: IUser, currentChatKeyID: number): Promise<boolean> {
-
+  private async executeCommand(userInput: string, userId: number, currentChatKeyID: number): Promise<boolean> {
+    let currentUser : IUser = await this.getIUserByUserID(userId);
     // split the user input into the command and the arguments
     let callString: string = splitString(userInput)[0].slice(1);
     let callArguments: string[] = splitString(userInput).slice(1);
 
     console.log("SupabaseConnection.executeCommand()", callString, callArguments);
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatMessage')
+      .insert([
+        { ChatKeyID: currentChatKeyID, UserID: userId, TargetUserID: userId, Message: userInput },
+      ])
     
-
+    let commandFound: boolean = false;
     for (let i = 0; i < this.commands.length; i++) {
       let command = this.commands[i];
       console.log(command.callString, callString);
-      
+
       if (command.callString == callString) {
         console.log("command found");
-        
+        commandFound = true;
 
         // a command was found -> execute it
         const answerLines: string[] = await command.execute(callArguments, currentUser, currentChatKeyID);
@@ -65,7 +70,12 @@ export class SupabaseConnection {
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
           // no answer -> command was not executed successfully
-          this.addChatMessage(command.helpText, currentChatKeyID, undefined, 1 );
+          //adding the Help Text in the DB to display in the Chat
+          const { data, error } = await SupabaseConnection.CLIENT
+            .from('ChatMessage')
+            .insert([
+              { ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: command.helpText },
+            ])
           return false;
         } else {
 
@@ -73,7 +83,11 @@ export class SupabaseConnection {
 
           // create a message for each line of the answer
           for (let i = 0; i < answerLines.length; i++) {
-            await this.addChatMessage(answerLines[i], currentChatKeyID, undefined, 1 );
+            const { data, error } = await SupabaseConnection.CLIENT
+              .from('ChatMessage')
+              .insert([
+                { ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: answerLines[i] },
+              ])
           }
 
           console.log("Command executed successfully.");
@@ -82,6 +96,14 @@ export class SupabaseConnection {
         }
       }
     };
+    if (commandFound == false) {
+      console.log("No command /" + callString + " found");
+      const { data, error } = await SupabaseConnection.CLIENT
+        .from('ChatMessage')
+        .insert([
+          { ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: 'No Command /' + callString + ' found' },
+        ])
+    }
 
     return false; // command was not found
   }
@@ -395,31 +417,29 @@ export class SupabaseConnection {
     } else if (userId === undefined) {
       return false;
     }
-    let targetUserId : any;
-    if(message[0] === "/"){
-      targetUserId = userId;
-    }
-    else{
-       targetUserId = '0';
-    }
-    const { data, error } = await SupabaseConnection.CLIENT
-    .from('ChatMessage')
-    .insert([
-      { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetUserId, Message: message },
-    ])
 
+    
     if(message[0] === "/") {
       console.log("Command detected");
-      await this.executeCommand(message, await this.getIUserByUserID(userId), chatKeyId);
-    }
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // Message was not added -> return false
-      return false;
-    } else {
-      // Message was added -> return true
+      await this.executeCommand(message, userId, chatKeyId);
       return true;
+    }
+    else{
+      console.log("No Command detected")
+      const { data, error } = await SupabaseConnection.CLIENT
+        .from('ChatMessage')
+        .insert([
+          { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
+        ])
+
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // Message was not added -> return false
+        return false;
+      } else {
+        // Message was added -> return true
+        return true;
+      }
     }
 
   };
