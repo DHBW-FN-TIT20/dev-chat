@@ -5,7 +5,6 @@ import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
-import Header from './header'
 
 export interface RegisterState {
   isNotLoggedIn: boolean,
@@ -160,7 +159,6 @@ class Register extends Component<RegisterProps, RegisterState> {
               height={1000}
               layout="responsive"
             />
-          </div>
           </div>
           </div>
         </main>

@@ -117,7 +117,7 @@ class Login extends Component<LoginProps, LoginState> {
                   &nbsp;instead.
                 </div>
               </div>
-            </div>
+            
             <div className={styles.right}>
               <div className="image">
                 <Image
@@ -128,6 +128,7 @@ class Login extends Component<LoginProps, LoginState> {
                   height={1000}
                 />
               </div>
+            </div>
             </div>
           </main>
         </div>
