@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies} from 'cookies-next';
 import { IChatMessage } from './public/interfaces';
+import chat from './pages/chat';
 
 
 /**
@@ -47,7 +48,7 @@ export class DevChatController {
   }
 
   /**
-   * Function to create a ChatKey
+   * Function to create a ChatKey and add it to DB
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
   **/
   public async addChatKey(): Promise<boolean> {
@@ -61,6 +62,10 @@ export class DevChatController {
     });
     let data = await response.json();
     console.log("addChatKey(): " + data.wasSuccessfull);
+    if(data.wasSuccessfull == true)
+    {
+      this.setChatKeyCookie(data.newChatKey);
+    }
     return data.wasSuccessfull;
   }
 
@@ -94,6 +99,7 @@ export class DevChatController {
    * @param {string} chatKey Value for cookie
    */
   public setChatKeyCookie(chatKey: string) {
+    console.log("setChatKeyCookie("+ chatKey+")")
     setCookies(this.chatKeyCookieName, chatKey);
   }
 
