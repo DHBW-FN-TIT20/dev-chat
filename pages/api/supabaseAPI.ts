@@ -569,13 +569,26 @@ export class SupabaseConnection {
   //#region User Token Methods
 
   /**
-   * This mehtod checks a username for requirements
+   * This method checks a username for requirements
    * @param {string} username username to check
    * @returns {boolean} true if the username meets the requirements, false if not
    */
   public isUsernameValid = (username: string): boolean => {
-    //TODO: Lukas implement task 50
-    return true;
+    /**
+     * Requirements:
+     * Length: 4-16 characters
+     * Characters: only letters and numbers
+     * Keyword admin is not allowed
+     */
+    if (username.length >= 4 && username.length <= 16) {
+      if (username.match("^[a-zA-Z0-9]+$")) {
+        if (username.match("[a-z,A-Z,0-9]*[a,A][d,D][m,M][i,I][n,N][a-z,A-Z,0-9]*")) {
+          return false;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -584,8 +597,20 @@ export class SupabaseConnection {
    * @returns {boolean} true if the password meets the requirements, false if not
    */
   public isPasswordValid = (password: string): boolean => {
-    // TODO: Lukas implement task 50
-    return true;
+    /**
+     * Requirements:
+     * Length: min. 8 characters
+     * Characters: min. 1 number, 1 uppercase character, 1 lowercase character, 1 special character
+     * Characters: only letters and numbers + !*#,;?+-_.=~^%(){}|:"/
+     */
+    if (password.length >= 8) {
+      if (password.match(".*[0-9].*") && password.match(".*[A-Z].*") && password.match(".*[a-z].*") && password.match('.*[!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-].*')) {
+        if (password.match('^[a-z,A-Z,0-9,!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-]*$')) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
