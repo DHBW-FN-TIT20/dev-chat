@@ -2,9 +2,15 @@
     
     .container {
         overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
     .left {
-        margin-top: 70pt;
+        margin-top: 20pt;
+        width: 90%;
+        
+        
     }
     
     

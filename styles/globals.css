@@ -376,3 +376,8 @@ input::placeholder {
 .orange {
   color: #FF9933;
 }
+
+p {
+  display: inline;
+  overflow-wrap: break-word;
+}

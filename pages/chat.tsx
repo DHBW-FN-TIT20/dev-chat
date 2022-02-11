@@ -137,18 +137,14 @@ class Chat extends Component<ChatProps, ChatState> {
                   <tbody>
                     {this.state.messages.map(message => (
                       <tr key={message.id}>
-                        <td className={styles.tableUser}>
-                          <p>
+                          <td className={styles.msg}>
+                          <p className={styles.tableUser}>
                             {message.user}
                           </p>
-                        </td>
-                        <td className={styles.tableAt}>
-                          <p>
+                          <p className={styles.tableAt}>
                             &nbsp;at&nbsp;
                           </p>
-                        </td>
-                        <td className={styles.tableDate}>
-                          <p>
+                          <p className={styles.tableDate}>
                             {new Date(message.date).toLocaleDateString('de-DE', {
                               day: '2-digit',
                               month: '2-digit',
@@ -157,18 +153,14 @@ class Chat extends Component<ChatProps, ChatState> {
                               minute: '2-digit',
                               hourCycle: 'h24',
                             })}
-                          </p>
-                        </td>
-                        <td className={styles.tableArrow}>
-                          <p>
+                          </p>                   
+                          <p className={styles.tableArrow}>
                             &nbsp;-&gt;&nbsp;
-                          </p>
-                        </td>
-                        <td className={styles.tableMessage}>
-                          <p>
+                          </p>                        
+                          <p className={styles.tableMessage}>
                             {message.message}
                           </p>
-                        </td>
+                          </td>
                       </tr>
                     ))}
                   </tbody>

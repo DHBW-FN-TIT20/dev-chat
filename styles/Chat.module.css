@@ -9,6 +9,10 @@
   flex-direction: column-reverse;
 }
 
+.msg {
+  display: inline-block;
+}
+
 .messageTableDiv::-webkit-scrollbar {
   display: none;
 }
