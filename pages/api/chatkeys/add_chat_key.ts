@@ -5,7 +5,8 @@ import { getThreeWords } from '../../../shared/threeword_generator';
 import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
-    wasSuccessfull: boolean
+    wasSuccessfull: boolean;
+    newChatKey: string;
 }
 
 const supabaseConnection = new SupabaseConnection();
@@ -16,8 +17,8 @@ const supabaseConnection = new SupabaseConnection();
  */
  export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {  
     
-    let chatKey = getThreeWords();;  
-
+    let chatKey = getThreeWords();
+    
     let addedSucessfully = await supabaseConnection.addChatKey(chatKey);
-    res.status(200).json({ wasSuccessfull: addedSucessfully });
+    res.status(200).json({ wasSuccessfull: addedSucessfully, newChatKey: chatKey});
 }
