@@ -134,8 +134,6 @@ class Register extends Component<RegisterProps, RegisterState> {
                   this.setState({
                     userAlreadyExists: userAlreadyExists
                   })
-                  //this.state.inputPassword === "" && this.state.inputConfirmPassword === "" && this.state.inputUsername === "" || this.state.inputConfirmPassword !== this.state.inputPassword
-                  //Hier muss Lukas noch die Anforderungen dann einbauen
                   if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
                     console.log("Pressed Register Button")
                     let registerUserReturnString :string = await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword);

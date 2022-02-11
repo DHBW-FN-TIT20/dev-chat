@@ -175,7 +175,7 @@ class Password extends Component<PasswordProps, PasswordState> {
       feedBackMessage = "Old password is incorrect or the new password doesn't match the requirements"
     }
 
-    if(inputOldPassword == inputNewPassword) {
+    if(inputOldPassword === inputNewPassword) {
       feedBackMessage = "Old password cannot be new password"
     }
     else if (inputConfirmPassword !== inputNewPassword) {
