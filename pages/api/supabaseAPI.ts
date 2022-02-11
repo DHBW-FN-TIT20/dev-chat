@@ -452,6 +452,9 @@ export class SupabaseConnection {
     // check if survey is still open
     let isExpired = await this.isSurveyExpired(voteToAdd.surveyID);
     
+    console.log(isExpired);
+    
+
     if (isExpired === true || isExpired === null) {
       return null;
     }
@@ -490,7 +493,7 @@ export class SupabaseConnection {
     return addedVote;
   }
 
-  
+
 
   /**
    * This function is used to check if a survey is expired or not.
@@ -507,8 +510,8 @@ export class SupabaseConnection {
     if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
       return null;
     }
-        
-    return surveyResponse.data[0].expirationDate < new Date();
+
+    return new Date(surveyResponse.data[0].ExpirationDate) < new Date();
   }
 
 
