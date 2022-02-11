@@ -282,7 +282,6 @@ export class DevChatController {
    * @returns {Promise<string>} true if registration was successfull, error message if not
    */
   public registerUser = async (username: string, password: string): Promise<string> => {
-    let returnString: string = ""
     let response = await fetch('./api/users/register', {
       method: 'POST',
       headers: {
@@ -294,24 +293,12 @@ export class DevChatController {
       })
     });
     let data = await response.json();
-    console.log("Controller.passwordValid "+data.passwordValid)
-    console.log("Controller.usernameValid "+data.usernameValid)
-    if (data.wasSuccessfull) {
+    console.log("Controller.data.wasSuccessfull "+data.wasSuccessfull)
+    if (data.wasSuccessfull == "True") {
       let controller = new DevChatController;
       await controller.loginUser(username, password);
-      returnString = "True"
     }
-    else if(data.usernameValid == false && data.passwordValid == false){
-      returnString = "error_username_password";
-    }
-    else if(data.passwordValid == false){
-      returnString = "error_password";
-    }
-    else if(data.usernameValid == false ){
-      returnString = "error_username";
-    }
-    console.log("return Message: "+ returnString);
-    return returnString;
+    return data.wasSuccessfull;    
   }
 
     /**

@@ -721,28 +721,43 @@ export class SupabaseConnection {
    * @param {string} user username to register
    * @param {string} password password for the user
    * @param {number} accessLevel access level for the user
-   * @returns {Promise<boolean>} true if registration was successfull, false if not
+   * @returns {Promise<string>} true if registration was successfull, error Message if not
    */
-  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
+  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<string> => {
+    if(await this.userAlreadyExists(username) == false){
+      let returnString: string = "";
+      let vUsernameValid: boolean = await this.isUsernameValid(username);
+      let vPasswordValid: boolean = await this.isPasswordValid(password);
+      console.log("vPasswordValid: " + vPasswordValid);
+      console.log("vUsernameValid: " + vUsernameValid);
+      if (vUsernameValid == false && vPasswordValid == false) {
+        returnString = "error_username_password";
+      }
+      else if (vPasswordValid == false) {
+        returnString = "error_password";
+      }
+      else if (vUsernameValid == false) {
+        returnString = "error_username";
+      }
+      else if (vUsernameValid && vPasswordValid) {
+        let hashedPassword = await this.hashPassword(password);
 
-    //let userExists = await this.userAlreadyExists(username);
+        const { data, error } = await SupabaseConnection.CLIENT
+          .from('User')
+          .insert([
+            { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
+          ]);
 
-    // if (!this.isUsernameValid(username) || !this.isPasswordValid(password) /*|| userExists*/) {
-    //   return false;
-    // }
-
-    let hashedPassword = await this.hashPassword(password);
-
-    const { data, error } = await SupabaseConnection.CLIENT
-      .from('User')
-      .insert([
-        { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
-      ]);
-
-    if (data === null || error !== null || data.length === 0) {
-      return false;
+        if (data === null || error !== null || data.length === 0) {
+          returnString = "False";
+        }
+        returnString = "True"
+      }
+      return returnString;
     }
-    return true;
+    else{
+      return "False";
+    }
   }
 
   /**
