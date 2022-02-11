@@ -38,11 +38,11 @@ export class ShowCommand extends Command {
     if (survey === null) {
       answerLines.push("Error: Could not find the survey.");
       return answerLines;
-    }
+    }    
 
     answerLines.push(`ID: ${survey.id}`);
     answerLines.push(`Name: ${survey.name}`);
-    answerLines.push(`Is expired: ${survey.expirationDate < new Date()} (Expiration date: ${survey.expirationDate})`);
+    answerLines.push(`Is expired: ${survey.expirationDate < new Date()} (Expiration date: ${survey.expirationDate.toLocaleDateString()})`);
     answerLines.push(`Options:`);
 
     for (let option of survey.options) {

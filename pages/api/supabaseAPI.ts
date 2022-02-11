@@ -321,7 +321,7 @@ export class SupabaseConnection {
       id: surveyResponse.data[0].SurveyID,
       name: surveyResponse.data[0].Name,
       description: surveyResponse.data[0].Description,
-      expirationDate: surveyResponse.data[0].ExpirationDate,
+      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
       options: optionResponse.data.map(option => {
         let countVotes = 0;
@@ -341,7 +341,7 @@ export class SupabaseConnection {
     return survey;
   }
 
-  
+
   /**
    * This function is used to get all surveys and it is called by the /show command.
    * @returns {Promise<ISurvey[]>} all surveys in the database
@@ -362,7 +362,7 @@ export class SupabaseConnection {
         id: survey.SurveyID,
         name: survey.Name,
         description: survey.Description,
-        expirationDate: survey.ExpirationDate,
+        expirationDate: new Date(survey.ExpirationDate),
         ownerID: survey.OwnerID,
         options: []
       }
@@ -386,7 +386,7 @@ export class SupabaseConnection {
         {
           Name: surveyToAdd.name,
           Description: surveyToAdd.description,
-          ExpirationDate: surveyToAdd.expirationDate,
+          ExpirationDate: new Date(surveyToAdd.expirationDate),
           OwnerID: surveyToAdd.ownerID,
         },
     ])
@@ -399,7 +399,7 @@ export class SupabaseConnection {
       id: surveyResponse.data[0].SurveyID,
       name: surveyResponse.data[0].Name,
       description: surveyResponse.data[0].Description,
-      expirationDate: surveyResponse.data[0].ExpirationDate,
+      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
       options: [],
     }
@@ -449,6 +449,13 @@ export class SupabaseConnection {
   public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
     let addedVote: ISurveyVote | null = null;
 
+    // check if survey is still open
+    let isExpired = await this.isSurveyExpired(voteToAdd.surveyID);
+    
+    if (isExpired === true || isExpired === null) {
+      return null;
+    }
+
     // check if the survey and the option exist
     const optionResponse = await SupabaseConnection.CLIENT
       .from('SurveyOption')
@@ -468,7 +475,7 @@ export class SupabaseConnection {
           SurveyID: voteToAdd.surveyID,
           OptionID: voteToAdd.optionID,
         },
-    ])
+      ])
 
     if (voteResponse.data === null || voteResponse.error !== null || voteResponse.data.length === 0) {
       return null;
@@ -481,6 +488,27 @@ export class SupabaseConnection {
     }
 
     return addedVote;
+  }
+
+  
+
+  /**
+   * This function is used to check if a survey is expired or not.
+   * @param surveyID the surveyID of the survey to check if it is expired
+   * @returns {Promise<boolean>} true if the survey is expired, false if not
+   */
+  public isSurveyExpired = async (surveyID: number): Promise<boolean | null> => {
+    // fetch the supabase database
+    const surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return null;
+    }
+        
+    return surveyResponse.data[0].expirationDate < new Date();
   }
 
 
