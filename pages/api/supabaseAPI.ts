@@ -258,7 +258,7 @@ export class SupabaseConnection {
 
   /**
    * This method returns all user informations for the given userID 
-   * @param userID the userID of the user
+   * @param {number} userID the userID of the user
    * @returns {Promise<IUser>} the user object containing all information
    */
    public getIUserByUserID = async (userID: number): Promise<IUser> => {
@@ -279,6 +279,11 @@ export class SupabaseConnection {
     }
   }
 
+  /**
+   * This method returns the current state of a survey for the given surveyID.
+   * @param {number} surveyID the surveyID of the survey 
+   * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
+   */
   public getCurrentSurveyState = async (surveyID: number): Promise<ISurveyState | null> => {
     let survey: ISurveyState;
 
@@ -336,6 +341,41 @@ export class SupabaseConnection {
     return survey;
   }
 
+  
+  /**
+   * This function is used to get all surveys and it is called by the /show command.
+   * @returns {Promise<ISurvey[]>} all surveys in the database
+   */
+  public getAllSurveys = async (): Promise<ISurvey[]> => {
+    let surveys: ISurvey[] = [];
+
+    let surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+    
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return surveys;
+    }
+
+    surveys = surveyResponse.data.map(survey => {
+      return {
+        id: survey.SurveyID,
+        name: survey.Name,
+        description: survey.Description,
+        expirationDate: survey.ExpirationDate,
+        ownerID: survey.OwnerID,
+        options: []
+      }
+    })
+
+    return surveys;
+  }
+
+  /**
+   * This function is used to add a new survey to the database.
+   * @param {ISurvey} surveyToAdd the survey object to add to the database
+   * @returns {Promise<ISurvey>} the survey object containing all information (with the added surveyID)
+   */
   public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
     let addedSurvey: ISurvey | null = null;
 
@@ -401,6 +441,11 @@ export class SupabaseConnection {
   }
 
 
+  /**
+   * This function is used to add a new vote for a survey option to the database.
+   * @param voteToAdd the vote object to add to the database
+   * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
+   */
   public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
     let addedVote: ISurveyVote | null = null;
 

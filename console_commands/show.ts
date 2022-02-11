@@ -18,13 +18,17 @@ export class ShowCommand extends Command {
     console.log("ShowCommand.execute()");
     
     let answerLines: string[] = [];
+
+    if(args.length === 0) {
+      answerLines = await this.showAllCurrentSurveys();
+      return answerLines;
+    } 
     
     // check if there is 1 argument and the id is a number
     if (args.length !== 1 || isNaN(Number(args[0]))) {
       return ["Error: Invalid arguments."];
     }
 
-    // ----------------------------------------------------------------
     const supabaseConnection = new SupabaseConnection();
     
     // get the survey with the given id
@@ -38,6 +42,7 @@ export class ShowCommand extends Command {
 
     answerLines.push(`ID: ${survey.id}`);
     answerLines.push(`Name: ${survey.name}`);
+    answerLines.push(`Is expired: ${survey.expirationDate < new Date()} (Expiration date: ${survey.expirationDate})`);
     answerLines.push(`Options:`);
 
     for (let option of survey.options) {
@@ -45,6 +50,29 @@ export class ShowCommand extends Command {
     }
 
     return answerLines;
+  }
+
+
+  /**
+   * This function shows all current surveys.
+   * @returns the answer lines for the command "/show" with all current surveys
+   */
+  async showAllCurrentSurveys(): Promise<string[]> {
+    let answerLines: string[] = [];
+
+    const supabaseConnection = new SupabaseConnection();
+
+    // get all surveys
+    let surveys: ISurvey[] = await supabaseConnection.getAllSurveys();
+
+    answerLines.push("Current Surveys:");
+
+    // print out the surveys
+    for (let survey of surveys) {
+      answerLines.push(`${survey.name} ID: ${survey.id} Status: ${(survey.expirationDate < new Date()) ? "expired" : "active"}`); 
+    }
+
+    return answerLines
   }
   
 }
