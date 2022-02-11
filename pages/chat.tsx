@@ -52,7 +52,7 @@ class Chat extends Component<ChatProps, ChatState> {
         router.push("/")
       }
       this.setState({messages: DevChatController.chatMessages})
-    }, 500);
+    }, 2000);
 
   }
   
@@ -62,7 +62,6 @@ class Chat extends Component<ChatProps, ChatState> {
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
     clearInterval(this.messageFetchInterval);
-    DevChatController.stopMessageFetch();
     DevChatController.clearChatKeyCookie();
   }
 
@@ -138,18 +137,38 @@ class Chat extends Component<ChatProps, ChatState> {
                   <tbody>
                     {this.state.messages.map(message => (
                       <tr key={message.id}>
-                        <td>{message.user}</td>
-                        <td>at</td>
-                        <td>{new Date(message.date).toLocaleDateString('de-DE', {
+                        <td className={styles.tableUser}>
+                          <p>
+                            {message.user}
+                          </p>
+                        </td>
+                        <td className={styles.tableAt}>
+                          <p>
+                            &nbsp;at&nbsp;
+                          </p>
+                        </td>
+                        <td className={styles.tableDate}>
+                          <p>
+                            {new Date(message.date).toLocaleDateString('de-DE', {
                               day: '2-digit',
                               month: '2-digit',
                               year: 'numeric',
                               hour: '2-digit',
                               minute: '2-digit',
                               hourCycle: 'h24',
-                            })}</td>
-                        <td>-&gt;</td>
-                        <td>{message.message}</td>
+                            })}
+                          </p>
+                        </td>
+                        <td className={styles.tableArrow}>
+                          <p>
+                            &nbsp;-&gt;&nbsp;
+                          </p>
+                        </td>
+                        <td className={styles.tableMessage}>
+                          <p>
+                            {message.message}
+                          </p>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
