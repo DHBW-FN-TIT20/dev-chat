@@ -7,6 +7,8 @@ import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
 import { SurveyCommand } from '../../console_commands/survey';
 import { VoteCommand } from '../../console_commands/vote';
+import { CalcCommand } from '../../console_commands/calc';
+import { ReportCommand } from '../../console_commands/report';
 
 /**
  * This is the connection to the supabase database.
@@ -27,7 +29,9 @@ export class SupabaseConnection {
       // add all command classes here
       new ExampleCommand,
       new SurveyCommand,
-      new VoteCommand
+      new VoteCommand,
+      new CalcCommand,
+      new ReportCommand
     ];
   }
 
@@ -44,6 +48,7 @@ export class SupabaseConnection {
   */
   private async executeCommand(userInput: string, userId: number, currentChatKeyID: number): Promise<boolean> {
     let currentUser : IUser = await this.getIUserByUserID(userId);
+
     // split the user input into the command and the arguments
     let callString: string = splitString(userInput)[0].slice(1);
     let callArguments: string[] = splitString(userInput).slice(1);
@@ -61,16 +66,23 @@ export class SupabaseConnection {
       console.log(command.callString, callString);
 
       if (command.callString == callString) {
+        // a command was found -> execute it
         console.log("command found");
         commandFound = true;
+        let answerLines: string[];
 
-        // a command was found -> execute it
-        const answerLines: string[] = await command.execute(callArguments, currentUser, currentChatKeyID);
+        // check if user is allowed to execute the command
+        let currentAccessLevel = currentUser.accessLevel ? currentUser.accessLevel : 0
+        if(currentAccessLevel >= command.minimumAccessLevel) {
+          answerLines = await command.execute(callArguments, currentUser, currentChatKeyID);
+        } else {
+          answerLines = ["Error: Not allowed to execute this command!"]
+        }
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
           // no answer -> command was not executed successfully
-          //adding the Help Text in the DB to display in the Chat
+          // adding the Help Text in the DB to display in the Chat
           const { data, error } = await SupabaseConnection.CLIENT
             .from('ChatMessage')
             .insert([
