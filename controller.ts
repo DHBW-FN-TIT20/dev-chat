@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies} from 'cookies-next';
 import { IChatMessage } from './public/interfaces';
+import chat from './pages/chat';
 
 
 /**
@@ -40,28 +41,24 @@ export class DevChatController {
   }
 
   /**
-   * Function to create a Chat Room
-   * @returns {Promise<boolean>} true if the chat key was created, false if not
-   */
-  public CreateChatRoom = async (): Promise<boolean> => {
-    // NOTE: This function needs to add a cookie with the chat key.
-    // NOTE: This function might not be needed because addChatKey could do all of it. (check if needed)
-    return await this.addChatKey()
-  }
-
-  /**
-   * Function to create a ChatKey
+   * Function to create a ChatKey and add it to DB
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
   **/
-   private addChatKey = async (): Promise<boolean> => {
-    let response = await fetch('./api/chatkeys/save_chat_key', {
+  public async addChatKey(): Promise<boolean> {
+    //Creates new chat Key and adds to DB
+    //TODO set Coockie
+    let response = await fetch('./api/chatkeys/add_chat_key', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
-      },      
+      },
     });
     let data = await response.json();
-    console.log("addChatKey(): "+ data.wasSuccessfull);   
+    console.log("addChatKey(): " + data.wasSuccessfull);
+    if(data.wasSuccessfull == true)
+    {
+      this.setChatKeyCookie(data.newChatKey);
+    }
     return data.wasSuccessfull;
   }
 
@@ -95,6 +92,7 @@ export class DevChatController {
    * @param {string} chatKey Value for cookie
    */
   public setChatKeyCookie(chatKey: string) {
+    console.log("setChatKeyCookie("+ chatKey+")")
     setCookies(this.chatKeyCookieName, chatKey);
   }
 
