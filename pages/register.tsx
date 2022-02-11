@@ -148,7 +148,7 @@ class Register extends Component<RegisterProps, RegisterState> {
                 &nbsp;instead.
               </div>
             </div>
-          </div>
+          
           <div className={styles.right}>
           <div className="image">
             <Image
@@ -159,6 +159,7 @@ class Register extends Component<RegisterProps, RegisterState> {
               height={1000}
               layout="responsive"
             />
+          </div>
           </div>
           </div>
         </main>

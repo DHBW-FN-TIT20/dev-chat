@@ -190,9 +190,11 @@ input::placeholder {
 @media screen and (min-width: 900px) {
   .image {
     width: 100%;
-    position: absolute;
-    left: 50%;
-    top:50%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 

@@ -1,8 +1,10 @@
 @media screen and (max-width: 900px) {
     
     .container {
-        margin-top: 20pt;
         overflow-x: hidden;
+    }
+    .left {
+        margin-top: 70pt;
     }
 }
 @media screen and (min-width: 900px) {
@@ -16,13 +18,13 @@
     
     .right {
         position: absolute;
-        left: 40%;
+        left: 50%;
         top: 50pt;
-        height: 30%;
-        width: 30%;
-    
+        height: 100%;
+        width: 50%;
     }
     .container {
+        height: 100%;
         overflow-x: hidden;
     }
 }
@@ -37,13 +39,13 @@
 
 .right {
     position: absolute;
-    left: 40%;
+    left: 50%;
     top: 50pt;
-    height: 30%;
-    width: 30%;
-
+    height: 100%;
+    width: 50%;
 }
 .container {
+    height: 100%;
     overflow-x: hidden;
 }
 
