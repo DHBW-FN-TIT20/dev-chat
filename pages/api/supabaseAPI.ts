@@ -673,11 +673,11 @@ export class SupabaseConnection {
    */
   public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
 
-    let userExists = await this.userAlreadyExists(username);
+    //let userExists = await this.userAlreadyExists(username);
 
-    if (!this.isUsernameValid(username) || !this.isPasswordValid(password) || userExists) {
-      return false;
-    }
+    // if (!this.isUsernameValid(username) || !this.isPasswordValid(password) /*|| userExists*/) {
+    //   return false;
+    // }
 
     let hashedPassword = await this.hashPassword(password);
 

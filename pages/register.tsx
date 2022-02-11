@@ -5,7 +5,6 @@ import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
-import Header from './header'
 
 export interface RegisterState {
   isNotLoggedIn: boolean,
@@ -14,6 +13,8 @@ export interface RegisterState {
   inputPassword: string,
   inputConfirmPassword: string,
   feedbackMessage: string,
+  newUsernameValid: boolean,
+  newPasswordValid: boolean
 }
 
 export interface RegisterProps extends WithRouterProps {}
@@ -32,6 +33,8 @@ class Register extends Component<RegisterProps, RegisterState> {
       inputPassword: "",
       inputConfirmPassword: "",
       feedbackMessage: "",
+      newPasswordValid: true,
+      newUsernameValid: true,
     }
     
   }
@@ -96,75 +99,88 @@ class Register extends Component<RegisterProps, RegisterState> {
           <header>
             <Header pageInformation={"Register"} showName={false} showExit={false} showLogout={false} />
           </header>
-    
+
           <main>
             <div className={styles.container}>
-            <div className={styles.left}>
-              <h1>
-                Create Account
-              </h1>
-              <input type="text" placeholder="Username..." 
-                onChange={(event) => { 
-                  this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false}) 
-                  this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword); 
-                }} 
-                value={this.state.inputUsername} />
-              <input type="password" placeholder="Password..." 
-                onChange={(event) => { 
-                  this.setState({ inputPassword: event.currentTarget.value }) 
-                  this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword); 
-                }} 
-                value={this.state.inputPassword} />
-              <input type="password" placeholder="Confirm Password..." 
-                onChange={(event) => { 
-                  this.setState({ inputConfirmPassword: event.currentTarget.value }) 
-                  this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, this.state.inputPassword, event.currentTarget.value);
-                }} 
-                value={this.state.inputConfirmPassword}/>
-              
-              <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+              <div className={styles.left}>
+                <h1>
+                  Create Account
+                </h1>
+                <input type="text" placeholder="Username..."
+                  onChange={(event) => {
+                    this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false })
+                    this.updateFeedbackMessage();
+                  }}
+                  value={this.state.inputUsername} />
+                <input type="password" placeholder="Password..."
+                  onChange={(event) => {
+                    this.setState({ inputPassword: event.currentTarget.value })
+                    this.updateFeedbackMessage();
+                  }}
+                  value={this.state.inputPassword} />
+                <input type="password" placeholder="Confirm Password..."
+                  onChange={(event) => {
+                    this.setState({ inputConfirmPassword: event.currentTarget.value })
+                    this.updateFeedbackMessage();
+                  }}
+                  value={this.state.inputConfirmPassword} />
 
-              <button onClick={async () => {
-                let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
-                this.setState({
-                  userAlreadyExists: userAlreadyExists
-                })
-                //this.state.inputPassword === "" && this.state.inputConfirmPassword === "" && this.state.inputUsername === "" || this.state.inputConfirmPassword !== this.state.inputPassword
-                //Hier muss Lukas noch die Anforderungen dann einbauen
-                if(!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
-                  console.log("Pressed Register Button" )
-                  if (await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword)) {
-                    router.push("/")
+                <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+
+                <button onClick={async () => {
+                  let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
+                  this.setState({
+                    userAlreadyExists: userAlreadyExists
+                  })
+                  //this.state.inputPassword === "" && this.state.inputConfirmPassword === "" && this.state.inputUsername === "" || this.state.inputConfirmPassword !== this.state.inputPassword
+                  //Hier muss Lukas noch die Anforderungen dann einbauen
+                  if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
+                    console.log("Pressed Register Button")
+                    let registerUserReturnString :string = await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword);
+                    console.log(registerUserReturnString)
+                    if (registerUserReturnString == "True") {
+                      this.setState({newPasswordValid: true, newUsernameValid: true});
+                      router.push("/")
+                    }
+                    else if(registerUserReturnString == "error_username_password"){
+                      //Password and username not Valid
+                      this.setState({newPasswordValid: false, newUsernameValid: false});
+                    }
+                    else if (registerUserReturnString == "error_username"){
+                      this.setState({newUsernameValid: false});
+                    }
+                    else if(registerUserReturnString == "error_password"){
+                      this.setState({newPasswordValid: false})
+                    }
                   }
-                }
-                this.updateFeedbackMessage(userAlreadyExists, this.state.inputUsername, this.state.inputPassword, this.state.inputConfirmPassword);
-              }}> 
-                Create
-              </button>
-              <div>
-                Or&nbsp; 
-                <a onClick={() => router.push("/login")}>
-                  login
-                </a> 
-                &nbsp;instead.
+                  this.updateFeedbackMessage();
+                }}>
+                  Create
+                </button>
+                <div>
+                  Or&nbsp;
+                  <a onClick={() => router.push("/login")}>
+                    login
+                  </a>
+                  &nbsp;instead.
+                </div>
               </div>
             </div>
-          </div>
-          <div className={styles.right}>
-          <div className="image">
-            <Image
-              priority
-              src={"/logo.png"}
-              alt="DEV-CHAT Logo"
-              width={1000}
-              height={1000}
-              layout="responsive"
-            />
-          </div>
-          </div>
-          </div>
-        </main>
+            <div className={styles.right}>
+              <div className="image">
+                <Image
+                  priority
+                  src={"/logo.png"}
+                  alt="DEV-CHAT Logo"
+                  width={1000}
+                  height={1000}
+                  layout="responsive"
+                />
+              </div>
+            </div>
+        </main >
       </div>
+
     )
     } else {
       return (
@@ -180,20 +196,35 @@ class Register extends Component<RegisterProps, RegisterState> {
   }
 
 
-  private updateFeedbackMessage(userAlreadyExists: boolean, inputUser: string, inputPassword: string, inputConfirmPassword: string) {
+  private updateFeedbackMessage() {
     console.log("updateFeedbackMessage()");
-    console.table({userAlreadyExists, inputUser, inputPassword, inputConfirmPassword})
+    console.log("userAlreadyExists: "+ this.state.userAlreadyExists)
+    console.log("inputUsername: "+ this.state.inputUsername)
+    console.log("inputPassword: "+ this.state.inputPassword)
+    console.log("inputConfirmPassword: "+ this.state.inputConfirmPassword)
+    console.log("newPasswordValid: "+ this.state.newPasswordValid)
+    console.log("newUsernameValid: "+ this.state.newUsernameValid)
     let feedbackMessage: string = "";
     
-    if(userAlreadyExists) {
+    if(this.state.userAlreadyExists) {
       feedbackMessage = "Username already exists";
     } 
-      else if (inputConfirmPassword !== inputPassword) {
+      else if (this.state.inputConfirmPassword !== this.state.inputPassword) {
       feedbackMessage = "Passwords are not correct";  
     } 
-      else if (inputUser === "" || inputPassword === "" || inputConfirmPassword === "") {
+      else if (this.state.inputUsername === "" || this.state.inputPassword === "" || this.state.inputConfirmPassword === "") {
       feedbackMessage = "Please enter all required fields"
     } 
+    if(this.state.newPasswordValid == false && this.state.newUsernameValid == false)
+    {
+      feedbackMessage = "The Password and the Username doesnt fulfil the requirements.";
+    }
+    else if(this.state.newPasswordValid == false){
+      feedbackMessage = "The Password doesnt fulfil the requirements.";
+    }
+    else if(this.state.newUsernameValid == false){
+      feedbackMessage = "The Username doesnt fulfil the requirements.";
+    }
 
     this.setState({ feedbackMessage: feedbackMessage });
   }
