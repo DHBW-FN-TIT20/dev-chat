@@ -3,14 +3,17 @@
   height: calc(100vh - 62pt - 30pt);
   margin-left: 2ch;
   margin-right: 2ch;
-  scrollbar-width: none;
+  scrollbar-width: 10pt;
   -ms-overflow-style: none;
   display: flex;
   flex-direction: column-reverse;
 }
 
+
 .msg {
   display: inline-block;
+  text-align: left;
+  
 }
 
 .messageTableDiv::-webkit-scrollbar {

@@ -34,6 +34,7 @@
     font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 16pt;
+    overflow: hidden;
   }
 }
 

@@ -4,7 +4,10 @@
         overflow-x: hidden;
     }
     .left {
-        margin-top: 70pt;
+        margin-top: 20pt;
+        width: 100%;
+        padding-left: 30pt;
+        padding-right: 30pt;
     }
     
 }
@@ -43,6 +46,7 @@
     top: 50pt;
     height: 100%;
     width: 50%;
+    overflow: hidden;
 }
 .container {
     height: 100%;
