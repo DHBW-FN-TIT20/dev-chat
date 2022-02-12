@@ -216,10 +216,12 @@ export class SupabaseConnection {
     .rpc('Delete')
 
     //Hier muss noch ggbfs. was geschrieben werden.
-    if (error) console.error(error)
-
-    else console.log(data)
-
+    if (error) {
+      console.error(error)
+    }
+    else {
+      console.log(data)
+    }
     
     return false;
   };
