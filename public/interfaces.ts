@@ -94,7 +94,7 @@ export interface ISurvey {
 // BugTicket
 
 export interface IBugTicket {
-    id: number;
+    id?: number;
     submitter: IUser;
     date: Date; // maybe change later
     message: string;

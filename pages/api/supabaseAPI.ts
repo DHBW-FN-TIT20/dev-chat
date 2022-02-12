@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, ISurveyVote, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, ISurveyVote, IUser, IBugTicket } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
@@ -311,6 +311,48 @@ export class SupabaseConnection {
     }
   }
 
+  
+  /**
+   * This Method adds a new ticket to the supabase database
+   * @param bugToReport the bug that should be reported (see report.ts)
+   * @returns returns the ticket which was added to the supabase database
+   */
+  public addNewTicket = async (bugToReport: IBugTicket): Promise<IBugTicket | null> =>{
+    let addedTicket: IBugTicket | null = null;
+    console.log("The reported Bug was: " + bugToReport.message)
+    // fetch the supabase database
+
+    // REMINDER EVTLL IBugTicket Struktur nehmen statt direkte Daten -------
+
+    const TicketResponse = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .insert([
+        {
+          SubmitterID: bugToReport.id,
+          TicketCreateDate: bugToReport.date,
+          // REMINDER EVTLL IBugTicket Struktur nehmen statt direkte Daten -------
+          Message: bugToReport.message,
+          Solved: bugToReport.solved,
+        },
+    ])
+    console.log("The reported Bug was: " + TicketResponse.data[0].Message)
+
+    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0 || TicketResponse.data[0].TicketID === null || TicketResponse.data[0].TicketID === undefined) {
+      return null;
+    }
+
+    addedTicket = {
+      id: TicketResponse.data[0].TicketID,
+      submitter: TicketResponse.data[0].SubmitterID,
+      date: TicketResponse.data[0].TicketCreateDate, 
+      message: TicketResponse.data[0].Message,
+      solved: TicketResponse.data[0].Solved,
+    }
+
+    const TicketID = TicketResponse.data[0].TicketID;
+
+    return addedTicket;
+  }
 
   public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
     let addedSurvey: ISurvey | null = null;
