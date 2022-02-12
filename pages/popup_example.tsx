@@ -31,12 +31,13 @@ export default class PopupExample extends Component<PopupExampleProps, PopupExam
             <h1>Testing Popup</h1>
             <button onClick={this.togglePopup.bind(this)}>show Popup</button>
             {this.state.showPopup ? 
-          <Popup
-            textDisplay='This is nice PopUp made by good Programmer'
-            closePopup={this.togglePopup.bind(this)}
-          />
-          : null
-        }
+              <Popup
+                headerText='PopUp Caption'
+                textDisplay='This is nice PopUp made by good Programmer'
+                closePopup={this.togglePopup.bind(this)}
+              />
+              : null
+            }
         </div>
       );
   }
