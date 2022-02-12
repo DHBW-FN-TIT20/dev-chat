@@ -6,6 +6,8 @@ import DevChatController from '../controller'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
+
+
 export interface ChatState {
   isLoggedIn: boolean,
   isChatKeyValid: boolean,
@@ -124,6 +126,14 @@ class Chat extends Component<ChatProps, ChatState> {
             <title>Chat</title>
             <meta name="description" content="chat" />
             <link rel="icon" href="/favicon.ico" />
+            <script>
+                let i = message.user.name.length;
+                let lenString = 16;
+                for(; i < lenString; ){
+                  document.write("&nbsp;")
+                }
+              
+            </script>
           </Head>
 
           <header>
@@ -139,6 +149,13 @@ class Chat extends Component<ChatProps, ChatState> {
                       <tr key={message.id}>
                           <td className={styles.msg}>
                           <p className={styles.tableUser}>
+                            
+                            {for(let i = message.user.length; i<16; i++) {
+                                message.user.split(" ");
+                              }
+                            }
+                             
+                             
                             {message.user}
                           </p>
                           <p className={styles.tableAt}>
@@ -168,6 +185,7 @@ class Chat extends Component<ChatProps, ChatState> {
               </div>
               <input className={styles.chatBox} value={this.state.chatLineInput} type="text" placeholder="Write a message..." onKeyPress={this.handleEnterKeyPress} onChange={this.handleChatLineInput} />
             </div>
+            
           </main>
         </div>
       )
