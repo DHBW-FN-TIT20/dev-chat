@@ -95,32 +95,32 @@ class Register extends Component<RegisterProps, RegisterState> {
           <header>
             <Header pageInformation={"Register"} showName={false} showExit={false} showLogout={false} />
           </header>
-    
+
           <main>
             <div className={styles.container}>
               <div className={styles.left}>
                 <h1>
                   Create Account
                 </h1>
-                <input type="text" placeholder="Username..." 
-                  onChange={(event) => { 
-                    this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false}) 
-                    this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword); 
-                  }} 
+                <input type="text" placeholder="Username..."
+                  onChange={(event) => {
+                    this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false })
+                    this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword);
+                  }}
                   value={this.state.inputUsername} />
-                <input type="password" placeholder="Password..." 
-                  onChange={(event) => { 
-                    this.setState({ inputPassword: event.currentTarget.value }) 
-                    this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword); 
-                  }} 
+                <input type="password" placeholder="Password..."
+                  onChange={(event) => {
+                    this.setState({ inputPassword: event.currentTarget.value })
+                    this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword);
+                  }}
                   value={this.state.inputPassword} />
-                <input type="password" placeholder="Confirm Password..." 
-                  onChange={(event) => { 
-                    this.setState({ inputConfirmPassword: event.currentTarget.value }) 
+                <input type="password" placeholder="Confirm Password..."
+                  onChange={(event) => {
+                    this.setState({ inputConfirmPassword: event.currentTarget.value })
                     this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, this.state.inputPassword, event.currentTarget.value);
-                  }} 
-                  value={this.state.inputConfirmPassword}/>
-                
+                  }}
+                  value={this.state.inputConfirmPassword} />
+
                 <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
 
                 <button onClick={async () => {
@@ -130,21 +130,21 @@ class Register extends Component<RegisterProps, RegisterState> {
                   })
                   //this.state.inputPassword === "" && this.state.inputConfirmPassword === "" && this.state.inputUsername === "" || this.state.inputConfirmPassword !== this.state.inputPassword
                   //Hier muss Lukas noch die Anforderungen dann einbauen
-                  if(!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
-                    console.log("Pressed Register Button" )
+                  if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
+                    console.log("Pressed Register Button")
                     if (await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword)) {
                       router.push("/")
                     }
                   }
                   this.updateFeedbackMessage(userAlreadyExists, this.state.inputUsername, this.state.inputPassword, this.state.inputConfirmPassword);
-                }}> 
+                }}>
                   Create
                 </button>
                 <div>
-                  Or&nbsp; 
+                  Or&nbsp;
                   <a onClick={() => router.push("/login")}>
                     login
-                  </a> 
+                  </a>
                   &nbsp;instead.
                 </div>
               </div>
@@ -161,9 +161,10 @@ class Register extends Component<RegisterProps, RegisterState> {
                 />
               </div>
             </div>
-          </main>
-        </div>
-      )
+        </main >
+      </div>
+
+    )
     } else {
       return (
         <div>
