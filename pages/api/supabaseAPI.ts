@@ -1,12 +1,13 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, ISurveyVote, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
 import { SurveyCommand } from '../../console_commands/survey';
 import { VoteCommand } from '../../console_commands/vote';
+import { ShowCommand } from '../../console_commands/show';
 
 /**
  * This is the connection to the supabase database.
@@ -27,7 +28,8 @@ export class SupabaseConnection {
       // add all command classes here
       new ExampleCommand,
       new SurveyCommand,
-      new VoteCommand
+      new VoteCommand,
+      new ShowCommand
     ];
   }
 
@@ -278,7 +280,7 @@ export class SupabaseConnection {
 
   /**
    * This method returns all user informations for the given userID 
-   * @param userID the userID of the user
+   * @param {number} userID the userID of the user
    * @returns {Promise<IUser>} the user object containing all information
    */
    public getIUserByUserID = async (userID: number): Promise<IUser> => {
@@ -299,7 +301,103 @@ export class SupabaseConnection {
     }
   }
 
+  /**
+   * This method returns the current state of a survey for the given surveyID.
+   * @param {number} surveyID the surveyID of the survey 
+   * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
+   */
+  public getCurrentSurveyState = async (surveyID: number): Promise<ISurveyState | null> => {
+    let survey: ISurveyState;
 
+    let surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return null;
+    }
+
+    let optionResponse = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (optionResponse.data === null || optionResponse.error !== null) {
+      return null;
+    }
+
+    let voteResponse = await SupabaseConnection.CLIENT
+      .from('SurveyVote')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (voteResponse.data === null || voteResponse.error !== null) {
+      return null;
+    }
+    
+    // console.log(surveyResponse, optionResponse, voteResponse);
+    
+    // assemble the survey object
+    survey = {
+      id: surveyResponse.data[0].SurveyID,
+      name: surveyResponse.data[0].Name,
+      description: surveyResponse.data[0].Description,
+      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
+      ownerID: surveyResponse.data[0].OwnerID,
+      options: optionResponse.data.map(option => {
+        let countVotes = 0;
+        if (voteResponse.data !== null && voteResponse.data.length > 0) {
+          countVotes = voteResponse.data.filter(vote => vote.OptionID === option.OptionID).length
+        }
+        return {
+          option: {
+            id: option.OptionID,
+            name: option.OptionName,
+          },
+          votes: countVotes
+        };
+      })
+    }
+
+    return survey;
+  }
+
+
+  /**
+   * This function is used to get all surveys and it is called by the /show command.
+   * @returns {Promise<ISurvey[]>} all surveys in the database
+   */
+  public getAllSurveys = async (): Promise<ISurvey[]> => {
+    let surveys: ISurvey[] = [];
+
+    let surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+    
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return surveys;
+    }
+
+    surveys = surveyResponse.data.map(survey => {
+      return {
+        id: survey.SurveyID,
+        name: survey.Name,
+        description: survey.Description,
+        expirationDate: new Date(survey.ExpirationDate),
+        ownerID: survey.OwnerID,
+        options: []
+      }
+    })
+
+    return surveys;
+  }
+
+  /**
+   * This function is used to add a new survey to the database.
+   * @param {ISurvey} surveyToAdd the survey object to add to the database
+   * @returns {Promise<ISurvey>} the survey object containing all information (with the added surveyID)
+   */
   public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
     let addedSurvey: ISurvey | null = null;
 
@@ -310,7 +408,7 @@ export class SupabaseConnection {
         {
           Name: surveyToAdd.name,
           Description: surveyToAdd.description,
-          ExpirationDate: surveyToAdd.expirationDate,
+          ExpirationDate: new Date(surveyToAdd.expirationDate),
           OwnerID: surveyToAdd.ownerID,
         },
     ])
@@ -323,7 +421,7 @@ export class SupabaseConnection {
       id: surveyResponse.data[0].SurveyID,
       name: surveyResponse.data[0].Name,
       description: surveyResponse.data[0].Description,
-      expirationDate: surveyResponse.data[0].ExpirationDate,
+      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
       options: [],
     }
@@ -365,8 +463,23 @@ export class SupabaseConnection {
   }
 
 
+  /**
+   * This function is used to add a new vote for a survey option to the database.
+   * @param voteToAdd the vote object to add to the database
+   * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
+   */
   public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
     let addedVote: ISurveyVote | null = null;
+
+    // check if survey is still open
+    let isExpired = await this.isSurveyExpired(voteToAdd.surveyID);
+    
+    console.log(isExpired);
+    
+
+    if (isExpired === true || isExpired === null) {
+      return null;
+    }
 
     // check if the survey and the option exist
     const optionResponse = await SupabaseConnection.CLIENT
@@ -387,7 +500,7 @@ export class SupabaseConnection {
           SurveyID: voteToAdd.surveyID,
           OptionID: voteToAdd.optionID,
         },
-    ])
+      ])
 
     if (voteResponse.data === null || voteResponse.error !== null || voteResponse.data.length === 0) {
       return null;
@@ -400,6 +513,27 @@ export class SupabaseConnection {
     }
 
     return addedVote;
+  }
+
+
+
+  /**
+   * This function is used to check if a survey is expired or not.
+   * @param surveyID the surveyID of the survey to check if it is expired
+   * @returns {Promise<boolean>} true if the survey is expired, false if not
+   */
+  public isSurveyExpired = async (surveyID: number): Promise<boolean | null> => {
+    // fetch the supabase database
+    const surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+      .match({ SurveyID: surveyID });
+
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return null;
+    }
+
+    return new Date(surveyResponse.data[0].ExpirationDate) < new Date();
   }
 
 
