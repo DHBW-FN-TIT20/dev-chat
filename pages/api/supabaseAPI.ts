@@ -310,6 +310,28 @@ export class SupabaseConnection {
       return user;
     }
   }
+/**
+ * This function is used to change the status of a ticket from to-do to solved
+ * NOTE -- This function only gives feedback inside the console, not the browser!
+ * @param ticketToChange The ID of the ticket, that should be changed
+ * @returns boolean - true if ticked was sucessfully changed - false if not
+ */
+  public changeSolvedState = async(ticketToChange: number): Promise <boolean> =>{
+    let changedSucessfully: boolean = false;
+
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .update({Solved: 'true'})
+      .eq('TicketID', ticketToChange)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    console.log("Your Ticket status was changed successfully!");
+
+    return changedSucessfully;
+  }
 
   
   /**
@@ -320,6 +342,7 @@ export class SupabaseConnection {
   public addNewTicket = async (bugToReport: IBugTicket): Promise<IBugTicket | null> =>{
     let addedTicket: IBugTicket | null = null;
     console.log("The reported Bug was: " + bugToReport.message)
+    console.log("The Submitter was: " + bugToReport.submitter)
     // fetch the supabase database
 
     // REMINDER EVTLL IBugTicket Struktur nehmen statt direkte Daten -------
@@ -328,18 +351,16 @@ export class SupabaseConnection {
       .from('Ticket')
       .insert([
         {
-          SubmitterID: bugToReport.id,
-          TicketCreateDate: bugToReport.date,
-          // REMINDER EVTLL IBugTicket Struktur nehmen statt direkte Daten -------
+          SubmitterID: bugToReport.submitter.id,
           Message: bugToReport.message,
-          Solved: bugToReport.solved,
         },
     ])
-    console.log("The reported Bug was: " + TicketResponse.data[0].Message)
+    
 
     if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0 || TicketResponse.data[0].TicketID === null || TicketResponse.data[0].TicketID === undefined) {
       return null;
     }
+    console.log("The reported Bug was: " + TicketResponse.data[0].Message)
 
     addedTicket = {
       id: TicketResponse.data[0].TicketID,

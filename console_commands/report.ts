@@ -17,18 +17,14 @@ export class ReportCommand extends Command {
     
     public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
       let answerLines: string[] = [];
-
       // save the date 
       let currentDate: Date = new Date();
 
       // Connect to supabase
       const supabaseConnection = new SupabaseConnection();
-
       let bugToReport: IBugTicket = {
         submitter: currentUser,
-        date: currentDate,
         message: args.join(" "),
-        solved: false,
       };
       // add the surves to the database
       let addedTicket: IBugTicket | null = await supabaseConnection.addNewTicket(bugToReport);
