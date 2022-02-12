@@ -208,6 +208,26 @@ export class SupabaseConnection {
   };
 
   /** 
+  * API function to delete all old chat keys from the database 
+  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if old chat keys were deleted
+  */
+  public deleteOldChatKeys = async (): Promise<boolean> => {
+    const { data, error } = await SupabaseConnection.CLIENT
+    .rpc('Delete')
+
+    //Hier muss noch ggbfs. was geschrieben werden.
+    if (error) {
+      console.error(error)
+    }
+    else {
+      console.log(data)
+    }
+    
+    return false;
+  };
+
+
+  /** 
 * API function to check if the input ChatKey exists
 * @param {string} chatKey the chatKey to check
 * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatkey exists

@@ -48,6 +48,22 @@ export class DevChatController {
   }
 
   /**
+   * This is a function that delete old chat keys from the database
+   * @returns {Promise<boolean>} true if old chat keys were deleted
+   **/
+  public deleteOldChatKeys = async (): Promise<boolean> => {
+    console.log("TEST VON PHILLIPP DELETE IM CONTROLLER") 
+    let response = await fetch('./api/chatkeys/delete_old_chat_keys', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+  
+  /**
    * Function to create a ChatKey and add it to DB
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
   **/
