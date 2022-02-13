@@ -1,12 +1,14 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser } from '../../public/interfaces';
+import { IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser, IBugTicket } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
 import { SurveyCommand } from '../../console_commands/survey';
 import { VoteCommand } from '../../console_commands/vote';
+import { CalcCommand } from '../../console_commands/calc';
+import { ReportCommand } from '../../console_commands/report';
 import { ShowCommand } from '../../console_commands/show';
 
 /**
@@ -29,6 +31,8 @@ export class SupabaseConnection {
       new ExampleCommand,
       new SurveyCommand,
       new VoteCommand,
+      new CalcCommand,
+      new ReportCommand
       new ShowCommand
     ];
   }
@@ -46,6 +50,7 @@ export class SupabaseConnection {
   */
   private async executeCommand(userInput: string, userId: number, currentChatKeyID: number): Promise<boolean> {
     let currentUser : IUser = await this.getIUserByUserID(userId);
+
     // split the user input into the command and the arguments
     let callString: string = splitString(userInput)[0].slice(1);
     let callArguments: string[] = splitString(userInput).slice(1);
@@ -63,16 +68,23 @@ export class SupabaseConnection {
       console.log(command.callString, callString);
 
       if (command.callString == callString) {
+        // a command was found -> execute it
         console.log("command found");
         commandFound = true;
+        let answerLines: string[];
 
-        // a command was found -> execute it
-        const answerLines: string[] = await command.execute(callArguments, currentUser, currentChatKeyID);
+        // check if user is allowed to execute the command
+        let currentAccessLevel = currentUser.accessLevel ? currentUser.accessLevel : 0
+        if(currentAccessLevel >= command.minimumAccessLevel) {
+          answerLines = await command.execute(callArguments, currentUser, currentChatKeyID);
+        } else {
+          answerLines = ["Error: Not allowed to execute this command!"]
+        }
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
           // no answer -> command was not executed successfully
-          //adding the Help Text in the DB to display in the Chat
+          // adding the Help Text in the DB to display in the Chat
           const { data, error } = await SupabaseConnection.CLIENT
             .from('ChatMessage')
             .insert([
@@ -320,7 +332,66 @@ export class SupabaseConnection {
       return user;
     }
   }
+/**
+ * This function is used to change the status of a ticket from to-do to solved
+ * NOTE -- This function only gives feedback inside the console, not the browser!
+ * @param ticketToChange The ID of the ticket, that should be changed
+ * @returns boolean - true if ticked was sucessfully changed - false if not
+ */
+  public changeSolvedState = async(ticketToChange: number): Promise <boolean> =>{
+    let changedSucessfully: boolean = false;
 
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .update({Solved: 'true'})
+      .eq('TicketID', ticketToChange)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    console.log("Your Ticket status was changed successfully!");
+
+    return changedSucessfully;
+  }
+
+  
+  /**
+   * This Method adds a new ticket to the supabase database
+   * @param bugToReport the bug that should be reported (see report.ts)
+   * @returns returns the ticket which was added to the supabase database
+   */
+  public addNewTicket = async (bugToReport: IBugTicket): Promise<IBugTicket | null> =>{
+    let addedTicket: IBugTicket | null = null;
+    console.log("The reported Bug was: " + bugToReport.message)
+    console.log("The Submitter was: " + bugToReport.submitter)
+    // fetch the supabase database
+    const TicketResponse = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .insert([
+        {
+          SubmitterID: bugToReport.submitter.id,
+          Message: bugToReport.message,
+        },
+    ])
+    
+    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0 || TicketResponse.data[0].TicketID === null || TicketResponse.data[0].TicketID === undefined) {
+      return null;
+    }
+    console.log("The reported Bug was: " + TicketResponse.data[0].Message)
+
+    addedTicket = {
+      id: TicketResponse.data[0].TicketID,
+      submitter: TicketResponse.data[0].SubmitterID,
+      date: TicketResponse.data[0].TicketCreateDate, 
+      message: TicketResponse.data[0].Message,
+      solved: TicketResponse.data[0].Solved,
+    }
+
+    const TicketID = TicketResponse.data[0].TicketID;
+
+    return addedTicket;
+  }
   /**
    * This method returns the current state of a survey for the given surveyID.
    * @param {number} surveyID the surveyID of the survey 
