@@ -32,7 +32,7 @@ export class SupabaseConnection {
       new SurveyCommand,
       new VoteCommand,
       new CalcCommand,
-      new ReportCommand
+      new ReportCommand,
       new ShowCommand
     ];
   }

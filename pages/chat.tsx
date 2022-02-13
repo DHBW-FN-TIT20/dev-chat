@@ -17,7 +17,7 @@ export interface ChatProps extends WithRouterProps { }
 class Chat extends Component<ChatProps, ChatState> {
   private messageFetchInterval: any = undefined;
   private currentChatKeyCookie: string = "";
-  private chatLineInput: string ="";
+  private chatLineInput: string = "";
   constructor(props: ChatProps) {
     super(props)
     this.state = {
