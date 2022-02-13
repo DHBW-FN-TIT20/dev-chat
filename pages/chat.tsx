@@ -126,14 +126,6 @@ class Chat extends Component<ChatProps, ChatState> {
             <title>Chat</title>
             <meta name="description" content="chat" />
             <link rel="icon" href="/favicon.ico" />
-            <script>
-                let i = message.user.name.length;
-                let lenString = 16;
-                for(; i < lenString; ){
-                  document.write("&nbsp;")
-                }
-              
-            </script>
           </Head>
 
           <header>
@@ -149,13 +141,6 @@ class Chat extends Component<ChatProps, ChatState> {
                       <tr key={message.id}>
                           <td className={styles.msg}>
                           <p className={styles.tableUser}>
-                            
-                            {for(let i = message.user.length; i<16; i++) {
-                                message.user.split(" ");
-                              }
-                            }
-                             
-                             
                             {message.user}
                           </p>
                           <p className={styles.tableAt}>
