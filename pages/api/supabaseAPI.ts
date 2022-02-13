@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser, IBugTicket } from '../../public/interfaces';
+import { IChatKey, IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser, IBugTicket } from '../../public/interfaces';
 import { ExampleCommand } from '../../console_commands/example';
 import { Command } from '../../console_commands/baseclass';
 import splitString from '../../shared/splitstring';
@@ -10,6 +10,8 @@ import { VoteCommand } from '../../console_commands/vote';
 import { CalcCommand } from '../../console_commands/calc';
 import { ReportCommand } from '../../console_commands/report';
 import { ShowCommand } from '../../console_commands/show';
+import { ExpireCommand } from '../../console_commands/expire';
+import chat from '../chat';
 
 /**
  * This is the connection to the supabase database.
@@ -33,7 +35,8 @@ export class SupabaseConnection {
       new VoteCommand,
       new CalcCommand,
       new ReportCommand,
-      new ShowCommand
+      new ShowCommand,
+      new ExpireCommand,
     ];
   }
 
@@ -678,6 +681,55 @@ export class SupabaseConnection {
     }
 
   };
+
+  /** 
+  * API function to update the current Chat Key ExpiratioNDate 
+  * @param {number} chatKeyID the Id of the current Chatroom
+  * @param {Date} newExpirationDate the new ExpirationDate
+  * @returns {Promise<IChatKey>} a promise that resolves an IChatKey with the new ExpirationDate
+  */
+  public updateExpirationDateFromCurrentChatKey = async (chatKeyID: number, newExpirationDate: Date): Promise<IChatKey | null> => {
+    let chatKey: IChatKey | null = null;
+
+    const { data, error } = await SupabaseConnection.CLIENT
+    .from('ChatKey')
+    .update({ 'ExpirationDate': newExpirationDate })
+    .eq('ChatKeyID', chatKeyID)
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // ChatKey was not updated -> return null
+      return chatKey;
+    } else {
+      // ChatKey was updated -> return chatkey object with new expirationDate
+      return await this.getChatKey(chatKeyID);
+    }
+  };
+
+  /**
+  * This function is used to get the current chat for the command /expire
+  * @param {number} chatKeyID the Id of the current Chatroom
+  * @returns {Promise<IChatKey>} to get the current chatKeyObject from the Database
+  */
+    public getChatKey = async (chatKeyID: number): Promise<IChatKey | null> => {
+    let chatKey: IChatKey | null = null;
+
+    let chatKeyToResponse = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .select()
+      .eq('ChatKeyID', chatKeyID)
+    
+    if (chatKeyToResponse.data === null || chatKeyToResponse.error !== null || chatKeyToResponse.data.length === 0) {
+      return chatKey;
+    }
+
+    chatKey = {
+        id: chatKeyToResponse.data[0].ChatKeyID,
+        threeWord: chatKeyToResponse.data[0].ChatKeyName,
+        expirationDate: new Date(chatKeyToResponse.data[0].ExpirationDate),
+    }       
+    return chatKey;
+  }
 
   /** 
    * API function to add a Chat Key to the database 
