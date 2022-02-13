@@ -9,7 +9,6 @@ import { IChatMessage } from '../public/interfaces'
 export interface ChatState {
   isLoggedIn: boolean,
   isChatKeyValid: boolean,
-  chatLineInput: string,
   messages: IChatMessage[],
 }
 
@@ -18,12 +17,12 @@ export interface ChatProps extends WithRouterProps { }
 class Chat extends Component<ChatProps, ChatState> {
   private messageFetchInterval: any = undefined;
   private currentChatKeyCookie: string = "";
+  private chatLineInput: string ="";
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       isLoggedIn: false,
       isChatKeyValid: false,
-      chatLineInput: '',
       messages: [],
     }
   }
@@ -96,11 +95,11 @@ class Chat extends Component<ChatProps, ChatState> {
   * Checks if Enter was pressed
   * @param event Occurred Event
   */
-   handleEnterKeyPress = (event: any) => {
+  handleEnterKeyPress = (event: any) => {
     if (event.key === 'Enter') {
-      console.log("Entered new Message: " + this.state.chatLineInput);
-      DevChatController.enteredNewMessage(this.state.chatLineInput);
-      this.setState({ chatLineInput: "" });
+      console.log("Entered new Message: " + this.chatLineInput);
+      DevChatController.enteredNewMessage(this.chatLineInput);
+      event.target.value = "";
     }
   }
 
@@ -110,7 +109,7 @@ class Chat extends Component<ChatProps, ChatState> {
    * @param event Occured Event
    */
   handleChatLineInput = (event: any) => {
-    this.setState({ chatLineInput: event.target.value });
+    this.chatLineInput = event.target.value
   }
 
   /**
@@ -155,7 +154,12 @@ class Chat extends Component<ChatProps, ChatState> {
                   </tbody>
                 </table>
               </div>
-              <input className={styles.chatBox} value={this.state.chatLineInput} type="text" placeholder="Write a message..." onKeyPress={this.handleEnterKeyPress} onChange={this.handleChatLineInput} />
+              <input 
+                className={styles.chatBox} 
+                type="text" placeholder="Write a message..." 
+                onKeyPress={this.handleEnterKeyPress} 
+                onChange={this.handleChatLineInput}
+              />
             </div>
           </main>
         </div>
