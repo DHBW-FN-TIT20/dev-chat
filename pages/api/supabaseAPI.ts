@@ -751,11 +751,13 @@ export class SupabaseConnection {
         if (data === null || error !== null || data.length === 0) {
           returnString = "False";
         }
-        returnString = "True"
+        else {
+          returnString = "True";
+        }
       }
       return returnString;
     }
-    else{
+    else {
       return "False";
     }
   }
