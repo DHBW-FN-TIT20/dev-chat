@@ -125,7 +125,13 @@ class Password extends Component<PasswordProps, PasswordState> {
                   router.push("/")
                 }
                 else {
-                  this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
+                  this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
+                  this.setState({
+                    inputConfirmPassword: "",
+                    inputOldPassword: "",
+                    inputNewPassword: "",
+                  })
+
                 }
               }}> 
                 Change Password 
@@ -162,7 +168,7 @@ class Password extends Component<PasswordProps, PasswordState> {
   
   private updateFeedbackMessage(oldPasswordIsCorrect: boolean, inputOldPassword: string, inputNewPassword: string, inputConfirmPassword: string) {
     console.log("updateFeedbackMessage()");
-    console.table({inputNewPassword, inputConfirmPassword})
+    console.table({oldPasswordIsCorrect, inputOldPassword, inputNewPassword, inputConfirmPassword})
     let feedBackMessage: string = "";
     
     if(!oldPasswordIsCorrect) {

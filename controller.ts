@@ -288,9 +288,9 @@ export class DevChatController {
    * This method registers a user to the database
    * @param {string} username the username of the user to be created
    * @param {string} password the password of the user to be created
-   * @returns {Promise<boolean>} true if registration was successfull, false if not
+   * @returns {Promise<string>} true if registration was successfull, error message if not
    */
-  public registerUser = async (username: string, password: string): Promise<boolean> => {
+  public registerUser = async (username: string, password: string): Promise<string> => {
     let response = await fetch('./api/users/register', {
       method: 'POST',
       headers: {
@@ -302,11 +302,12 @@ export class DevChatController {
       })
     });
     let data = await response.json();
-    if (data.wasSuccessfull) {
+    console.log("Controller.data.wasSuccessfull "+data.wasSuccessfull)
+    if (data.wasSuccessfull == "True") {
       let controller = new DevChatController;
       await controller.loginUser(username, password);
     }
-    return data.wasSuccessfull;
+    return data.wasSuccessfull;    
   }
 
     /**

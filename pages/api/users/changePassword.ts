@@ -20,7 +20,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   let changedSuccesfully = await supabaseConnection.changeUserPassword(userToken, oldPassword, newPassword);
 
-  console.log("Hallo")
   console.log(String(changedSuccesfully))
 
   res.status(200).json({ wasSuccessfull: changedSuccesfully });

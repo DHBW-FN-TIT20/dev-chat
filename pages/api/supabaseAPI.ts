@@ -873,13 +873,26 @@ export class SupabaseConnection {
   //#region User Token Methods
 
   /**
-   * This mehtod checks a username for requirements
+   * This method checks a username for requirements
    * @param {string} username username to check
    * @returns {boolean} true if the username meets the requirements, false if not
    */
   public isUsernameValid = (username: string): boolean => {
-    //TODO: Lukas implement task 50
-    return true;
+    /**
+     * Requirements:
+     * Length: 4-16 characters
+     * Characters: only letters and numbers
+     * Keyword admin is not allowed
+     */
+    if (username.length >= 4 && username.length <= 16) {
+      if (username.match("^[a-zA-Z0-9]+$")) {
+        if (username.match("[a-z,A-Z,0-9]*[a,A][d,D][m,M][i,I][n,N][a-z,A-Z,0-9]*")) {
+          return false;
+        }
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -888,8 +901,20 @@ export class SupabaseConnection {
    * @returns {boolean} true if the password meets the requirements, false if not
    */
   public isPasswordValid = (password: string): boolean => {
-    // TODO: Lukas implement task 50
-    return true;
+    /**
+     * Requirements:
+     * Length: min. 8 characters
+     * Characters: min. 1 number, 1 uppercase character, 1 lowercase character, 1 special character
+     * Characters: only letters and numbers + !*#,;?+-_.=~^%(){}|:"/
+     */
+    if (password.length >= 8) {
+      if (password.match(".*[0-9].*") && password.match(".*[A-Z].*") && password.match(".*[a-z].*") && password.match('.*[!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-].*')) {
+        if (password.match('^[a-z,A-Z,0-9,!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-]*$')) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**
@@ -973,28 +998,45 @@ export class SupabaseConnection {
    * @param {string} user username to register
    * @param {string} password password for the user
    * @param {number} accessLevel access level for the user
-   * @returns {Promise<boolean>} true if registration was successfull, false if not
+   * @returns {Promise<string>} true if registration was successfull, error Message if not
    */
-  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<boolean> => {
+  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<string> => {
+    if(await this.userAlreadyExists(username) == false){
+      let returnString: string = "";
+      let vUsernameValid: boolean = await this.isUsernameValid(username);
+      let vPasswordValid: boolean = await this.isPasswordValid(password);
+      console.log("vPasswordValid: " + vPasswordValid);
+      console.log("vUsernameValid: " + vUsernameValid);
+      if (vUsernameValid == false && vPasswordValid == false) {
+        returnString = "error_username_password";
+      }
+      else if (vPasswordValid == false) {
+        returnString = "error_password";
+      }
+      else if (vUsernameValid == false) {
+        returnString = "error_username";
+      }
+      else if (vUsernameValid && vPasswordValid) {
+        let hashedPassword = await this.hashPassword(password);
 
-    let userExists = await this.userAlreadyExists(username);
+        const { data, error } = await SupabaseConnection.CLIENT
+          .from('User')
+          .insert([
+            { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
+          ]);
 
-    if (!this.isUsernameValid(username) || !this.isPasswordValid(password) || userExists) {
-      return false;
+        if (data === null || error !== null || data.length === 0) {
+          returnString = "False";
+        }
+        else {
+          returnString = "True";
+        }
+      }
+      return returnString;
     }
-
-    let hashedPassword = await this.hashPassword(password);
-
-    const { data, error } = await SupabaseConnection.CLIENT
-      .from('User')
-      .insert([
-        { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
-      ]);
-
-    if (data === null || error !== null || data.length === 0) {
-      return false;
+    else {
+      return "False";
     }
-    return true;
   }
 
   /**
