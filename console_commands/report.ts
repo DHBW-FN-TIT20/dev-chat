@@ -17,8 +17,6 @@ export class ReportCommand extends Command {
     
     public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
       let answerLines: string[] = [];
-      // save the date 
-      let currentDate: Date = new Date();
 
       // Connect to supabase
       const supabaseConnection = new SupabaseConnection();
@@ -26,10 +24,10 @@ export class ReportCommand extends Command {
         submitter: currentUser,
         message: args.join(" "),
       };
-      // add the surves to the database
+      // add the ticket to the database
       let addedTicket: IBugTicket | null = await supabaseConnection.addNewTicket(bugToReport);
 
-      // check if the survey was added successfully 
+      // check if the ticket was added successfully 
       if (addedTicket === null) {
         answerLines.push(bugToReport.message)
         answerLines.push("Error: There was a problem with your ticket. Please try again.");
