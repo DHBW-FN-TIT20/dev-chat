@@ -6,7 +6,7 @@ import DevChatController from '../controller'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 import { setStringOnFixLength } from '../shared/set_string_on_fix_length'
-
+import SocketIOClient from "socket.io-client";
 
 
 export interface ChatState {
@@ -45,16 +45,29 @@ class Chat extends Component<ChatProps, ChatState> {
       const { router } = this.props;
       router.push("/")
     }
-    // Login validated
-    DevChatController.startMessageFetch();
-    this.messageFetchInterval = setInterval(() => {
-      // Check for chat key cookie changes, if changed, exit chat
-      if (DevChatController.getChatKeyFromCookie() !== this.currentChatKeyCookie) {
-        const { router } = this.props;
-        router.push("/")
-      }
-      this.setState({messages: DevChatController.chatMessages})
-    }, 2000);
+    // // Login validated
+    // DevChatController.startMessageFetch();
+    // this.messageFetchInterval = setInterval(() => {
+    //   // Check for chat key cookie changes, if changed, exit chat
+    //   if (DevChatController.getChatKeyFromCookie() !== this.currentChatKeyCookie) {
+    //     const { router } = this.props;
+    //     router.push("/")
+    //   }
+    //   this.setState({messages: DevChatController.chatMessages})
+    // }, 2000);
+
+
+    const socket = SocketIOClient("localhost:3000", {
+      path: "/api/socketio",
+    });
+
+    socket.on("connect", () => {
+      console.log("SOCKET CONNECTED!", socket.id);
+    });
+
+    socket.on("message", () => {
+      console.log("SOCKET MESSAGE!", socket.id);}
+    );
 
   }
   
@@ -65,6 +78,11 @@ class Chat extends Component<ChatProps, ChatState> {
     window.removeEventListener('storage', this.storageTokenListener);
     clearInterval(this.messageFetchInterval);
     DevChatController.clearChatKeyCookie();
+
+    // if (socket) {
+    //   socket.disconnect();
+    // }
+
   }
 
   /**
