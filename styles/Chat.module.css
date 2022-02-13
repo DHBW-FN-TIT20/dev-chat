@@ -2,7 +2,6 @@
   overflow: scroll;
   height: calc(100vh - 62pt - 30pt);
   margin-left: 2ch;
-  
   scrollbar-width: 10pt;
   -ms-overflow-style: none;
   display: flex;
@@ -13,22 +12,22 @@
 .messageTableDiv::-webkit-scrollbar {
   width: 10px;
   height: 12px;
-  }
+}
 
-  .messageTableDiv::-webkit-scrollbar-track {
+.messageTableDiv::-webkit-scrollbar-track {
   box-shadow: inset 0 0 10px black;
   border-radius: 10px;
-  }
+}
 
-  .messageTableDiv::-webkit-scrollbar-thumb {
+.messageTableDiv::-webkit-scrollbar-thumb {
   border-radius: 10px;
   background: black; 
   box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
-  }
+}
 
-  .messageTableDiv::-webkit-scrollbar-thumb:hover {
+.messageTableDiv::-webkit-scrollbar-thumb:hover {
   background: black;
-  }
+}
 
 .msg {
   display: inline-block;
@@ -98,9 +97,8 @@
 
 .chatBox {
   background-color: #666666;
-  width: 100vw;
-  border-radius: 0pt;
   width: 100%;
+  border-radius: 0pt;
   font-size: 22pt;
   padding: 2pt;
   position: absolute;

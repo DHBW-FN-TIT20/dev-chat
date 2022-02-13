@@ -9,7 +9,6 @@
     font-family: 'Red Hat Mono', monospace;
     color: #D7BA7D;
     font-size: 12pt;
-    
   }
 }
 
@@ -46,6 +45,9 @@
 
 p {
   margin: 2pt;
+  display: inline;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 /** Headlines */
@@ -376,9 +378,4 @@ input::placeholder {
 
 .orange {
   color: #FF9933;
-}
-
-p {
-  display: inline;
-  overflow-wrap: break-word;
 }

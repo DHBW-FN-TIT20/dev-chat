@@ -5,6 +5,7 @@ import React, { Component } from 'react'
 import DevChatController from '../controller'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
+import { setStringOnFixLength } from '../shared/set_string_on_fix_length'
 
 
 
@@ -140,7 +141,7 @@ class Chat extends Component<ChatProps, ChatState> {
                       <tr key={message.id}>
                           <td className={styles.msg}>
                           <p className={styles.tableUser}>
-                            {message.user}
+                            {setStringOnFixLength(String(message.user), 16)}
                           </p>
                           <p className={styles.tableAt}>
                             &nbsp;at&nbsp;
