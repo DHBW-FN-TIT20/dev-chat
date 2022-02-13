@@ -1,16 +1,381 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+/** Background */
+
+@media screen and (max-width: 900px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Red Hat Mono', monospace;
+    color: #D7BA7D;
+    font-size: 12pt;
+  }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@media screen and (min-width: 900px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Red Hat Mono', monospace;
+    color: #D7BA7D;
+    font-size: 12pt;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: 'Red Hat Mono', monospace;
+    color: #D7BA7D;
+    font-size: 16pt;
+    overflow: hidden;
+  }
 }
 
 * {
   box-sizing: border-box;
+}
+
+/** Text */
+
+p {
+  margin: 2pt;
+  display: inline;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+/** Headlines */
+
+@media screen and (max-width: 900px) {
+  h1 {
+    color: #D7BA7D;
+    font-size: 20pt;
+    margin: 2pt;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  h1 {
+    color: #D7BA7D;
+    font-size: 30pt;
+    margin: 2pt;
+  }  
+}
+
+@media screen and (min-width: 1280px) {
+  h1 {
+    color: #D7BA7D;
+    font-size: 40pt;
+    margin: 2pt;
+  }  
+}
+
+/** Links */
+
+a {
+  color: #99CCFF;
+  text-decoration: underline;
+}
+
+a:hover {
+  color: #0077ff;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.clickable:hover {
+  cursor: pointer;
+  opacity: 0.5;
+  transition: 0.3s;
+}
+
+/** Input fields */
+
+input::placeholder {
+  color: #CCCCCC;
+}
+
+@media screen and (max-width: 900px) {
+  input {
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+    margin: 0 auto;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  input {
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  input {
+    width: 100%;
+    font-size: 16pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #666666;
+    padding: 10pt;
+    margin: 2pt;
+  }
+}
+
+/** Buttons */
+
+@media screen and (max-width: 900px) {
+  button {
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+    margin: 0 auto;
+  }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  button {
+    width: 100%;
+    font-size: 12pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+  }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  button {
+    font-size: 16pt;
+    color: white;
+    background-color: transparent;
+    border-style: solid;
+    border-radius: 5pt;
+    border-width: 2pt;
+    border-color: #FF9933;
+    padding: 10pt;
+    margin: 2pt;
+  }  
+  button:hover {
+    background-color: #FF9933;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  button:active {
+    background-color: #FF6F1C;
+    border-color: #FF6F1C;
+    transition: 0.2s;
+  }
+}
+
+/** Images */
+
+@media screen and (max-width: 900px) {
+  .image {
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .image {
+    width: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+/** Tables */
+
+@media screen and (max-width: 900px) {
+  table {
+    border-color: white;
+    border-style: solid;
+    border-width: 2pt;
+    color: white;
+    border-collapse: collapse;
+    white-space: nowrap;
+  }
+  
+  table th {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    font-weight: bold;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+    width: max-content;
+  }
+  
+  table td {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+    overflow: auto;
+  }
+
+  table td input {
+    border: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  table td input:focus {
+    outline: none;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  table {
+    border-color: white;
+    border-style: solid;
+    border-width: 4pt;
+    color: white;
+    border-collapse: collapse;
+  }
+  
+  table th {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    font-weight: bold;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+  }
+  
+  table td {
+    border-color: #CCCCCC;
+    border-style: solid;
+    border-width: 1pt;
+    padding: 2pt 4pt 2pt 4pt;
+    text-align: center;
+  }
+
+  table td input {
+    border: hidden;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-width: 0;
+    border-radius: 0;
+    text-align: center;
+  }
+
+  table td input:focus {
+    outline: none;
+  }
+}
+
+/** Custom objects */
+
+@media screen and (max-width: 900px) {
+  .error {
+    background-color: rgb(150, 25, 25);
+    text-align: center;
+    width: 100%;
+    margin: 2pt;
+    padding: 10pt;
+    border-color:  #666666;
+    border-width: 2pt;
+    border-radius: 5pt;
+    border-style: solid;
+    margin: 0 auto;
+    
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .error {
+    background-color: rgb(150, 25, 25);
+    text-align: center;
+    width: 100%;
+    margin: 2pt;
+    padding: 10pt;
+    border-color:  #666666;
+    border-width: 2pt;
+    border-radius: 5pt;
+    border-style: solid;
+  }
+}
+
+/** Colors */
+
+.deactivated {
+  color: #999999;
+}
+
+.green {
+  color: #00FF00;
+}
+
+.red {
+  columns: #FF0000;
+}
+
+.orange {
+  color: #FF9933;
 }

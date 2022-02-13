@@ -1,0 +1,107 @@
+.messageTableDiv {
+  overflow: scroll;
+  height: calc(100vh - 62pt - 30pt);
+  margin-left: 2ch;
+  scrollbar-width: 10pt;
+  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column-reverse;
+  overflow-x: hidden;
+}
+
+.messageTableDiv::-webkit-scrollbar {
+  width: 10px;
+  height: 12px;
+}
+
+.messageTableDiv::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 10px black;
+  border-radius: 10px;
+}
+
+.messageTableDiv::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: black; 
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+}
+
+.messageTableDiv::-webkit-scrollbar-thumb:hover {
+  background: black;
+}
+
+.msg {
+  display: inline-block;
+  text-align: left;
+  
+}
+
+.messageTableDiv table, .messageTableDiv tr, .messageTableDiv tr td {
+  border: none;
+}
+
+.tableUser {
+  width: 16ch;
+  padding: 0;
+  margin: 0;
+  color: #FF9933;
+}
+
+.tableAt {
+  width: 4ch;
+  padding: 0;
+  margin: 0;
+  color: #666666;
+}
+
+.tableDate {
+  width: 17ch;
+  padding: 0;
+  margin: 0;
+  color: #666666;
+}
+
+.tableArrow {
+  width: 4ch;
+  padding: 0;
+  margin: 0;
+}
+
+.tableMessage {
+  width: calc(100vw - 41ch - 4ch);
+  padding: 0;
+  margin: 0;
+}
+
+.messageTableDiv tr td p {
+  width: inherit;
+  overflow: hidden;
+  text-align: left;
+  padding: 0;
+  margin: 0;
+}
+
+.tableMessage p {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-break: auto;
+  overflow: scroll;
+}
+
+.chatBox::placeholder {
+  color: #CCCCCC;
+}
+
+.chatBox:focus {
+  outline: none;
+}
+
+.chatBox {
+  background-color: #666666;
+  width: 100%;
+  border-radius: 0pt;
+  font-size: 22pt;
+  padding: 2pt;
+  position: absolute;
+  bottom: 0;
+  margin: 0;
+}
