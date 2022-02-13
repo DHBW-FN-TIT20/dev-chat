@@ -147,7 +147,7 @@ class Main extends Component<MainProps, MainState> {
               <h1>
                 Settings
               </h1>
-              <button onClick={() => router.push("/admin")}> 
+              <button hidden={!DevChatController.getAdminValueFromToken(DevChatController.getUserToken())} onClick={() => router.push("/admin")}> 
                 Admin Settings
               </button>
               <button onClick={() => router.push("/password")}> 
