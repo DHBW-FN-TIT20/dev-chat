@@ -99,7 +99,7 @@ class Login extends Component<LoginProps, LoginState> {
               <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
               <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
                 {
-                  !this.props.showError && 
+                  this.props.showError && 
                   <div className='error' id={styles.error1}> 
                     Incorrect username or password. 
                   </div>
@@ -117,7 +117,7 @@ class Login extends Component<LoginProps, LoginState> {
                   &nbsp;instead.
                 </div>
               </div>
-            </div>
+            
             <div className={styles.right}>
               <div className="image">
                 <Image
@@ -128,6 +128,7 @@ class Login extends Component<LoginProps, LoginState> {
                   height={1000}
                 />
               </div>
+            </div>
             </div>
           </main>
         </div>

@@ -24,17 +24,10 @@ export class DevChatController {
    * Function to start fetching messages from the Database
    */
   public async startMessageFetch() {
-    // Update chat messages every 2 sec. 
-    this.chatMessageInterval = setInterval(async () => {
-      this.updateChatMessages();
-    }, 2000);
-  }
-
-  /**
-   * Function to stop fetching messages from the Database
-   */
-  public stopMessageFetch() {
-    clearInterval(this.chatMessageInterval);
+    while (true) {
+      console.log("Start updateChatMessage in while loop.")
+      await this.updateChatMessages();
+    }
   }
   
   /**

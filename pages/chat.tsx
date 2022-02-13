@@ -6,10 +6,11 @@ import DevChatController from '../controller'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
+
+
 export interface ChatState {
   isLoggedIn: boolean,
   isChatKeyValid: boolean,
-  chatLineInput: string,
   messages: IChatMessage[],
 }
 
@@ -18,12 +19,12 @@ export interface ChatProps extends WithRouterProps { }
 class Chat extends Component<ChatProps, ChatState> {
   private messageFetchInterval: any = undefined;
   private currentChatKeyCookie: string = "";
+  private chatLineInput: string = "";
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       isLoggedIn: false,
       isChatKeyValid: false,
-      chatLineInput: '',
       messages: [],
     }
   }
@@ -52,7 +53,7 @@ class Chat extends Component<ChatProps, ChatState> {
         router.push("/")
       }
       this.setState({messages: DevChatController.chatMessages})
-    }, 500);
+    }, 2000);
 
   }
   
@@ -62,7 +63,6 @@ class Chat extends Component<ChatProps, ChatState> {
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
     clearInterval(this.messageFetchInterval);
-    DevChatController.stopMessageFetch();
     DevChatController.clearChatKeyCookie();
   }
 
@@ -96,11 +96,11 @@ class Chat extends Component<ChatProps, ChatState> {
   * Checks if Enter was pressed
   * @param event Occurred Event
   */
-   handleEnterKeyPress = (event: any) => {
+  handleEnterKeyPress = (event: any) => {
     if (event.key === 'Enter') {
-      console.log("Entered new Message: " + this.state.chatLineInput);
-      DevChatController.enteredNewMessage(this.state.chatLineInput);
-      this.setState({ chatLineInput: "" });
+      console.log("Entered new Message: " + this.chatLineInput);
+      DevChatController.enteredNewMessage(this.chatLineInput);
+      event.target.value = "";
     }
   }
 
@@ -110,7 +110,7 @@ class Chat extends Component<ChatProps, ChatState> {
    * @param event Occured Event
    */
   handleChatLineInput = (event: any) => {
-    this.setState({ chatLineInput: event.target.value });
+    this.chatLineInput = event.target.value
   }
 
   /**
@@ -138,25 +138,43 @@ class Chat extends Component<ChatProps, ChatState> {
                   <tbody>
                     {this.state.messages.map(message => (
                       <tr key={message.id}>
-                        <td>{message.user}</td>
-                        <td>at</td>
-                        <td>{new Date(message.date).toLocaleDateString('de-DE', {
+                          <td className={styles.msg}>
+                          <p className={styles.tableUser}>
+                            {message.user}
+                          </p>
+                          <p className={styles.tableAt}>
+                            &nbsp;at&nbsp;
+                          </p>
+                          <p className={styles.tableDate}>
+                            {new Date(message.date).toLocaleDateString('de-DE', {
                               day: '2-digit',
                               month: '2-digit',
                               year: 'numeric',
                               hour: '2-digit',
                               minute: '2-digit',
                               hourCycle: 'h24',
-                            })}</td>
-                        <td>-&gt;</td>
-                        <td>{message.message}</td>
+                            })}
+                          </p>                   
+                          <p className={styles.tableArrow}>
+                            &nbsp;-&gt;&nbsp;
+                          </p>                        
+                          <p className={styles.tableMessage}>
+                            {message.message}
+                          </p>
+                          </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
-              <input className={styles.chatBox} value={this.state.chatLineInput} type="text" placeholder="Write a message..." onKeyPress={this.handleEnterKeyPress} onChange={this.handleChatLineInput} />
+              <input 
+                className={styles.chatBox} 
+                type="text" placeholder="Write a message..." 
+                onKeyPress={this.handleEnterKeyPress} 
+                onChange={this.handleChatLineInput}
+              />
             </div>
+            
           </main>
         </div>
       )

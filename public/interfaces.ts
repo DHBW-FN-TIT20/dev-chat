@@ -105,11 +105,11 @@ export interface ISurveyState {
 // BugTicket
 
 export interface IBugTicket {
-    id: number;
+    id?: number;
     submitter: IUser;
-    date: Date; // maybe change later
+    date?: Date; // maybe change later
     message: string;
-    solved: boolean;
+    solved?: boolean;
 }
 
 export var emptyBugTicket: IBugTicket = {
