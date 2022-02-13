@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { SupabaseConnection } from "../pages/api/supabaseAPI";
 import { IChatKey, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
@@ -11,7 +12,7 @@ export class ExpireCommand extends Command {
   public constructor() {
     super();
     this.callString = "expire";
-    this.helpText = "run '/expire <ExpirationDate (dd.MM.yyyy HH:mm)>' to set a new ExpirationDate for the Current Chat";
+    this.helpText = "run '/expire <ExpirationDate (dd.MM.yyyy)>' <ExpirationTime (HH:mm)>' to set a new ExpirationDate for the Current Chat";
     this.minimumAccessLevel = 1;
   }
   
@@ -23,15 +24,25 @@ export class ExpireCommand extends Command {
     // check if the arguments are valid 
     let argsValid: boolean = true;
 
-    if(args.length !== 1) {
+    if(args.length !== 2) {
         argsValid = false;
     }
 
     console.log("ArgsValid: " + argsValid)
 
-    // check if the first argument is a valid expiration date in format dd.MM.yyyy HH:mm
-    // Man kann aktuell nur amerikanische Date Format ohne Zeit eingeben
-    let expirationDate: Date = new Date(args[0]);
+    // check if the first argument is a valid expiration date in format dd.MM.yyyy
+    // check if the second argument is a valid expiration time in format HH:mm
+
+    // First Param is the date, second Param is the time => We need to build a new Date with Time of these two Params
+    let expirationDateString: string = args[0];
+    expirationDateString += " ";
+    expirationDateString += args[1];
+    
+    console.log(expirationDateString);
+
+    // Man kann aktuell nur amerikanische Date Format ohne Zeit eingeben wird behoben durch Johannes Fix bei den /survey
+
+    let expirationDate: Date = new Date(expirationDateString);
     if (isNaN(expirationDate.getTime())) {
       argsValid = false;
     }
