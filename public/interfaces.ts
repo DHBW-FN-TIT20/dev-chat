@@ -90,6 +90,17 @@ export interface ISurvey {
     options: ISurveyOption[];
 }
 
+// Survey with votes (Survey State)
+export interface ISurveyState {
+    id: number;
+    name: string;
+    description: string;
+    expirationDate: Date;
+    ownerID?: number;
+    options: {
+        option: ISurveyOption, votes: number
+    }[];
+}
 
 // BugTicket
 
