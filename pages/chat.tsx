@@ -6,6 +6,8 @@ import DevChatController from '../controller'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 
+
+
 export interface ChatState {
   isLoggedIn: boolean,
   isChatKeyValid: boolean,
@@ -51,7 +53,7 @@ class Chat extends Component<ChatProps, ChatState> {
         router.push("/")
       }
       this.setState({messages: DevChatController.chatMessages})
-    }, 500);
+    }, 2000);
 
   }
   
@@ -61,7 +63,6 @@ class Chat extends Component<ChatProps, ChatState> {
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
     clearInterval(this.messageFetchInterval);
-    DevChatController.stopMessageFetch();
     DevChatController.clearChatKeyCookie();
   }
 
@@ -137,18 +138,30 @@ class Chat extends Component<ChatProps, ChatState> {
                   <tbody>
                     {this.state.messages.map(message => (
                       <tr key={message.id}>
-                        <td>{message.user}</td>
-                        <td>at</td>
-                        <td>{new Date(message.date).toLocaleDateString('de-DE', {
+                          <td className={styles.msg}>
+                          <p className={styles.tableUser}>
+                            {message.user}
+                          </p>
+                          <p className={styles.tableAt}>
+                            &nbsp;at&nbsp;
+                          </p>
+                          <p className={styles.tableDate}>
+                            {new Date(message.date).toLocaleDateString('de-DE', {
                               day: '2-digit',
                               month: '2-digit',
                               year: 'numeric',
                               hour: '2-digit',
                               minute: '2-digit',
                               hourCycle: 'h24',
-                            })}</td>
-                        <td>-&gt;</td>
-                        <td>{message.message}</td>
+                            })}
+                          </p>                   
+                          <p className={styles.tableArrow}>
+                            &nbsp;-&gt;&nbsp;
+                          </p>                        
+                          <p className={styles.tableMessage}>
+                            {message.message}
+                          </p>
+                          </td>
                       </tr>
                     ))}
                   </tbody>
@@ -161,6 +174,7 @@ class Chat extends Component<ChatProps, ChatState> {
                 onChange={this.handleChatLineInput}
               />
             </div>
+            
           </main>
         </div>
       )
