@@ -51,7 +51,7 @@ class Chat extends Component<ChatProps, ChatState> {
       router.push("/")
     }
     // // Login validated
-    
+    DevChatController.chatMessages = [];
     const tempChatMessages = await DevChatController.updateChatMessages()
     this.setState({messages: tempChatMessages})
     
