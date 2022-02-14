@@ -112,8 +112,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
-    margin: 0 auto;
+    margin: 2pt 0;
   }
 }
 
@@ -128,7 +127,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }
 }
 
@@ -143,7 +142,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }
 }
 
@@ -160,8 +159,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #FF9933;
     padding: 10pt;
-    margin: 2pt;
-    margin: 0 auto;
+    margin: 2pt 0;
   }  
   button:hover {
     background-color: #FF9933;
@@ -186,7 +184,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #FF9933;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }  
   button:hover {
     background-color: #FF9933;
@@ -210,7 +208,7 @@ input::placeholder {
     border-width: 2pt;
     border-color: #FF9933;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }  
   button:hover {
     background-color: #FF9933;
