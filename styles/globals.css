@@ -103,6 +103,7 @@ input::placeholder {
 
 @media screen and (max-width: 900px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 12pt;
     color: white;
@@ -118,6 +119,7 @@ input::placeholder {
 
 @media screen and (min-width: 900px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 12pt;
     color: white;
@@ -133,6 +135,7 @@ input::placeholder {
 
 @media screen and (min-width: 1280px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 16pt;
     color: white;
