@@ -85,15 +85,15 @@ export class DevChatController {
     console.log("DevChatController.updateChatMessages()");
     
     // get the highest id of the chat messages to only get the new messages
-    // let lastMessageId: number = 0;
-    // if (this.chatMessages.length > 0) {
-    //   lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
-    // }
+    let lastMessageId: number = 0;
+    if (this.chatMessages.length > 0) {
+      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
+    }
     
     let userToken = this.getUserToken();
 
     // get the new messages
-    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), 0);
+    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
 
     // console.log("newMessages: ");
     // console.table(newMessages);

@@ -7,6 +7,8 @@ import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 import { setStringOnFixLength } from '../shared/set_string_on_fix_length'
 import SocketIOClient from "socket.io-client";
+import { Socket } from 'socket.io'
+import { DefaultEventsMap } from 'socket.io/dist/typed-events'
 
 
 export interface ChatState {
@@ -18,6 +20,8 @@ export interface ChatState {
 export interface ChatProps extends WithRouterProps { }
 
 class Chat extends Component<ChatProps, ChatState> {
+  private blockFetchMessages = false;
+  private socket: any = null;
   private messageFetchInterval: any = undefined;
   private currentChatKeyCookie: string = "";
   private chatLineInput: string = "";
@@ -28,12 +32,13 @@ class Chat extends Component<ChatProps, ChatState> {
       isChatKeyValid: false,
       messages: [],
     }
-  }
 
+  }
+  
   /**
    * is always called, if component did mount
    */
-   async componentDidMount() {
+  async componentDidMount() {
     await this.checkLoginState();
     // Check for changes in local state -> reevaluate login
     window.addEventListener('storage', this.storageTokenListener);
@@ -46,10 +51,10 @@ class Chat extends Component<ChatProps, ChatState> {
       router.push("/")
     }
     // // Login validated
-
+    
     const tempChatMessages = await DevChatController.updateChatMessages()
     this.setState({messages: tempChatMessages})
-
+    
     // DevChatController.startMessageFetch();
     // this.messageFetchInterval = setInterval(() => {
     //   // Check for chat key cookie changes, if changed, exit chat
@@ -59,37 +64,31 @@ class Chat extends Component<ChatProps, ChatState> {
     //   }
     //   this.setState({messages: DevChatController.chatMessages})
     // }, 2000);
+      
+    // get the url
+    const url = window.location.href.split("?")[0].split("#")[0].split("/",3).join("/");
 
-    // get current url with port
-    const url = window.location.href;
-    const port = window.location.port;
-
-
-    const socket = SocketIOClient("localhost:3000", {
-      path: "/api/socketio",
+    // init socket 
+    // TODO: route the chat key to the server + filter at subsciption
+    this.socket = SocketIOClient(url, {
+      path: "/api/messages/socketio",
     });
 
-    socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", socket.id);
+    // register connection event
+    this.socket.on("connect", () => {
+      console.log("SOCKET CONNECTED!", this.socket.id);
     });
-
-    socket.on("message", async (payload) => {
-      console.log("SOCKET MESSAGE!", socket.id, payload);
-      // const tempChatMessages = this.state.messages;
-      // const newMessage: IChatMessage = {
-      //   user: {id: payload.new.UserID},
-      //   date: new Date(payload.new.DateSend),
-      //   message: payload.new.Message,
-      //   id: payload.new.MessageID,
-      //   // target: {id: payload.new.TargetUserID},
-      //   // chatKey: payload.new.ChatKey,
-      // }
-      // tempChatMessages.push(newMessage);
-
-      const tempChatMessages:IChatMessage[] = await DevChatController.updateChatMessages();
-      this.setState({messages: tempChatMessages})
+    
+    // register message event
+    this.socket.on("message", async () => {
+      if (!this.blockFetchMessages) {
+        this.blockFetchMessages = true;
+        console.log("SOCKET MESSAGE!");
+        const tempChatMessages:IChatMessage[] = await DevChatController.updateChatMessages();
+        this.setState({messages: tempChatMessages})
+        this.blockFetchMessages = false;
+      }
     });
-
   }
   
   /**
@@ -100,9 +99,9 @@ class Chat extends Component<ChatProps, ChatState> {
     clearInterval(this.messageFetchInterval);
     DevChatController.clearChatKeyCookie();
 
-    // if (socket) {
-    //   socket.disconnect();
-    // }
+    if (this.socket) {
+      this.socket.disconnect();
+    }
 
   }
 
@@ -141,6 +140,7 @@ class Chat extends Component<ChatProps, ChatState> {
       console.log("Entered new Message: " + this.chatLineInput);
       DevChatController.enteredNewMessage(this.chatLineInput);
       event.target.value = "";
+      this.chatLineInput = "";
     }
   }
 
