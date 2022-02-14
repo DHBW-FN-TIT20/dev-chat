@@ -3,6 +3,7 @@ import { NextApiResponseServerIO } from "../../../shared/next";
 import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
 import { createClient } from "@supabase/supabase-js";
+import { SupabaseConnection } from "../supabaseAPI";
 
 
 export const config = { api: { bodyParser: false, }, };
@@ -26,17 +27,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
-    const supabse = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(supabaseUrl, supabaseKey);
+    let supabaseConnection = new SupabaseConnection();
 
     // subscribe to the ChatMessages table 
-    // TODO: use a filter on chatKey
-    const ChatMessageSubscription = supabse
+    const ChatMessageSubscription = supabase
       .from('ChatMessage')
-      .on('*', payload => {
+      .on('INSERT', async payload => {
         console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${payload.new.ChatKeyID} | User: ${payload.new.UserID}`);
-
-        // emit the change to all connected clients
-        io.emit("message");
+        const chatKey = await supabaseConnection.getChatKey(payload.new.ChatKeyID);
+        io.emit("message", chatKey?.threeWord);
       })
       .subscribe()
   }

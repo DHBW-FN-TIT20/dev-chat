@@ -725,7 +725,7 @@ export class SupabaseConnection {
 
     chatKey = {
         id: chatKeyToResponse.data[0].ChatKeyID,
-        threeWord: chatKeyToResponse.data[0].ChatKeyName,
+        threeWord: chatKeyToResponse.data[0].ChatKey,
         expirationDate: new Date(chatKeyToResponse.data[0].ExpirationDate),
     }       
     return chatKey;

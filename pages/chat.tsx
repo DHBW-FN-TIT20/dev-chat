@@ -80,8 +80,8 @@ class Chat extends Component<ChatProps, ChatState> {
     });
     
     // register message event
-    this.socket.on("message", async () => {
-      if (!this.blockFetchMessages) {
+    this.socket.on("message", async (chatKey: string) => {
+      if (!this.blockFetchMessages && chatKey === this.currentChatKeyCookie) {
         this.blockFetchMessages = true;
         console.log("SOCKET MESSAGE!");
         const tempChatMessages:IChatMessage[] = await DevChatController.updateChatMessages();
