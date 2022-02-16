@@ -82,7 +82,7 @@ export class DevChatController {
    * This method updates the data of the chat.
    * @returns {Promise<IChatMessage[]>} The updated chat messages.
    */
-  public async updateChatMessages() {
+  public async updateChatMessages(): Promise<IChatMessage[]> {
     console.log("DevChatController.updateChatMessages()");
     
     // get the highest id of the chat messages to only get the new messages
