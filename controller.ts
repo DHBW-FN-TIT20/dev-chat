@@ -87,27 +87,30 @@ export class DevChatController {
   }
 
   /**
-  * This method updates the data of the chat.
-  */
-  public async updateChatMessages() {
+   * This method updates the data of the chat.
+   * @returns {Promise<IChatMessage[]>} The updated chat messages.
+   */
+  public async updateChatMessages(): Promise<IChatMessage[]> {
     console.log("DevChatController.updateChatMessages()");
-
+    
     // get the highest id of the chat messages to only get the new messages
     let lastMessageId: number = 0;
     if (this.chatMessages.length > 0) {
-      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function (message) { return message.id; }) || [0]);
+      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
     }
-
+    
     let userToken = this.getUserToken();
 
     // get the new messages
-    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken, this.getChatKeyFromCookie(), lastMessageId);
+    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
 
     // console.log("newMessages: ");
     // console.table(newMessages);
 
     // add the new messages to the chat messages
     this.chatMessages = this.chatMessages.concat(newMessages);
+
+    return this.chatMessages;
   }
 
   /**
@@ -189,7 +192,7 @@ export class DevChatController {
     }
     return data.wasSuccessfull;
   }
-
+  
   //#endregion 
 
   //#region Cookie Methods
