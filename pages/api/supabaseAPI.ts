@@ -1145,5 +1145,4 @@ export class SupabaseConnection {
   }
 
   //#endregion
-
 }
