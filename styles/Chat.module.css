@@ -37,6 +37,7 @@
 
 .messageTableDiv table, .messageTableDiv tr, .messageTableDiv tr td {
   border: none;
+  overflow: hidden;
 }
 
 .tableUser {
@@ -84,7 +85,7 @@
   word-wrap: break-word;
   overflow-wrap: break-word;
   line-break: auto;
-  overflow: scroll;
+  overflow: hidden;
 }
 
 .chatBox::placeholder {
@@ -99,7 +100,7 @@
   background-color: #666666;
   width: 100%;
   border-radius: 0pt;
-  font-size: 22pt;
+  font-size: 15pt;
   padding: 2pt;
   position: absolute;
   bottom: 0;
