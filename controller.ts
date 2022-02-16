@@ -80,6 +80,7 @@ export class DevChatController {
 
   /**
    * This method updates the data of the chat.
+   * @returns {Promise<IChatMessage[]>} The updated chat messages.
    */
   public async updateChatMessages() {
     console.log("DevChatController.updateChatMessages()");

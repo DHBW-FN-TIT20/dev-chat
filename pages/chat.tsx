@@ -96,7 +96,6 @@ class Chat extends Component<ChatProps, ChatState> {
    */
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
-    clearInterval(this.messageFetchInterval);
     DevChatController.clearChatKeyCookie();
 
     if (this.socket) {
