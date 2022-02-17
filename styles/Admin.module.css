@@ -61,12 +61,12 @@
 @media screen and (min-width: 1280px) {
 .left {
     position: absolute;
-    height: 85%;
+    height: 92%;
     width: 100%;
     overflow-y: auto;
     text-align: center;
-    margin-top: 50pt;
-    top: 30pt;
+    padding-left: 50pt;
+    padding-right: 50pt;
 }
 
 .table {
@@ -76,6 +76,7 @@
     width: 100% ;
     margin-top: 10pt;
     margin-bottom: 10pt;
+    
 }
 
 .container {
@@ -83,24 +84,26 @@
     height: 100%;
     width: 100%;
     overflow-y: hidden;
+    overflow-x: hidden;
 }
+
 .left::-webkit-scrollbar {
     width: 10px;
     height: 12px;
-    }
+}
     
-    .left::-webkit-scrollbar-track {
+.left::-webkit-scrollbar-track {
     box-shadow: inset 0 0 10px black;
     border-radius: 10px;
-    }
+}
     
-    .left::-webkit-scrollbar-thumb {
+.left::-webkit-scrollbar-thumb {
     border-radius: 10px;
     background: black; 
     box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
     }
     
-    .left::-webkit-scrollbar-thumb:hover {
+.left::-webkit-scrollbar-thumb:hover {
     background: black;
     }
 
