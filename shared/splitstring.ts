@@ -22,7 +22,9 @@
                 inQuotation = true;
             }
         } else if (str[i] === " " && !inQuotation) {
-            result.push(currentWord);
+            if (currentWord !== "") {
+                result.push(currentWord);
+            }
             currentWord = "";
         } else {
             currentWord += str[i];
@@ -31,6 +33,8 @@
     if (inQuotation) {
         return [];
     }
-    result.push(currentWord);
+    if (currentWord !== "") {
+        result.push(currentWord);
+    }
     return result;
 }
