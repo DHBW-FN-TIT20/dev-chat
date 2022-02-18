@@ -842,6 +842,35 @@ export class SupabaseConnection {
 
   };
 
+  public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
+    
+    // verify if user is valid
+    if (!this.isTokenValid(userToken)) {
+      return false;
+    }
+
+    // get the user 
+    let user = await this.getIUserByUserID(await this.getUserIDFromToken(userToken));
+    if (user === null) {
+      return false;
+    }
+
+    // get the chatKeyId
+    let chatKeyID = await this.getChatKeyID(chatKey);
+    if (chatKeyID === null) {
+      return false;
+    }
+
+    // send the message to the chatroom
+    if (joinOrLeave === "join") {
+      return await this.addChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
+    } else if (joinOrLeave === "leave") {
+      return await this.addChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
+    } else {
+      return false;
+    }
+  }
+
   //#endregion
 
   //#region Ticket Methods
