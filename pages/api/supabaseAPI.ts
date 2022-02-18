@@ -842,6 +842,13 @@ export class SupabaseConnection {
 
   };
 
+  /**
+   * API function to add a join/leave chat message to the database
+   * @param userToken the token of the user
+   * @param chatKey the chatKey of the chat
+   * @param joinOrLeave "join" or "leave"
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
   public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
     
     // verify if user is valid

@@ -113,7 +113,9 @@ export class DevChatController {
     return this.chatMessages;
   }
 
-
+  /**
+   * This method sends a join message to the database
+   */
   public async joinRoomMessage() {
     let userToken = this.getUserToken();
     let chatKey = this.getChatKeyFromCookie();
@@ -129,9 +131,12 @@ export class DevChatController {
       })
     });
     let data = await response.json();
-    console.log("joinRoomMessage(): " + data.wasSuccessfull);
+    console.log("joinRoomMessage(): " + data.messageAddedSuccessfully);
   }
 
+  /**
+   * This method sends a leave message to the database
+   */
   public async leaveRoomMessage() {
     let userToken = this.getUserToken();
     let chatKey = this.getChatKeyFromCookie();
@@ -147,7 +152,7 @@ export class DevChatController {
       })
     });
     let data = await response.json();
-    console.log("leaveRoomMessage(): " + data.wasSuccessfull);
+    console.log("leaveRoomMessage(): " + data.messageAddedSuccessfully);
   }
 
   /**
