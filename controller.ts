@@ -114,6 +114,48 @@ export class DevChatController {
   }
 
   /**
+   * This method sends a join message to the database
+   */
+  public async joinRoomMessage() {
+    let userToken = this.getUserToken();
+    let chatKey = this.getChatKeyFromCookie();
+    let response = await fetch('./api/messages/join_leave_room_message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKey: chatKey,
+        joinOrLeave: "join"
+      })
+    });
+    let data = await response.json();
+    console.log("joinRoomMessage(): " + data.messageAddedSuccessfully);
+  }
+
+  /**
+   * This method sends a leave message to the database
+   */
+  public async leaveRoomMessage() {
+    let userToken = this.getUserToken();
+    let chatKey = this.getChatKeyFromCookie();
+    let response = await fetch('./api/messages/join_leave_room_message', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKey: chatKey,
+        joinOrLeave: "leave"
+      })
+    });
+    let data = await response.json();
+    console.log("leaveRoomMessage(): " + data.messageAddedSuccessfully);
+  }
+
+  /**
    * Function to start fetching messages from the Database
    */
   public async startMessageFetch() {

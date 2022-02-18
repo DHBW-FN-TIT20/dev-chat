@@ -842,6 +842,42 @@ export class SupabaseConnection {
 
   };
 
+  /**
+   * API function to add a join/leave chat message to the database
+   * @param {string} userToken the token of the user
+   * @param {string} chatKey the chatKey of the chat
+   * @param {string} joinOrLeave "join" or "leave"
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
+  public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
+    
+    // verify if user is valid
+    if (!this.isUserTokenValid(userToken)) {
+      return false;
+    }
+
+    // get the user 
+    let user = await this.getIUserByUserID(await this.getUserIDFromToken(userToken));
+    if (user === null) {
+      return false;
+    }
+
+    // get the chatKeyId
+    let chatKeyID = await this.getChatKeyID(chatKey);
+    if (chatKeyID === null) {
+      return false;
+    }
+
+    // send the message to the chatroom
+    if (joinOrLeave === "join") {
+      return await this.addChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
+    } else if (joinOrLeave === "leave") {
+      return await this.addChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
+    } else {
+      return false;
+    }
+  }
+
   //#endregion
 
   //#region Ticket Methods

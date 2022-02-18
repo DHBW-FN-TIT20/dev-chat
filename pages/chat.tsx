@@ -51,6 +51,7 @@ class Chat extends Component<ChatProps, ChatState> {
       router.push("/")
     }
     // // Login validated
+    DevChatController.joinRoomMessage();
     DevChatController.chatMessages = [];
     const tempChatMessages = await DevChatController.updateChatMessages()
     this.setState({messages: tempChatMessages})
@@ -96,6 +97,7 @@ class Chat extends Component<ChatProps, ChatState> {
    */
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
+    DevChatController.leaveRoomMessage();
     DevChatController.clearChatKeyCookie();
 
     if (this.socket) {
