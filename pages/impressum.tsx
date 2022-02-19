@@ -44,7 +44,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
             <p>
               Henry Schuler
             </p>
-            
+            <br />
             <h1>
               Team
             </h1>
@@ -60,19 +60,27 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
               Kontakt
             </h1>
             <p>
-              DEV-CHAT <br />
-              STRASSE <br />
-              PLZ ORT <br />
+              Henry Schuler <br />
+              Kastellstraße 69/1 <br />
+              88316 Isny <br />
               <br />
-              TELEFON <br />
-              E-MAIL <br />
+              Tel: +49 163 7292914 <br />
+              E-Mail: devchat.contact@gmail.com <br />
             </p>
             <br></br>
             <h1>Datenschutzerklärung</h1> 
 
 <p>Verantwortlicher im Sinne der Datenschutzgesetze, insbesondere der EU-Datenschutzgrundverordnung (DSGVO), ist:</p> 
 
-<p>Henry Schuler</p> 
+<p>
+  <br /><br />
+  Henry Schuler <br />
+  Kastellstraße 69/1 <br />
+  88316 Isny <br />
+  <br />
+  Tel: +49 163 7292914 <br />
+  E-Mail: devchat.contact@gmail.com <br />
+  </p>
 
 <h2>Ihre Betroffenenrechte</h2> 
 
@@ -162,7 +170,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p>Soweit Sie uns durch Ihre Browsereinstellungen oder Zustimmung die Verwendung von Cookies erlauben, können folgende Cookies auf unseren Webseiten zum Einsatz kommen:</p> 
 
-<p>Benutzername und Passwort; Speicherdauer: bis Logout</p> 
+<p><br  /><br  />Benutzername und Passwort - diese werden bis zum Logout abgespeichert</p> 
 
 <h2>Technisch notwendige Cookies </h2> 
 
@@ -198,7 +206,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p>Für die Registrierung auf unserer Website benötigen wir einige personenbezogene Daten, die über eine Eingabemaske an uns übermittelt werden. </p> 
 
-<p>Zum Zeitpunkt der Registrierung werden zusätzlich folgende Daten erhoben:</p> 
+<p>Zum Zeitpunkt der Registrierung werden zusätzlich folgende Daten erhoben: Keine.</p> 
 
 <p></p><p>Ihre Registrierung ist für das Bereithalten bestimmter Inhalte und Leistungen auf unserer Website erforderlich.</p> 
 
@@ -246,33 +254,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p></p><h2>Kontaktformular</h2> 
 
-<h3>Art und Zweck der Verarbeitung:</h3> 
-
-<p>Die von Ihnen eingegebenen Daten werden zum Zweck der individuellen Kommunikation mit Ihnen gespeichert. Hierfür ist die Angabe einer validen E-Mail-Adresse sowie Ihres Namens erforderlich. Diese dient der Zuordnung der Anfrage und der anschließenden Beantwortung derselben. Die Angabe weiterer Daten ist optional.</p> 
-
-<h3>Rechtsgrundlage:</h3> 
-
-<p>Die Verarbeitung der in das Kontaktformular eingegebenen Daten erfolgt auf der Grundlage eines berechtigten Interesses (Art. 6 Abs. 1 lit. f DSGVO).</p> 
-
-<p>Durch Bereitstellung des Kontaktformulars möchten wir Ihnen eine unkomplizierte Kontaktaufnahme ermöglichen. Ihre gemachten Angaben werden zum Zwecke der Bearbeitung der Anfrage sowie für mögliche Anschlussfragen gespeichert.</p> 
-
-<p>Sofern Sie mit uns Kontakt aufnehmen, um ein Angebot zu erfragen, erfolgt die Verarbeitung der in das Kontaktformular eingegebenen Daten zur Durchführung vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).</p> 
-
-<h3>Empfänger:</h3> 
-
-<p>Empfänger der Daten sind ggf. Auftragsverarbeiter.</p> 
-
-<p></p><h3>Speicherdauer:</h3> 
-
-<p>Daten werden spätestens 6 Monate nach Bearbeitung der Anfrage gelöscht.</p> 
-
-<p>Sofern es zu einem Vertragsverhältnis kommt, unterliegen wir den gesetzlichen Aufbewahrungsfristen nach HGB und löschen Ihre Daten nach Ablauf dieser Fristen. </p> 
-
-<h3>Bereitstellung vorgeschrieben oder erforderlich:</h3> 
-
-<p>Die Bereitstellung Ihrer personenbezogenen Daten erfolgt freiwillig. Wir können Ihre Anfrage jedoch nur bearbeiten, sofern Sie uns Ihren Namen, Ihre E-Mail-Adresse und den Grund der Anfrage mitteilen.</p> 
-
-<p></p>
+Wir stellen kein Kontaktformular auf dieser Webseite bereit. Falls sie dennoch wünschen mit uns Kontakt aufzunehmen, um z. B. Fragen zu stellen oder uns über Änderung/Löschung Ihrer Daten zu informieren, nutzen sie bitte die im Impressum angegebenen Kontaktdaten.
 
 <h2>Information über Ihr Widerspruchsrecht nach Art. 21 DSGVO</h2> 
 
@@ -284,7 +266,14 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <h3>Empfänger eines Widerspruchs</h3> 
 
-<p>Henry Schuler</p> 
+<p>
+  Henry Schuler <br />
+  Kastellstraße 69/1 <br />
+  88316 Isny <br />
+  <br />
+  Tel: +49 163 7292914 <br />
+  E-Mail: devchat.contact@gmail.com <br />
+  </p>
 
 <h2>Änderung unserer Datenschutzbestimmungen</h2> 
 
@@ -294,7 +283,15 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p>Wenn Sie Fragen zum Datenschutz haben, schreiben Sie uns bitte eine E-Mail oder wenden Sie sich direkt an die für den Datenschutz verantwortliche Person in unserer Organisation:</p> 
 
-<p>Henry Schuler</p> 
+<p>
+  <br /><br />
+  Henry Schuler <br />
+  Kastellstraße 69/1 <br />
+  88316 Isny <br />
+  <br />
+  Tel: +49 163 7292914 <br />
+  E-Mail: devchat.contact@gmail.com <br /><br />
+</p> 
 
 <p><em>Die Datenschutzerklärung wurde mithilfe der activeMind AG erstellt, den Experten für <a href="https://www.activemind.de/datenschutz/datenschutzbeauftragter/" target="_blank" rel="noopener">externe Datenschutzbeauftragte</a> (Version #2020-09-30).</em></p> 
           </div>
