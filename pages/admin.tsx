@@ -86,7 +86,7 @@ class Admin extends Component<AdminProps, AdminState> {
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.promoteUser(currentToken,name);
     if(wasSuccessful){
-      window.alert("Der User mit dem Namen " + name + " wurde promoted.");
+      console.log("Der User mit dem Namen " + name + " wurde promoted.");
     }
   }
 
@@ -94,12 +94,16 @@ class Admin extends Component<AdminProps, AdminState> {
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.demoteUser(currentToken,name);
     if(wasSuccessful){
-      window.alert("Der User mit dem Namen " + name + " wurde demoted.");
+      console.log("Der User mit dem Namen " + name + " wurde demoted.");
     }
   }
 
-  async changePassword(name: string | undefined, hashedPassword: string){
+  async resetPassword(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.resetPassword(currentToken,name);
+    if(wasSuccessful){
+      console.log("Das Passwort des Users mit dem Namen " + name + " wurde resettet.");
+    }
   }
 
   /**
@@ -153,7 +157,7 @@ class Admin extends Component<AdminProps, AdminState> {
                           </td>
 
                           <td><a href="" onClick={() => this.promoteUser(user.name)}>Promote</a> | <a href="" onClick={() => this.demoteUser(user.name)}>Demote</a></td>
-                          <td><a href="">Reset</a></td>
+                          <td><a href="" onClick={() => this.resetPassword(user.name)}>Reset</a></td>
                           <td><a href="" onClick={() => this.userClickDelete(user.name)}>Delete</a></td>
                       </tr>
                     ))}

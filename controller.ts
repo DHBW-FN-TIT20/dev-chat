@@ -113,62 +113,6 @@ export class DevChatController {
 
     return this.chatMessages;
   }
- /**
- * This Method is used to get all users
- */
-  public getAllUsers = async (): Promise<IUser[]> => {
-   let allUsers: IUser[] = [];
-   let userToken = this.getUserToken();
-   let response = await fetch('/api/users/getAllUsers',{
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      userToken: userToken,
-    })
-  });
-  let dataUser = await response.json();
-  allUsers = dataUser.allUsers;
-  return allUsers;
-  }
-
-/**
- * This method is used to promote a certain user
- */
-  public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
-    let response = await fetch('./api/users/promote', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userToken: userToken,
-        usernameToPromote: usernameToPromote,
-      })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
-  }
-
-  /**
-   * This method is used to demote a certain User
-   */
-   public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
-    let response = await fetch('./api/users/demote', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userToken: userToken,
-        usernameToDemote: usernameToDemote,
-      })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
-  }
-
 
   /**
    * This method sends a join message to the database
@@ -328,6 +272,77 @@ export class DevChatController {
 
   //#region User Methods
 
+   /**
+ * This Method is used to get all users
+ */
+    public getAllUsers = async (): Promise<IUser[]> => {
+      let allUsers: IUser[] = [];
+      let userToken = this.getUserToken();
+      let response = await fetch('/api/users/getAllUsers',{
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({
+         userToken: userToken,
+       })
+     });
+     let dataUser = await response.json();
+     allUsers = dataUser.allUsers;
+     return allUsers;
+     }
+   
+   /**
+    * This method is used to promote a certain user
+    */
+     public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
+       let response = await fetch('./api/users/promote', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           userToken: userToken,
+           usernameToPromote: usernameToPromote,
+         })
+       });
+       let data = await response.json();
+       return data.wasSuccessfull;
+     }
+
+     public resetPassword = async (userToken: string, usernameToReset: string | undefined): Promise<boolean> => {
+      let response = await fetch('./api/users/resetPassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userToken: userToken,
+          usernameToReset: usernameToReset,
+        })
+      });
+      let data = await response.json();
+      return data.wasSuccessfull;  
+     }
+   
+     /**
+      * This method is used to demote a certain User
+      */
+      public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
+       let response = await fetch('./api/users/demote', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           userToken: userToken,
+           usernameToDemote: usernameToDemote,
+         })
+       });
+       let data = await response.json();
+       return data.wasSuccessfull;
+     }
+   
   /**
  * This mehtod loggs out the current user.
  * @returns {boolean} True if logout was successfull, false if not
