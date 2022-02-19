@@ -12,8 +12,8 @@
 .return {
   cursor: pointer;
   transition: all 0.3s ease-out;
-  
 }
+
 .button1 {
   width: 100%;
   padding-left: 20pt;
@@ -22,6 +22,7 @@
   position: absolute;
   bottom: 10pt;
 }
+
 .overlay {
   position: fixed;
   top: 0;
@@ -33,20 +34,13 @@
   visibility: hidden;
   opacity: 0;
 }
+
 .overlay:target {
   visibility: visible;
   opacity: 1;
 }
 
-.popup {
-  margin: 70px auto;
-  background: #1A1A1A;
-  border: solid black 2px;
-  width: 40%;
-  height: 30%;
-  position: relative;
-  transition: all 3s;
-}
+
 
 .delacc {
   border-bottom: solid black 2px;
@@ -54,6 +48,7 @@
   height: 30pt; 
   width: 100%;
 }
+
 .delacchead {
   margin-top: 0;
 }
@@ -98,5 +93,38 @@
   background: #06D85F;
 }
 /* -------------- */
+@media screen and (min-width: 1280px) {
+  .popup {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 40%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+}
 
+@media screen and (max-width: 1280px) {
+  .popup {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 80%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+}
 
+@media screen and (max-width: 900px) {
+  .popup {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 90%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+}
