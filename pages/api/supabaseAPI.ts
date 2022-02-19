@@ -271,7 +271,7 @@ export class SupabaseConnection {
   * @param {string} username the username of the user
   * @returns {Promise<number>} the userID of the user
   */
-  public getUserIDByUsername = async (username: string): Promise<number> => {
+  public getUserIDByUsername = async (username: string| undefined ): Promise<number> => {
     // fetch the supabase database
     const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
@@ -924,11 +924,75 @@ export class SupabaseConnection {
     return changedSucessfully;
   }
 
-  public fetchAllUsers = async(): Promise<IUser[]> => {
+  /** 
+   * This function is used to promote a user
+   */
+  public promoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.isUserTokenValid(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    let promotionID = await this.getUserIDByUsername(name);
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('User')
+      .update({ AccessLevel: '1' })
+      .eq('UserID', promotionID);
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong with the promotion!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+ 
+  /** 
+   * This function is used to demote a user
+   */
+   public demoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.isUserTokenValid(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    let demotionID = await this.getUserIDByUsername(name);
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('User')
+      .update({ AccessLevel: '0' })
+      .eq('UserID', demotionID);
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong with the demotion!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+
+  /**
+   * This function is used to fetch all Users from the Database
+   * @param token 
+   * @returns Array of all IUsers
+   */
+  public fetchAllUsers = async(token:string): Promise<IUser[]> => {
     let allUsers: IUser[] = [];
+    // check if user is valid
+    let userIsValid: boolean = await this.isUserTokenValid(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return allUsers;
+    }
       let UserResponse = await SupabaseConnection.CLIENT
         .from('User')
-        .select('UserID,Username,AccessLevel',)
+        .select('UserID,Username,AccessLevel')
 
     if (UserResponse.data === null || UserResponse.error !== null || UserResponse.data.length === 0) {
       console.log("Unknown Error, please contact support.")
@@ -941,9 +1005,9 @@ export class SupabaseConnection {
       accessLevel: allUser.AccessLevel, 
               }
       })
-    //console.log("Die User die zurückgegeben wurden, sind " + allUsers);
     return allUsers;
   }
+
   /**
   * This Method adds a new ticket to the supabase database
   * @param bugToReport the bug that should be reported (see report.ts)

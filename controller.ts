@@ -119,10 +119,6 @@ export class DevChatController {
   public getAllUsers = async (): Promise<IUser[]> => {
    let allUsers: IUser[] = [];
    let userToken = this.getUserToken();
-   if(!this.getAdminValueFromToken(userToken)){
-    console.log("You are not an admin!")
-    return allUsers;
-  }
    let response = await fetch('/api/users/getAllUsers',{
     method: 'POST',
     headers: {
@@ -132,23 +128,45 @@ export class DevChatController {
       userToken: userToken,
     })
   });
-  let data = await response.json();
-  allUsers = data.allUsers;
-  console.log("Alle User: " + allUsers);
+  let dataUser = await response.json();
+  allUsers = dataUser.allUsers;
   return allUsers;
   }
+
 /**
  * This method is used to promote a certain user
  */
-  public async promoteUser(){
-    console.log("User has sucessfully been promoted!");
+  public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
+    let response = await fetch('./api/users/promote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        usernameToPromote: usernameToPromote,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
   }
 
   /**
    * This method is used to demote a certain User
    */
-  public async demoteUser(){
-
+   public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
+    let response = await fetch('./api/users/demote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        usernameToDemote: usernameToDemote,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
   }
 
 
@@ -328,7 +346,7 @@ export class DevChatController {
    * @param {string} usernameTodelete username of user that should be deleted
    * @returns {Promise<boolean>} true if target user was deleted, false if not
    */
-  public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
+  public deleteUser = async (userToken: string, usernameToDelete: string | undefined): Promise<boolean> => {
     let response = await fetch('./api/users/delete', {
       method: 'POST',
       headers: {

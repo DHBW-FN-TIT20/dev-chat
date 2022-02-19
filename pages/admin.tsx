@@ -26,10 +26,11 @@ class Admin extends Component<AdminProps, AdminState> {
   /**
    * is always called, if component did mount
    */
-   componentDidMount() {
+  async componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
-    this.renderAllUsers();
+    const tempallUsers = await this.returnAllUsers();
+    this.setState({allUsersState: tempallUsers})
   }
   
   /**
@@ -67,10 +68,38 @@ class Admin extends Component<AdminProps, AdminState> {
   /**
    * This method is used to get all Users from the database
    */
-  async renderAllUsers(){
+  async returnAllUsers(){
     
     let allUsers = await DevChatController.getAllUsers();
-    console.log("Alle User der Funktion 'renderAllUsers()'" + allUsers);
+    return allUsers;
+  }
+  async userClickDelete(name: string | undefined){
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.deleteUser(currentToken,name);
+    
+    if(wasSuccessful){
+      window.alert("Der User mit dem Namen " + name + " wurde gelöscht.");
+    }
+  }
+
+  async promoteUser(name: string | undefined){
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.promoteUser(currentToken,name);
+    if(wasSuccessful){
+      window.alert("Der User mit dem Namen " + name + " wurde promoted.");
+    }
+  }
+
+  async demoteUser(name: string | undefined){
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.demoteUser(currentToken,name);
+    if(wasSuccessful){
+      window.alert("Der User mit dem Namen " + name + " wurde demoted.");
+    }
+  }
+
+  async changePassword(name: string | undefined, hashedPassword: string){
+    let currentToken = DevChatController.getUserToken();
   }
 
   /**
@@ -96,23 +125,7 @@ class Admin extends Component<AdminProps, AdminState> {
             <div className={styles.left}>
               <h1>
                 User Settings
-              </h1>
-              <table><tbody>
-              {this.state.allUsersState.map(user => (
-                      <tr key={user.id}>
-                          <td>
-                          <p>
-                            {user.name}
-                          </p>
-                          <p>
-                            {user.accessLevel}
-                          </p>
-                      
-                          </td>
-                      </tr>
-                    ))}
-              </tbody>
-                </table>
+              </h1>                          
               <div> 
                 <table className={styles.table}>
                   <thead>
@@ -125,20 +138,25 @@ class Admin extends Component<AdminProps, AdminState> {
                     </tr>
                   </thead>
                   <tbody>
+                  {this.state.allUsersState.map(user => (
+                      <tr key={user.id}>
+                          <td>
+                          <p>
+                            {user.name}
+                          </p>
+                          </td>
 
-                      <td>admin</td>
-                      <td>ADMIN</td>
-                      <td><a href="#">Promote</a> | <a href="">Demote</a></td>
-                      <td><a href="">Reset</a></td>
-                      <td><a href="">Delete</a></td>
-                    </tr>
-                    <tr>
-                      <td>henry</td>
-                      <td>USER</td>
-                      <td><a href="">Promote</a> | <a href="">Demote</a></td>
-                      <td><a href="">Reset</a></td>
-                      <td><a href="">Delete</a></td>
-                    </tr>
+                          <td>
+                          <p>
+                            {user.accessLevel}
+                          </p>
+                          </td>
+
+                          <td><a href="" onClick={() => this.promoteUser(user.name)}>Promote</a> | <a href="" onClick={() => this.demoteUser(user.name)}>Demote</a></td>
+                          <td><a href="">Reset</a></td>
+                          <td><a href="" onClick={() => this.userClickDelete(user.name)}>Delete</a></td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
