@@ -5,9 +5,11 @@ import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
+import { IUser } from '../public/interfaces'
 
 export interface AdminState {
   isLoggedIn: boolean,
+  allUsersState: IUser[],
 }
 
 export interface AdminProps extends WithRouterProps {}
@@ -17,6 +19,7 @@ class Admin extends Component<AdminProps, AdminState> {
     super(props)
     this.state = {
       isLoggedIn: false,
+      allUsersState: [],
     }
   }
 
@@ -26,6 +29,7 @@ class Admin extends Component<AdminProps, AdminState> {
    componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
+    this.renderAllUsers();
   }
   
   /**
@@ -61,6 +65,15 @@ class Admin extends Component<AdminProps, AdminState> {
   }
 
   /**
+   * This method is used to get all Users from the database
+   */
+  async renderAllUsers(){
+    
+    let allUsers = await DevChatController.getAllUsers();
+    console.log("Alle User der Funktion 'renderAllUsers()'" + allUsers);
+  }
+
+  /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
    */
@@ -84,6 +97,22 @@ class Admin extends Component<AdminProps, AdminState> {
               <h1>
                 User Settings
               </h1>
+              <table><tbody>
+              {this.state.allUsersState.map(user => (
+                      <tr key={user.id}>
+                          <td>
+                          <p>
+                            {user.name}
+                          </p>
+                          <p>
+                            {user.accessLevel}
+                          </p>
+                      
+                          </td>
+                      </tr>
+                    ))}
+              </tbody>
+                </table>
               <div> 
                 <table className={styles.table}>
                   <thead>
@@ -96,10 +125,10 @@ class Admin extends Component<AdminProps, AdminState> {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
+
                       <td>admin</td>
                       <td>ADMIN</td>
-                      <td><a href="">Promote</a> | <a href="">Demote</a></td>
+                      <td><a href="#">Promote</a> | <a href="">Demote</a></td>
                       <td><a href="">Reset</a></td>
                       <td><a href="">Delete</a></td>
                     </tr>

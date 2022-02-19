@@ -14,6 +14,7 @@ import { ReportCommand } from '../../console_commands/report';
 import { ShowCommand } from '../../console_commands/show';
 import { ExpireCommand } from '../../console_commands/expire';
 import chat from '../chat';
+import { DevChatController } from '../../controller';
 
 //#endregion
 
@@ -184,6 +185,24 @@ export class SupabaseConnection {
 
     }
     return "";
+  }
+
+  /**
+  * This method checks a User for Admin-Status via his Token
+  * @param {string} token Token to check for Admin-Status
+  * @returns {string} true if Token is Admin-Token, false if not
+  */
+   public getIsAdminFromToken = (token: string): boolean => {
+    try {
+      let data = jwt.decode(token);
+      if (typeof data === "object" && data !== null) {
+        console.log("Access granted. You are an Admin!");
+        return data.isAdmin;
+      }
+    } catch (error) {
+
+    }
+    return false;
   }
 
   /**
@@ -905,7 +924,26 @@ export class SupabaseConnection {
     return changedSucessfully;
   }
 
+  public fetchAllUsers = async(): Promise<IUser[]> => {
+    let allUsers: IUser[] = [];
+      let UserResponse = await SupabaseConnection.CLIENT
+        .from('User')
+        .select('UserID,Username,AccessLevel',)
 
+    if (UserResponse.data === null || UserResponse.error !== null || UserResponse.data.length === 0) {
+      console.log("Unknown Error, please contact support.")
+      return allUsers;
+    }
+    allUsers = UserResponse.data.map(allUser => {
+      return {
+      id: allUser.UserID,
+      name: allUser.Username,
+      accessLevel: allUser.AccessLevel, 
+              }
+      })
+    //console.log("Die User die zurückgegeben wurden, sind " + allUsers);
+    return allUsers;
+  }
   /**
   * This Method adds a new ticket to the supabase database
   * @param bugToReport the bug that should be reported (see report.ts)

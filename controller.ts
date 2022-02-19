@@ -2,8 +2,9 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IChatMessage } from './public/interfaces';
+import { IChatMessage, IUser } from './public/interfaces';
 import chat from './pages/chat';
+import { SupabaseConnection } from './pages/api/supabaseAPI';
 
 //#endregion
 
@@ -112,6 +113,44 @@ export class DevChatController {
 
     return this.chatMessages;
   }
+ /**
+ * This Method is used to get all users
+ */
+  public getAllUsers = async (): Promise<IUser[]> => {
+   let allUsers: IUser[] = [];
+   let userToken = this.getUserToken();
+   if(!this.getAdminValueFromToken(userToken)){
+    console.log("You are not an admin!")
+    return allUsers;
+  }
+   let response = await fetch('/api/users/getAllUsers',{
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userToken: userToken,
+    })
+  });
+  let data = await response.json();
+  allUsers = data.allUsers;
+  console.log("Alle User: " + allUsers);
+  return allUsers;
+  }
+/**
+ * This method is used to promote a certain user
+ */
+  public async promoteUser(){
+    console.log("User has sucessfully been promoted!");
+  }
+
+  /**
+   * This method is used to demote a certain User
+   */
+  public async demoteUser(){
+
+  }
+
 
   /**
    * This method sends a join message to the database
