@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IChatMessage, IUser } from './public/interfaces';
+import { IChatMessage, ISurvey, IUser } from './public/interfaces';
 import chat from './pages/chat';
 import { SupabaseConnection } from './pages/api/supabaseAPI';
 
@@ -270,8 +270,53 @@ export class DevChatController {
 
   //#endregion
 
+  //#region Survey Methods
+
+    /**
+ * This Method is used to get all surveys | It is called by admin.ts when displaying Admin Settings for Surveys
+ */
+     public getAllSurveys = async (): Promise<ISurvey[]> => {
+      let allSurveys: ISurvey[] = [];
+      let userToken = this.getUserToken();
+      let response = await fetch('/api/surveys/getAllSurveys',{
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({
+         userToken: userToken,
+       })
+     });
+     let dataUser = await response.json();
+     allSurveys = dataUser.allSurveys;
+     return allSurveys;
+     }
+
+  //#endregion
+
   //#region User Methods
 
+  /**
+   * This method is used to get a username from a userID
+   * @param userID 
+   * @returns 
+   */
+  public getUserFromID = async (userID: number | undefined): Promise<string> => {
+    let username: string;
+    let response = await fetch('./api/users/getUserFromID', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userID : userID,
+      })
+    });
+    let data = await response.json();
+    username = data.wantedUser;
+    console.log(username);
+    return username;
+  }
    /**
  * This Method is used to get all users
  */

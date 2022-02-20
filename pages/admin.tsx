@@ -5,11 +5,13 @@ import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
-import { IUser } from '../public/interfaces'
+import { IUser, ISurvey } from '../public/interfaces'
 
 export interface AdminState {
   isLoggedIn: boolean,
   allUsersState: IUser[],
+  allSurveysState: ISurvey[],
+  usernameForSurveys: string,
 }
 
 export interface AdminProps extends WithRouterProps {}
@@ -20,6 +22,8 @@ class Admin extends Component<AdminProps, AdminState> {
     this.state = {
       isLoggedIn: false,
       allUsersState: [],
+      allSurveysState: [],
+      usernameForSurveys: "Hier soll der Name stehen...",
     }
   }
 
@@ -30,7 +34,9 @@ class Admin extends Component<AdminProps, AdminState> {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
     const tempallUsers = await this.returnAllUsers();
-    this.setState({allUsersState: tempallUsers})
+    this.setState({allUsersState: tempallUsers});
+    const tempallSurveys = await this.returnAllSurveys();
+    this.setState({allSurveysState: tempallSurveys});
   }
   
   /**
@@ -64,12 +70,24 @@ class Admin extends Component<AdminProps, AdminState> {
       router.push("/login")
     }
   }
+  /**
+   * This method is used to get all Surveys from the database
+   */
+   async returnAllSurveys(){
+    let allSurveys = await DevChatController.getAllSurveys();
+    return allSurveys;
+  }
+  // mit Array von Namen versuchen! - Notiz 
+    async getUserNameByID(ownerID: number | undefined){
+      console.log("Username:");
+      let wantedUsername =  await DevChatController.getUserFromID(ownerID);
+      this.setState({usernameForSurveys: String(wantedUsername)});
+    }
 
   /**
    * This method is used to get all Users from the database
    */
   async returnAllUsers(){
-    
     let allUsers = await DevChatController.getAllUsers();
     return allUsers;
   }
@@ -208,13 +226,37 @@ class Admin extends Component<AdminProps, AdminState> {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>Survey 1</td>
-                      <td>16/01/2022 21:23:12</td>
-                      <td>admin</td>
-                      <td><a href="">Set Time</a></td>
-                      <td><a href="">Delete</a></td>
-                    </tr>
+                  {this.state.allSurveysState.map(survey => (
+                      <tr key={survey.id}>
+                          <td>
+                          <p>
+                            {survey.name}
+                          </p>
+                          </td>
+
+                          <td>
+                          <p>
+                          {new Date(survey.expirationDate).toLocaleDateString('de-DE', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hourCycle: 'h24',
+                            })}
+                          </p>
+                          </td>
+                          <td>
+                          <p>
+                            {String(this.state.usernameForSurveys)} |
+                            {" " + survey.ownerID}
+                          </p>
+                          </td>
+
+                          <td><a href="">Set Time</a></td>
+                          <td><a href="">Delete</a></td>
+                      </tr>
+                    ))}
                     <tr>
                       <td>Survey 2</td>
                       <td>25/01/2022 16:59:59</td>

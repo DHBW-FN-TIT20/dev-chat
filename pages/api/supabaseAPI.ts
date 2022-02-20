@@ -399,6 +399,27 @@ export class SupabaseConnection {
     }
   }
 
+    /**
+  * This helper function is used to get the username of a user by userID
+  * @param {string} userID the id of the user
+  * @returns {Promise<number>} the username of the user
+  */
+     public getUsernameByUserID = async (userID: number| undefined ): Promise<string|undefined> => {
+      // fetch the supabase database
+      const { data, error } = await SupabaseConnection.CLIENT
+        .from('User')
+        .select('Username')
+        .eq( 'UserID', userID );
+  
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // user was not found -> return undefined
+        return undefined;
+      } else {
+        return data[0].Username;
+      }
+    }
+
   /**
   * This method returns all user informations for the given username
   * @param username the username of the user
