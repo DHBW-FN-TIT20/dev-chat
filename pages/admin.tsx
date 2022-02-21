@@ -5,12 +5,13 @@ import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
-import { IUser, ISurvey } from '../public/interfaces'
+import { IUser, ISurvey, IBugTicket } from '../public/interfaces'
 
 export interface AdminState {
   isLoggedIn: boolean,
   allUsersState: IUser[],
   allSurveysState: ISurvey[],
+  allTicketsState: IBugTicket[],
   usernameForSurveys: string[],
 }
 
@@ -23,6 +24,7 @@ class Admin extends Component<AdminProps, AdminState> {
       isLoggedIn: false,
       allUsersState: [],
       allSurveysState: [],
+      allTicketsState: [],
       usernameForSurveys: [],
     }
   }
@@ -37,6 +39,8 @@ class Admin extends Component<AdminProps, AdminState> {
     this.setState({allUsersState: tempallUsers});
     const tempallSurveys = await DevChatController.getAllSurveys();
     this.setState({allSurveysState: tempallSurveys});
+    const tempallTickets = await DevChatController.getAllTickets();
+    this.setState({allTicketsState: tempallTickets});
   }
   
   /**
@@ -71,14 +75,14 @@ class Admin extends Component<AdminProps, AdminState> {
     }
   }
 
-/*
-  // mit Array von Namen versuchen! - Notiz 
-    async getUserNameByID(ownerID: number | undefined){
-      console.log("Username:");
-      let wantedUsername =  await DevChatController.getUserFromID(ownerID);
-      this.setState({usernameForSurveys: String(wantedUsername)});
-    }
-*/
+giveBoolStringTicket(boolToPrint: boolean | undefined):string{
+  if(boolToPrint){
+    return "Done";
+  }
+  else{
+    return "To-Do";
+  }
+}
 
 matchingUsername(userID: number | undefined, username: string | undefined, ownerID: number | undefined): string | undefined{
   if(userID === ownerID){
@@ -86,13 +90,25 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
   }
   return "";
 }
-
+  /**
+   * This function is used to delete a user via admin interface
+   * @param name username to delete
+   */
   async userClickDelete(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.deleteUser(currentToken,name);
     
     if(wasSuccessful){
-      window.alert("Der User mit dem Namen " + name + " wurde gelöscht.");
+      console.log("Der User mit dem Namen " + name + " wurde gelöscht.");
+    }
+  }
+
+  async surveyClickDelete(surveyID: number | undefined){
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.deleteSurvey(currentToken,surveyID);
+    
+    if(wasSuccessful){
+      console.log("Die Survey mit der ID " + surveyID + " wurde gelöscht.");
     }
   }
 
@@ -249,16 +265,9 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                           ))}
                           </td>
                           <td><a href="">Set Time</a></td>
-                          <td><a href="">Delete</a></td>
+                          <td><a href="" onClick={() => this.surveyClickDelete(survey.id)}>Delete</a></td>
                       </tr>
                     ))}
-                    <tr>
-                      <td>Survey 2</td>
-                      <td>25/01/2022 16:59:59</td>
-                      <td>admin</td>
-                      <td><a href="">Set Time</a></td>
-                      <td><a href="">Delete</a></td>
-                    </tr>
                   </tbody>
                 </table>
               </div>
@@ -277,20 +286,39 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>admin</td>
-                      <td>16/01/2022 21:23:12</td>
-                      <td>Done</td>
-                      <td><a href="">Set To Do</a></td>
-                      <td><a href="">View</a></td>
-                    </tr>
-                    <tr>
-                      <td>henry</td>
-                      <td>25/01/2022 16:59:59</td>
-                      <td>To Do</td>
-                      <td><a href="">Set Done</a></td>
-                      <td><a href="">View</a></td>
-                    </tr>
+                  {this.state.allTicketsState.map(ticket => (
+                      <tr key={ticket.id}>
+                          <td>
+                          <p>
+                            {ticket.submitter}
+                          </p>
+                          </td>
+                          <td>
+                          <p>
+                          {new Date(ticket.date).toLocaleDateString('de-DE', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hourCycle: 'h24',
+                            })}
+                          </p>
+                          </td>
+                          <td>
+                          <p>
+                          {(this.giveBoolStringTicket(ticket.solved))}
+                          </p>
+                          </td>
+                          <td><a href="">Change State</a></td>
+                          <td>
+                          <p>
+                            {ticket.message}
+                          </p>
+                          </td>
+
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>

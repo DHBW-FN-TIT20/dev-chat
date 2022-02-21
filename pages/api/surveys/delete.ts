@@ -8,15 +8,16 @@ type Data = {
 const supabaseConnection = new SupabaseConnection();
 
 /**
- * This is a api route to remove a user from the database.
- * @param req the request object (body: userToken, usernameToDelete)
+ * This is a api route to remove a survey from the database
+ * @param req the request object (body: userToken, surveyIDToDelete)
  * @param res the response object (body: wasSuccessfull)
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken = req.body.userToken;
-  let usernameToDelete = req.body.usernameToDelete;
+  let surveyIDToDelete = req.body.surveyIDToDelete;
+  console.log("Es geht los!");
 
-  let removedSuccessfully = await supabaseConnection.deleteUser(userToken, usernameToDelete);
+  let wasSuccessfull = await supabaseConnection.deleteSurvey(userToken, surveyIDToDelete);
 
-  res.status(200).json({ wasSuccessfull: removedSuccessfully });
+  res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }

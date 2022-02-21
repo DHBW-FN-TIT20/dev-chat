@@ -107,7 +107,7 @@ export interface ISurveyState {
 export interface IBugTicket {
     id?: number;
     submitter: IUser;
-    date?: Date; // maybe change later
+    date: Date; // maybe change later
     message: string;
     solved?: boolean;
 }

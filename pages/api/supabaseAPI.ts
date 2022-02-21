@@ -271,7 +271,7 @@ export class SupabaseConnection {
    */
    public promoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
     let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.isUserTokenValid(token);
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
 
     if (!userIsValid) {
       console.log("You are not an admin!");
@@ -297,7 +297,7 @@ export class SupabaseConnection {
    */
    public demoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
     let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.isUserTokenValid(token);
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
 
     if (!userIsValid) {
       console.log("You are not an admin!");
@@ -323,7 +323,7 @@ export class SupabaseConnection {
    */
    public resetPassword = async(token:string, name:string|undefined): Promise<boolean> =>{
     let resetSucessfully: boolean = false;
-    let userIsValid: boolean = await this.isUserTokenValid(token);
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
 
     if (!userIsValid) {
       console.log("You are not an admin!");
@@ -344,6 +344,7 @@ export class SupabaseConnection {
     resetSucessfully = true;
     return resetSucessfully;
   }
+
   /**
    * This function is used to fetch all Users from the Database
    * @param token 
@@ -352,7 +353,7 @@ export class SupabaseConnection {
   public fetchAllUsers = async(token:string): Promise<IUser[]> => {
     let allUsers: IUser[] = [];
     // check if user is valid
-    let userIsValid: boolean = await this.isUserTokenValid(token);
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
 
     if (!userIsValid) {
       console.log("You are not an admin!");
@@ -638,22 +639,14 @@ export class SupabaseConnection {
   * @returns {Promise<boolean>} true if user was deleted, false if not
   */
   public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
-    // check if the user and the password are correct
-    const isValid = await this.isUserTokenValid(userToken);
-
-    if (!isValid) {
-      // user and password are not correct -> return false
-      return false;
-    }
 
     const currentUserId = await this.getUserIDFromToken(userToken);
     const targetUserId = await this.getUserIDByUsername(usernameToDelete);
 
-    // check if user is allowed to remove the user (either admin user or target is the user himself)
-    let isAllowed = (currentUserId === 1 || currentUserId === 2 || currentUserId === targetUserId);
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
 
-    if (!isAllowed) {
-      // user is not allowed to remove the user -> return false
+    if (!userIsValid) {
+      console.log("You are not an admin!");
       return false;
     }
 
@@ -661,7 +654,7 @@ export class SupabaseConnection {
     const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
       .delete()
-      .match({ UserID: targetUserId });
+      .match({ 'UserID': targetUserId });
 
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
@@ -1032,6 +1025,41 @@ export class SupabaseConnection {
 
   //#region Ticket Methods
 
+
+  /**
+   * This function is used to fetch all Tickets from the Database
+   * @param token 
+   * @returns Array of all IBugTickets
+   */
+   public fetchAllTickets = async(token:string): Promise<IBugTicket[]> => {
+    let allTickets: IBugTicket[] = [];
+    // check if user is valid
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return allTickets;
+    }
+      let TicketResponse = await SupabaseConnection.CLIENT
+        .from('Ticket')
+        .select()
+
+    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0) {
+      console.log("Unknown Error, please contact support.")
+      return allTickets;
+    }
+    allTickets = TicketResponse.data.map(allTicket => {
+      return {
+    id: allTicket.TicketID,
+    submitter: allTicket.SubmitterID,
+    date: allTicket.TicketCreateDate,
+    message: allTicket.Message,
+    solved: allTicket.Solved,
+              }
+      })
+    return allTickets;
+  }
+
   /**
   * This function is used to change the status of a ticket from to-do to solved
   * NOTE -- This function only gives feedback inside the console, not the browser!
@@ -1096,6 +1124,74 @@ export class SupabaseConnection {
   //#endregion
 
   //#region Survey Methods
+
+
+  public deleteSurveyOption = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyOption was not removed -> return false
+      return false;
+    } else {
+      // surveyOption was removed -> return true
+      console.log("SurveyOption has been deleted successfully!");
+      return true;
+    }
+  }
+
+  public deleteSurveyVote = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('SurveyVote')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyVote was not removed -> return false
+      return false;
+    } else {
+      // surveyVote was removed -> return true
+      console.log("SurveyVote has been deleted successfully!");
+      return true;
+    }
+  }
+
+  public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return false;
+    }
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // survey was not removed -> return false
+      console.log(error);
+      return false;
+    } else {
+      // survey was removed -> return true
+      console.log("Survey has been deleted successfully!");
+      return true;
+    }
+  }
 
   /**
   * This method returns the current state of a survey for the given surveyID.

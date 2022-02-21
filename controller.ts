@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IChatMessage, ISurvey, IUser } from './public/interfaces';
+import { IBugTicket, IChatMessage, ISurvey, IUser } from './public/interfaces';
 import chat from './pages/chat';
 import { SupabaseConnection } from './pages/api/supabaseAPI';
 
@@ -275,6 +275,27 @@ export class DevChatController {
     /**
  * This Method is used to get all surveys | It is called by admin.ts when displaying Admin Settings for Surveys
  */
+     /**
+      *  A function that is used to delete a certain survey
+      * @param userToken - userToken of the current user
+      * @param surveyIDToDelete  - ID of the survey that should be deleted
+      * @returns 
+      */
+     public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+      let response = await fetch('./api/surveys/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userToken: userToken,
+          surveyIDToDelete: surveyIDToDelete,
+        })
+      });
+      let data = await response.json();
+      return data.wasSuccessfull;
+    }
+
      public getAllSurveys = async (): Promise<ISurvey[]> => {
       let allSurveys: ISurvey[] = [];
       let userToken = this.getUserToken();
@@ -292,6 +313,25 @@ export class DevChatController {
      return allSurveys;
      }
 
+  //#endregion
+
+  //#region Ticket Methods
+  public getAllTickets = async (): Promise<IBugTicket[]> => {
+    let allTickets: IBugTicket[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/tickets/getAllTickets',{
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+       userToken: userToken,
+     })
+   });
+   let dataUser = await response.json();
+   allTickets = dataUser.allTickets;
+   return allTickets;
+   }
   //#endregion
 
   //#region User Methods
