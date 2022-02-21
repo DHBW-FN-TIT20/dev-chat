@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       .from('ChatMessage')
       .on('INSERT', async payload => {
         const chatKey = await supabaseConnection.getChatKey(payload.new.ChatKeyID);
-        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${chatKey} | User: ${payload.new.UserID}`);
+        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${chatKey?.threeWord} | User: ${payload.new.UserID}`);
         io.emit("message", chatKey?.threeWord);
       })
       .subscribe()
