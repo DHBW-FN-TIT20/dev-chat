@@ -1,3 +1,15 @@
+@media screen and (max-width: 550px) {
+    
+    .container {
+        overflow-x: hidden;
+    }
+    .left {
+        margin-top: 20pt;
+        width: 100%;
+        padding-left: 30pt;
+        padding-right: 30pt;
+    }
+}
 @media screen and (max-width: 900px) {
     
     .container {
