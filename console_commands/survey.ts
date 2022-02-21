@@ -1,17 +1,18 @@
 import { SupabaseConnection } from "../pages/api/supabaseAPI";
 import { ISurvey, IUser } from "../public/interfaces";
+import getDateByGermanString from "../shared/get_date_by_german_string";
 import { Command } from "./baseclass";
 
 /**
  * This command is used to start the survey.
  * It is triggerd by the command "/survey"
- * Pattern: /survey <SurveyName> <"Description"> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]
+ * Pattern: /survey <SurveyName> <"Description"> <ExpirationDate (DD.MM.YYY-HH:MM)> <Option1> <Option2> [... <OptionN>]
  */
 export class SurveyCommand extends Command {
     public constructor() {
       super();
       this.callString = "survey";
-      this.helpText = "run '/survey <SurveyName> <\"Description\"> <ExpirationDate (DD.MM.YYY)> <Option1> <Option2> [... <OptionN>]' to start a new survey";
+      this.helpText = "run '/survey <SurveyName> <\"Description\"> <ExpirationDate (DD.MM.YYY-HH:MM)> <Option1> <Option2> [... <OptionN>]' to start a new survey";
     }
     
     public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
@@ -30,9 +31,9 @@ export class SurveyCommand extends Command {
       // check if the first argument is a valid survey name
       // NOTE: maybe add checks for the survey name here
 
-      // check if the second argument is a valid expiration date in format DD.MM.YYYY
-      let expirationDate: Date = new Date(args[2]);
-      if (isNaN(expirationDate.getTime())) {
+      // check if the second argument is a valid expiration date in format DD.MM.YYY-HH:MM
+      let expirationDate: Date | null = getDateByGermanString(args[2]);
+      if (expirationDate === null) {
         argsValid = false;
       }
 
@@ -47,7 +48,7 @@ export class SurveyCommand extends Command {
       let surveyToAdd: ISurvey = {
         name: args[0],
         description: args[1],
-        expirationDate: expirationDate,
+        expirationDate: expirationDate ? expirationDate : new Date(),
         options: args.slice(3).map(option => { return { name: option } }),
         ownerID: currentUser.id,
       };
@@ -65,7 +66,7 @@ export class SurveyCommand extends Command {
       answerLines.push("ID: " + addedSurvey.id);
       answerLines.push("Name: " + addedSurvey.name);
       answerLines.push("Description: " + addedSurvey.description);
-      answerLines.push("Expiration Date: " + expirationDate.toLocaleDateString());
+      answerLines.push("Expiration Date: " + addedSurvey.expirationDate.toLocaleString());
 
       // display the options
       addedSurvey.options.forEach((option) => {
