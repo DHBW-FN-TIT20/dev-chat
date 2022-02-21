@@ -171,11 +171,13 @@ class Chat extends Component<ChatProps, ChatState> {
     }
     if(event.key == "ArrowUp" && this.historyIndex != 0){
       this.historyIndex --;
-      event.target.value = this.historyMessage[this.historyIndex]
+      this.chatLineInput = this.historyMessage[this.historyIndex];
+      event.target.value = this.historyMessage[this.historyIndex];
     }
     else if(event.key == "ArrowDown" && this.historyIndex != this.historyMessage.length -1){
       this.historyIndex ++;
-      event.target.value = this.historyMessage[this.historyIndex]
+      event.target.value = this.historyMessage[this.historyIndex];
+      this.chatLineInput = this.historyMessage[this.historyIndex];
     }
     
   }
