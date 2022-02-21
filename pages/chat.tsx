@@ -75,6 +75,12 @@ class Chat extends Component<ChatProps, ChatState> {
     // TODO: route the chat key to the server + filter at subsciption
     this.socket = SocketIOClient(url, {
       path: "/api/messages/socketio",
+      auth: {
+        headers: {
+          chatKey: DevChatController.getChatKeyFromCookie(),
+          userToken: DevChatController.getUserToken()
+        }
+      }
     });
 
     // register connection event
