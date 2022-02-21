@@ -23,6 +23,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const httpServer: NetServer = res.socket.server as any;
     const io = new ServerIO(httpServer, { path: "/api/messages/socketio" });
     res.socket.server.io = io;
+    
+    // print every minute a list of clients connected to the server
+    const logAllClients = async () => {
+      let clients = await io.sockets.fetchSockets();
+      console.log(`${new Date().toLocaleString()}: ${clients.length} clients connected`);
+      clients.forEach(socket => {
+        console.log(`Client ${socket.id} connected to the server with IP: ${socket.handshake.address}`);
+      });
+    }
+    logAllClients();
+    setInterval(logAllClients, 60000);
 
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
