@@ -29,11 +29,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       let clients = await io.sockets.fetchSockets();
       console.log(`${new Date().toLocaleString()}: ${clients.length} clients connected`);
       clients.forEach(socket => {
-        console.log(`Client ${socket.id} connected to the server with IP: ${socket.handshake.address}`);
+        const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address;
+        console.log(`Client ${socket.id} connected to the server with IP: ${ip}`);
       });
     }
     logAllClients();
-    setInterval(logAllClients, 60000);
+    setInterval(logAllClients, 6000);
 
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
