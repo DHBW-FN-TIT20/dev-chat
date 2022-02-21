@@ -11,7 +11,7 @@ export interface AdminState {
   isLoggedIn: boolean,
   allUsersState: IUser[],
   allSurveysState: ISurvey[],
-  usernameForSurveys: string,
+  usernameForSurveys: string[],
 }
 
 export interface AdminProps extends WithRouterProps {}
@@ -23,7 +23,7 @@ class Admin extends Component<AdminProps, AdminState> {
       isLoggedIn: false,
       allUsersState: [],
       allSurveysState: [],
-      usernameForSurveys: "Hier soll der Name stehen...",
+      usernameForSurveys: [],
     }
   }
 
@@ -33,9 +33,9 @@ class Admin extends Component<AdminProps, AdminState> {
   async componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
-    const tempallUsers = await this.returnAllUsers();
+    const tempallUsers = await DevChatController.getAllUsers();
     this.setState({allUsersState: tempallUsers});
-    const tempallSurveys = await this.returnAllSurveys();
+    const tempallSurveys = await DevChatController.getAllSurveys();
     this.setState({allSurveysState: tempallSurveys});
   }
   
@@ -70,27 +70,23 @@ class Admin extends Component<AdminProps, AdminState> {
       router.push("/login")
     }
   }
-  /**
-   * This method is used to get all Surveys from the database
-   */
-   async returnAllSurveys(){
-    let allSurveys = await DevChatController.getAllSurveys();
-    return allSurveys;
-  }
+
+/*
   // mit Array von Namen versuchen! - Notiz 
     async getUserNameByID(ownerID: number | undefined){
       console.log("Username:");
       let wantedUsername =  await DevChatController.getUserFromID(ownerID);
       this.setState({usernameForSurveys: String(wantedUsername)});
     }
+*/
 
-  /**
-   * This method is used to get all Users from the database
-   */
-  async returnAllUsers(){
-    let allUsers = await DevChatController.getAllUsers();
-    return allUsers;
+matchingUsername(userID: number | undefined, username: string | undefined, ownerID: number | undefined): string | undefined{
+  if(userID === ownerID){
+    return username;
   }
+  return "";
+}
+
   async userClickDelete(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.deleteUser(currentToken,name);
@@ -233,7 +229,6 @@ class Admin extends Component<AdminProps, AdminState> {
                             {survey.name}
                           </p>
                           </td>
-
                           <td>
                           <p>
                           {new Date(survey.expirationDate).toLocaleDateString('de-DE', {
@@ -247,12 +242,12 @@ class Admin extends Component<AdminProps, AdminState> {
                           </p>
                           </td>
                           <td>
-                          <p>
-                            {String(this.state.usernameForSurveys)} |
-                            {" " + survey.ownerID}
-                          </p>
+                          {this.state.allUsersState.map(user => ( 
+                            <div>
+                                {(this.matchingUsername(user.id,user.name,survey.ownerID))}
+                            </div> 
+                          ))}
                           </td>
-
                           <td><a href="">Set Time</a></td>
                           <td><a href="">Delete</a></td>
                       </tr>
