@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       });
     }
     logAllClients();
-    setInterval(logAllClients, 6000);
+    setInterval(logAllClients, 60000);
 
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
