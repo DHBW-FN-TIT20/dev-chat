@@ -117,6 +117,7 @@ class Main extends Component<MainProps, MainState> {
               <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
 
               <button onClick={async() => {
+                 this.setState({feedbackMessage : ""});
                 let doesChatKeyExists = await DevChatController.doesChatKeyExists(this.state.inputChatKey)
                 this.setState({
                   doesChatKeyExists: doesChatKeyExists
