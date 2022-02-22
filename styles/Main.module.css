@@ -2,6 +2,8 @@
     
     .container {
         overflow-x: hidden;
+        width: 100%;
+        height: 100%;
     }
     .left {
         margin-top: 20pt;
@@ -30,6 +32,8 @@
     }
     .container {
         overflow-x: hidden;
+        width: 100%;
+        height: 100%;
     }
 }
 @media screen and (min-width: 1280px) {
@@ -48,9 +52,12 @@
     height: 100%;
     width: 50%;
 }
+
 .container {
     height: 100%;
+    width: 100%;
     overflow-x: hidden;
 }
 
 }
+
