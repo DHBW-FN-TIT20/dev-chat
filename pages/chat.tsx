@@ -25,6 +25,8 @@ class Chat extends Component<ChatProps, ChatState> {
   private messageFetchInterval: any = undefined;
   private currentChatKeyCookie: string = "";
   private chatLineInput: string = "";
+  private historyMessage: string[] = ["",];
+  private historyIndex: number = 0;
   constructor(props: ChatProps) {
     super(props)
     this.state = {
@@ -73,6 +75,12 @@ class Chat extends Component<ChatProps, ChatState> {
     // TODO: route the chat key to the server + filter at subsciption
     this.socket = SocketIOClient(url, {
       path: "/api/messages/socketio",
+      auth: {
+        headers: {
+          chatKey: DevChatController.getChatKeyFromCookie(),
+          userToken: DevChatController.getUserToken()
+        }
+      }
     });
 
     // register connection event
@@ -138,6 +146,9 @@ class Chat extends Component<ChatProps, ChatState> {
   */
   handleEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
+      this.historyMessage[this.historyMessage.length -1] = this.chatLineInput;
+      this.historyMessage.push("");
+      this.historyIndex = this.historyMessage.length -1;
       console.log("Entered new Message: " + this.chatLineInput);
       DevChatController.enteredNewMessage(this.chatLineInput);
       event.target.value = "";
@@ -152,6 +163,30 @@ class Chat extends Component<ChatProps, ChatState> {
    */
   handleChatLineInput = (event: any) => {
     this.chatLineInput = event.target.value
+  }
+
+  /**
+   * Handle of KeyDown-Event from the Input
+   * Checks if Arrow up or down is pressed to load the History
+   * @param event Occured Event
+   */
+  handleKeyDown = (event:any) => {
+    if(this.historyMessage.length == 1){
+      //no History in local Browser
+      return;
+    }
+    if(event.key == "ArrowUp" && this.historyIndex != 0){
+      this.historyIndex --;
+      this.chatLineInput = this.historyMessage[this.historyIndex];
+      event.target.value = this.historyMessage[this.historyIndex];
+      setTimeout(() => { event.target.selectionStart = event.target.selectionEnd = event.target.value.length; }, 1);
+    }
+    else if(event.key == "ArrowDown" && this.historyIndex != this.historyMessage.length -1){
+      this.historyIndex ++;
+      event.target.value = this.historyMessage[this.historyIndex];
+      this.chatLineInput = this.historyMessage[this.historyIndex];
+    }
+    
   }
 
   /**
@@ -213,6 +248,7 @@ class Chat extends Component<ChatProps, ChatState> {
                 type="text" placeholder="Write a message..." 
                 onKeyPress={this.handleEnterKeyPress} 
                 onChange={this.handleChatLineInput}
+                onKeyDown={this.handleKeyDown}
               />
             </div>
             
