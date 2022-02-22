@@ -21,9 +21,19 @@ export default class Popup extends Component<PopupProps, PopupState> {
     return (
       <div className={styles.popup}>
         <div className={styles.popup_inner}>
-          <h1>{this.props.headerText}</h1>
-          <p>{this.props.textDisplay}</p>
-          <button className={styles.buttonPopup} onClick={this.props.closePopup}>Close</button>
+          <div className={styles.delacc}>
+		          <p className={styles.delacchead}>{this.props.headerText}</p>
+          </div>
+          <div className={styles.attentiondiv}>
+              <span className={styles.attention}>!</span>
+          </div>
+          <div className={styles.content}>
+            {this.props.textDisplay}
+		      </div>
+          <div className={styles.button1}>
+          <button className={styles.buttonPopup} onClick={this.props.closePopup}>Ok</button>
+          </div>
+          
         </div>
       </div>
       );
