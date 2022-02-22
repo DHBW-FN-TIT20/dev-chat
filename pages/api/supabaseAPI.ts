@@ -700,6 +700,64 @@ export class SupabaseConnection {
 
   //#region ChatKey Methods
 
+  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
+
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return false;
+    }
+
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .delete()
+      .eq('ChatKeyID', chatKeyToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // chatKey was not removed -> return false
+      return false;
+    } else {
+      // chatKey was removed -> return true
+      return true;
+    }
+  }
+
+   /**
+   * This function is used to fetch all ChatKeys from the Database
+   * @param token 
+   * @returns Array of all IChatKeys
+   */
+    public fetchAllChatKeys = async(token:string): Promise<IChatKey[]> => {
+      let allChatKeys: IChatKey[] = [];
+      // check if user is valid
+      console.log("Es geht los!!!");
+      let userIsValid: boolean = await this.getIsAdminFromToken(token);
+  
+      if (!userIsValid) {
+        console.log("You are not an admin!");
+        return allChatKeys;
+      }
+      
+      let ChatKeyResponse = await SupabaseConnection.CLIENT
+        .from('ChatKey')
+        .select('ChatKeyID,ChatKey,ExpirationDate')
+  
+      if (ChatKeyResponse.data === null || ChatKeyResponse.error !== null || ChatKeyResponse.data.length === 0) {
+        console.log("No Chat Keys found!")
+        return allChatKeys;
+      }
+      allChatKeys = ChatKeyResponse.data.map(allChat => {
+        return {
+          id: allChat.ChatKeyID,
+          threeWord: allChat.ChatKey,
+          expirationDate: allChat.ExpirationDate,
+                }
+        })
+      return allChatKeys;
+    }
   /**
   * API funciton to get the id of a threeword chatKey
   * @param {string} chatKey the threeword
@@ -826,12 +884,25 @@ export class SupabaseConnection {
   };
 
   /** 
-  * API function to delete all old chat keys from the database 
+  * API function to delete all old chat keys from the database // is always called, when going into Admin settings
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if old chat keys were deleted
   */
   public deleteOldChatKeys = async (): Promise<boolean> => {
+
     const { data, error } = await SupabaseConnection.CLIENT
-      .rpc('Delete')
+      .from('ChatKey')
+      .delete()
+      .lt('ExpirationDate',((new Date()).toISOString()).toLocaleLowerCase())
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyOption was not removed -> return false
+      return false;
+    } else {
+      // surveyOption was removed -> return true
+      console.log("Old ChatKeys have been deleted successfully!");
+      return true;
+    }
 
     //Hier muss noch ggbfs. was geschrieben werden.
     if (error) {
@@ -1064,19 +1135,39 @@ export class SupabaseConnection {
   * This function is used to change the status of a ticket from to-do to solved
   * NOTE -- This function only gives feedback inside the console, not the browser!
   * @param ticketToChange The ID of the ticket, that should be changed
+  * 
   * @returns boolean - true if ticked was sucessfully changed - false if not
   */
-  public changeSolvedState = async (ticketToChange: number): Promise<boolean> => {
+  public changeSolvedState = async (currentToken: string, ticketToChange: number | undefined , currentState: boolean | undefined): Promise<boolean> => {
     let changedSucessfully: boolean = false;
-
+    let userIsValid: boolean = await this.getIsAdminFromToken(currentToken);
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+    if(!currentState){
     const UpdateStatus = await SupabaseConnection.CLIENT
       .from('Ticket')
-      .update({ Solved: 'true' })
+      .update({ Solved: currentState })
       .eq('TicketID', ticketToChange)
-
+    
+    
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log(UpdateStatus.error);
+      return changedSucessfully;
+    }
+  }
+  else{
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .update({ Solved: !currentState })
+      .eq('TicketID', ticketToChange)
+    
+    
     if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
       return changedSucessfully;
     }
+  }
     changedSucessfully = true;
     console.log("Your Ticket status was changed successfully!");
 

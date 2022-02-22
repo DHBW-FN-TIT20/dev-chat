@@ -5,14 +5,16 @@ import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
-import { IUser, ISurvey, IBugTicket } from '../public/interfaces'
+import { IUser, ISurvey, IBugTicket, IChatKey } from '../public/interfaces'
 
 export interface AdminState {
   isLoggedIn: boolean,
   allUsersState: IUser[],
   allSurveysState: ISurvey[],
   allTicketsState: IBugTicket[],
+  allChatKeysState: IChatKey[],
   usernameForSurveys: string[],
+  inputChatKey: string,
 }
 
 export interface AdminProps extends WithRouterProps {}
@@ -25,7 +27,9 @@ class Admin extends Component<AdminProps, AdminState> {
       allUsersState: [],
       allSurveysState: [],
       allTicketsState: [],
+      allChatKeysState:[],
       usernameForSurveys: [],
+      inputChatKey: "",
     }
   }
 
@@ -41,6 +45,9 @@ class Admin extends Component<AdminProps, AdminState> {
     this.setState({allSurveysState: tempallSurveys});
     const tempallTickets = await DevChatController.getAllTickets();
     this.setState({allTicketsState: tempallTickets});
+    const tempallChatKeys = await DevChatController.getAllChatKeys();
+    this.setState({allChatKeysState: tempallChatKeys});
+    console.log("Alle ChatKeys" + this.state.allChatKeysState.map(Chatter => (Chatter.id)))
   }
   
   /**
@@ -84,11 +91,28 @@ giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   }
 }
 
+async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean | undefined ):Promise<boolean>{
+  let currentToken = DevChatController.getUserToken();
+  let wasSuccessful = await DevChatController.changeSolvedState(currentToken,ticketID,currentState);
+    
+  if(wasSuccessful){
+    console.log("Das Ticket mit der Nummer " + ticketID + " wurde auf geändert.");
+  }
+  else{
+    console.log("Es ging beim ändern des Tickets etwas schief.");
+  }
+  return wasSuccessful;
+}
+
 matchingUsername(userID: number | undefined, username: string | undefined, ownerID: number | undefined): string | undefined{
   if(userID === ownerID){
     return username;
   }
   return "";
+}
+
+handleSetTimePopUp(){
+
 }
   /**
    * This function is used to delete a user via admin interface
@@ -100,6 +124,15 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     
     if(wasSuccessful){
       console.log("Der User mit dem Namen " + name + " wurde gelöscht.");
+    }
+  }
+
+  async chatClickDelete(chatID: number | undefined){
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.deleteChatKey(currentToken,chatID);
+    
+    if(wasSuccessful){
+      console.log("Der Chat mit dem Namen " + chatID + " wurde gelöscht.");
     }
   }
 
@@ -185,7 +218,6 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                             {user.accessLevel}
                           </p>
                           </td>
-
                           <td><a href="" onClick={() => this.promoteUser(user.name)}>Promote</a> | <a href="" onClick={() => this.demoteUser(user.name)}>Demote</a></td>
                           <td><a href="" onClick={() => this.resetPassword(user.name)}>Reset</a></td>
                           <td><a href="" onClick={() => this.userClickDelete(user.name)}>Delete</a></td>
@@ -208,16 +240,40 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>BreadFatherMother</td>
-                      <td>20/01/2021 13:46:14</td>
-                      <td><a href="">Set Time</a></td>
-                      <td><a href="">Delete</a></td>
-                    </tr>
-                    <tr>
-                      <td><input type="text" placeholder="Enter Custom Key..." /></td>
-                      <td>Auto</td>
-                      <td><a href="">Set Time</a></td>
+                  {this.state.allChatKeysState.map(ChatKey => (
+                      <tr key={ChatKey.id}>
+                          <td>
+                          <p>
+                            {ChatKey.threeWord}
+                          </p>
+                          </td>
+
+                          <td>
+                          <p>
+                          {new Date(ChatKey.expirationDate).toLocaleDateString('de-DE', {
+                              day: '2-digit',
+                              month: '2-digit',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hourCycle: 'h24',
+                            })}
+                          </p>
+                          </td>
+                          <td><a href="" onClick={() => this.handleSetTimePopUp()}>Set Time</a></td>
+                          <td><a href="" onClick={() => this.chatClickDelete(ChatKey.id)}>Delete</a></td>
+                      </tr>
+                    ))} 
+                    <tr key={this.state.inputChatKey}>        
+                      <td><input 
+                          type="text" placeholder="Enter Custom Chat Key"
+                          onChange={(event) => { 
+                          this.setState({ inputChatKey: event.currentTarget.value})       
+                          }} 
+                          value={this.state.inputChatKey} />
+                      </td>
+                      <td></td>
+                      <input type="datetime-local" className={styles.inputDate}></input>
                       <td><a href="">Add</a></td>
                     </tr>
                   </tbody>
@@ -259,7 +315,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                           </td>
                           <td>
                           {this.state.allUsersState.map(user => ( 
-                            <div>
+                            <div key={user.id}>
                                 {(this.matchingUsername(user.id,user.name,survey.ownerID))}
                             </div> 
                           ))}
@@ -310,7 +366,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                           {(this.giveBoolStringTicket(ticket.solved))}
                           </p>
                           </td>
-                          <td><a href="">Change State</a></td>
+                          <td><a href="" onClick={() => this.ticketChangeSolvedClick(ticket.id,ticket.solved)}>Change State</a></td>
                           <td>
                           <p>
                             {ticket.message}

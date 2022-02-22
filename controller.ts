@@ -2,7 +2,7 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IBugTicket, IChatMessage, ISurvey, IUser } from './public/interfaces';
+import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from './public/interfaces';
 import chat from './pages/chat';
 import { SupabaseConnection } from './pages/api/supabaseAPI';
 
@@ -315,7 +315,66 @@ export class DevChatController {
 
   //#endregion
 
+  //#region ChatKey Methods
+
+  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToDelete: chatKeyToDelete,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  public getAllChatKeys = async (): Promise<IChatKey[]> => {
+    let allChatKeys: IChatKey[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/chatkeys/get_chat_keys',{
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+       userToken: userToken,
+     })
+   });
+   let dataUser = await response.json();
+   allChatKeys = dataUser.allChatKeys;
+   return allChatKeys;
+   }
+
+  //#endregion
+
   //#region Ticket Methods
+  /**
+   * This function is used to invert the status of a ticket. (ToDo->Done | Done->ToDo) It calls a API Route (changeSolvedState.ts)
+   * @param currentToken 
+   * @param ticketID 
+   * @param currentState 
+   * @returns 
+   */
+  public changeSolvedState = async (currentToken: string, ticketID: number | undefined, currentState: boolean | undefined): Promise<boolean> => {
+    let response = await fetch('./api/tickets/changeSolvedState', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        currentToken: currentToken,
+        ticketID: ticketID,
+        currentState: currentState,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
   public getAllTickets = async (): Promise<IBugTicket[]> => {
     let allTickets: IBugTicket[] = [];
     let userToken = this.getUserToken();

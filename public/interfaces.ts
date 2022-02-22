@@ -3,7 +3,7 @@
 export interface IChatKey {
     id?: number;
     threeWord?: string;
-    expirationDate?: Date; // maybe change later
+    expirationDate: Date; // maybe change later
 }
 
 export var emptyChatKey: IChatKey = {

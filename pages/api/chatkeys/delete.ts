@@ -14,9 +14,9 @@ const supabaseConnection = new SupabaseConnection();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken = req.body.userToken;
-  let surveyIDToDelete = req.body.surveyIDToDelete;
+  let chatKeyToDelete = req.body.chatKeyToDelete;
 
-  let wasSuccessfull = await supabaseConnection.deleteSurvey(userToken, surveyIDToDelete);
+  let wasSuccessfull = await supabaseConnection.deleteChatKey(userToken, chatKeyToDelete);
 
   res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }
