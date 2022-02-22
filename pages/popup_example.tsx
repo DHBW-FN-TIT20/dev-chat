@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Popup from './popup';
+import Popup from '../components/popup';
 
 export interface PopupExampleState {
     showPopup: boolean
