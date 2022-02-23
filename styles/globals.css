@@ -6,7 +6,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 12pt;
   }
@@ -18,7 +18,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 12pt;
   }
@@ -30,7 +30,7 @@
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 16pt;
     overflow: hidden;
@@ -163,6 +163,7 @@ input::placeholder {
     border-color: #FF9933;
     padding: 10pt;
     margin: 2pt 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }  
   button:hover {
     background-color: #FF9933;
@@ -188,6 +189,7 @@ input::placeholder {
     border-color: #FF9933;
     padding: 10pt;
     margin: 2pt 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }  
   button:hover {
     background-color: #FF9933;
@@ -212,6 +214,7 @@ input::placeholder {
     border-color: #FF9933;
     padding: 10pt;
     margin: 2pt 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   }  
   button:hover {
     background-color: #FF9933;

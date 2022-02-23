@@ -70,7 +70,7 @@ export class SupabaseConnection {
     let callString: string = splitString(userInput)[0].slice(1);
     let callArguments: string[] = splitString(userInput).slice(1);
 
-    console.log("SupabaseConnection.executeCommand()", callString, callArguments);
+    // console.log("SupabaseConnection.executeCommand()", callString, callArguments);
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatMessage')
       .insert([
@@ -84,7 +84,7 @@ export class SupabaseConnection {
 
       if (command.callString == callString) {
         // a command was found -> execute it
-        console.log("command found");
+        // console.log("command found");
         commandFound = true;
         let answerLines: string[];
 
@@ -119,14 +119,14 @@ export class SupabaseConnection {
               ])
           }
 
-          console.log("Command executed successfully.");
+          // console.log("Command executed successfully.");
 
           return true; // answer -> command was executed successfully
         }
       }
     };
     if (commandFound == false) {
-      console.log("No command /" + callString + " found");
+      // console.log("No command /" + callString + " found");
       const { data, error } = await SupabaseConnection.CLIENT
         .from('ChatMessage')
         .insert([
@@ -424,7 +424,7 @@ export class SupabaseConnection {
     if (await this.isUserValid({ name: username, password: password })) {
       let user = await this.getIUserByUsername(username);
       if (user !== {}) {
-        console.log(user)
+        console.log("User logs in:", user)
         let token = jwt.sign({
           username: username,
           isAdmin: (user.accessLevel === 1)
@@ -447,8 +447,8 @@ export class SupabaseConnection {
       let returnString: string = "";
       let vUsernameValid: boolean = await this.isUsernameValid(username);
       let vPasswordValid: boolean = await this.isPasswordValid(password);
-      console.log("vPasswordValid: " + vPasswordValid);
-      console.log("vUsernameValid: " + vUsernameValid);
+      // console.log("vPasswordValid: " + vPasswordValid);
+      // console.log("vUsernameValid: " + vUsernameValid);
       if (vUsernameValid == false && vPasswordValid == false) {
         returnString = "error_username_password";
       }
@@ -472,6 +472,7 @@ export class SupabaseConnection {
         }
         else {
           returnString = "True";
+          console.log("User registered:", username);
         }
       }
       return returnString;
@@ -641,7 +642,7 @@ export class SupabaseConnection {
     var expirationDate = new Date();
     // currentDate + 1 Day = ExpirationDate
     expirationDate.setDate(expirationDate.getDate() + 1);
-    console.log("Chat Key expires: " + expirationDate);
+    // console.log("Chat Key expires: " + expirationDate);
 
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatKey')
@@ -692,10 +693,10 @@ export class SupabaseConnection {
 
     //Hier muss noch ggbfs. was geschrieben werden.
     if (error) {
-      console.error(error)
+      // console.error(error)
     }
     else {
-      console.log(data)
+      // console.log(data)
     }
 
     return false;
@@ -818,12 +819,10 @@ export class SupabaseConnection {
 
 
     if (message[0] === "/") {
-      console.log("Command detected");
       await this.executeCommand(message, userId, chatKeyId);
       return true;
     }
     else {
-      console.log("No Command detected")
       const { data, error } = await SupabaseConnection.CLIENT
         .from('ChatMessage')
         .insert([
@@ -841,6 +840,42 @@ export class SupabaseConnection {
     }
 
   };
+
+  /**
+   * API function to add a join/leave chat message to the database
+   * @param {string} userToken the token of the user
+   * @param {string} chatKey the chatKey of the chat
+   * @param {string} joinOrLeave "join" or "leave"
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
+  public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
+    
+    // verify if user is valid
+    if (!this.isUserTokenValid(userToken)) {
+      return false;
+    }
+
+    // get the user 
+    let user = await this.getIUserByUserID(await this.getUserIDFromToken(userToken));
+    if (user === null) {
+      return false;
+    }
+
+    // get the chatKeyId
+    let chatKeyID = await this.getChatKeyID(chatKey);
+    if (chatKeyID === null) {
+      return false;
+    }
+
+    // send the message to the chatroom
+    if (joinOrLeave === "join") {
+      return await this.addChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
+    } else if (joinOrLeave === "leave") {
+      return await this.addChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
+    } else {
+      return false;
+    }
+  }
 
   //#endregion
 
@@ -864,7 +899,6 @@ export class SupabaseConnection {
       return changedSucessfully;
     }
     changedSucessfully = true;
-    console.log("Your Ticket status was changed successfully!");
 
     return changedSucessfully;
   }
@@ -877,8 +911,6 @@ export class SupabaseConnection {
   */
   public addNewTicket = async (bugToReport: IBugTicket): Promise<IBugTicket | null> => {
     let addedTicket: IBugTicket | null = null;
-    console.log("The reported Bug was: " + bugToReport.message)
-    console.log("The Submitter was: " + bugToReport.submitter)
     // fetch the supabase database
     const TicketResponse = await SupabaseConnection.CLIENT
       .from('Ticket')
@@ -892,7 +924,6 @@ export class SupabaseConnection {
     if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0 || TicketResponse.data[0].TicketID === null || TicketResponse.data[0].TicketID === undefined) {
       return null;
     }
-    console.log("The reported Bug was: " + TicketResponse.data[0].Message)
 
     addedTicket = {
       id: TicketResponse.data[0].TicketID,
@@ -945,8 +976,6 @@ export class SupabaseConnection {
     if (voteResponse.data === null || voteResponse.error !== null) {
       return null;
     }
-
-    // console.log(surveyResponse, optionResponse, voteResponse);
 
     // assemble the survey object
     survey = {
@@ -1083,9 +1112,6 @@ export class SupabaseConnection {
 
     // check if survey is still open
     let isExpired = await this.isSurveyExpired(voteToAdd.surveyID);
-
-    console.log(isExpired);
-
 
     if (isExpired === true || isExpired === null) {
       return null;

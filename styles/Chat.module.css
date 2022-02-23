@@ -7,6 +7,7 @@
   display: flex;
   flex-direction: column-reverse;
   overflow-x: hidden;
+  font-family: 'Red Hat Mono', monospace;
 }
 
 .messageTableDiv::-webkit-scrollbar {

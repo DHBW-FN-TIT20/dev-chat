@@ -23,6 +23,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const httpServer: NetServer = res.socket.server as any;
     const io = new ServerIO(httpServer, { path: "/api/messages/socketio" });
     res.socket.server.io = io;
+    
+    // print every minute a list of clients connected to the server
+    const logAllClients = async () => {
+      let clients = await io.sockets.fetchSockets();
+      console.log(`${new Date().toLocaleString()}: ${clients.length} clients connected`);
+      clients.forEach(socket => {
+        const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address;
+        console.log(`Client ${socket.id} connected to the server with IP: ${ip}`);
+      });
+    }
+    logAllClients();
+    setInterval(logAllClients, 60000);
 
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
@@ -34,8 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const ChatMessageSubscription = supabase
       .from('ChatMessage')
       .on('INSERT', async payload => {
-        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${payload.new.ChatKeyID} | User: ${payload.new.UserID}`);
         const chatKey = await supabaseConnection.getChatKey(payload.new.ChatKeyID);
+        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${chatKey?.threeWord} | User: ${payload.new.UserID}`);
         io.emit("message", chatKey?.threeWord);
       })
       .subscribe()
