@@ -106,7 +106,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p>Sie können sich jederzeit mit einer Beschwerde an eine Aufsichtsbehörde wenden, z. B. an die zuständige Aufsichtsbehörde des Bundeslands Ihres Wohnsitzes oder an die für uns als verantwortliche Stelle zuständige Behörde.</p> 
 
-<p>Eine Liste der Aufsichtsbehörden (für den nichtöffentlichen Bereich) mit Anschrift finden Sie unter: <a href="https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html" target="_blank" rel="noopener nofollow">https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html</a>.</p> 
+<p>Eine Liste der Aufsichtsbehörden (für den nichtöffentlichen Bereich) mit Anschrift finden Sie unter: <a href="https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html">https://www.bfdi.bund.de/DE/Service/Anschriften/Laender/Laender-node.html</a>.</p> 
 
 <p></p><h2>Erfassung allgemeiner Informationen beim Besuch unserer Website</h2> 
 
@@ -154,15 +154,15 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <ul> 
 
-<li>Mozilla Firefox: <a href="https://support.mozilla.org/de/kb/cookies-loeschen-daten-von-websites-entfernen" target="_blank" rel="nofollow noopener">https://support.mozilla.org/de/kb/cookies-loeschen-daten-von-websites-entfernen</a></li> 
+<li>Mozilla Firefox: <a href="https://support.mozilla.org/de/kb/cookies-loeschen-daten-von-websites-entfernen" >https://support.mozilla.org/de/kb/cookies-loeschen-daten-von-websites-entfernen</a></li> 
 
-<li>Internet Explorer: <a href="https://support.microsoft.com/de-de/help/17442/windows-internet-explorer-delete-manage-cookies" target="_blank" rel="nofollow noopener">https://support.microsoft.com/de-de/help/17442/windows-internet-explorer-delete-manage-cookies</a></li> 
+<li>Internet Explorer: <a href="https://support.microsoft.com/de-de/help/17442/windows-internet-explorer-delete-manage-cookies" >https://support.microsoft.com/de-de/help/17442/windows-internet-explorer-delete-manage-cookies</a></li> 
 
-<li>Google Chrome: <a href="https://support.google.com/accounts/answer/61416?hl=de" target="_blank" rel="nofollow noopener">https://support.google.com/accounts/answer/61416?hl=de</a></li> 
+<li>Google Chrome: <a href="https://support.google.com/accounts/answer/61416?hl=de" >https://support.google.com/accounts/answer/61416?hl=de</a></li> 
 
-<li>Opera: <a href="http://www.opera.com/de/help" target="_blank" rel="nofollow noopener">http://www.opera.com/de/help</a></li> 
+<li>Opera: <a href="http://www.opera.com/de/help" >http://www.opera.com/de/help</a></li> 
 
-<li>Safari: <a href="https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=de_DE" target="_blank" rel="nofollow noopener">https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=de_DE</a></li> 
+<li>Safari: <a href="https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=de_DE" >https://support.apple.com/kb/PH17191?locale=de_DE&viewlocale=de_DE</a></li> 
 
 </ul> 
 
@@ -293,7 +293,7 @@ Wir stellen kein Kontaktformular auf dieser Webseite bereit. Falls sie dennoch w
   E-Mail: devchat.contact@gmail.com <br /><br />
 </p> 
 
-<p><em>Die Datenschutzerklärung wurde mithilfe der activeMind AG erstellt, den Experten für <a href="https://www.activemind.de/datenschutz/datenschutzbeauftragter/" target="_blank" rel="noopener">externe Datenschutzbeauftragte</a> (Version #2020-09-30).</em></p> 
+<p><em>Die Datenschutzerklärung wurde mithilfe der activeMind AG erstellt, den Experten für <a href="https://www.activemind.de/datenschutz/datenschutzbeauftragter/">externe Datenschutzbeauftragte</a> (Version #2020-09-30).</em></p> 
           </div>
           <div className={styles.right}>
           <div className="image">
