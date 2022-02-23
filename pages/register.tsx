@@ -261,7 +261,7 @@ class Register extends Component<RegisterProps, RegisterState> {
       return feedbackMessage;
     } else {
       feedbackMessage = "Following requirements missing: ";
-      const bulletPoint = `\n    ●`;
+      const bulletPoint = `\n●`;
       if (!atLeast8Characters) {
         feedbackMessage += ` ${bulletPoint} at least 8 characters  `;
       }
