@@ -72,6 +72,42 @@ class Password extends Component<PasswordProps, PasswordState> {
   }
 
   /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   * @param event Occurred Event
+   */
+  handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onPasswordChangeButtonClick(event);
+    }
+  }
+
+  /**
+   * Handle of On click Event from Button
+   * @param event 
+   */
+  onPasswordChangeButtonClick = async (event: any) => {
+    const { router } = this.props;
+    this.setState({feedBackMessage : ""});
+    let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
+    this.setState({
+      oldPasswordIsCorrect: oldPasswordIsCorrect
+    })
+    if (oldPasswordIsCorrect) {
+      router.push("/")
+    }
+    else {
+      this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
+      this.setState({
+        inputConfirmPassword: "",
+        inputOldPassword: "",
+        inputNewPassword: "",
+      })
+
+    }
+  }
+
+  /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
    */
@@ -101,42 +137,25 @@ class Password extends Component<PasswordProps, PasswordState> {
               onChange={(event) => { 
                 this.setState({inputOldPassword: event.currentTarget.value}) 
                 this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, event.currentTarget.value, this.state.inputNewPassword, this.state.inputConfirmPassword); 
-              }} 
+              }}
+              onKeyPress={this.handleEnterKeyPress} 
               value={this.state.inputOldPassword}/>
               <input type="password" placeholder="New Password..." 
                 onChange={(event) => { 
                   this.setState({inputNewPassword: event.currentTarget.value }) 
                   this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, event.currentTarget.value, this.state.inputConfirmPassword); 
-                }} 
+                }}
+                onKeyPress={this.handleEnterKeyPress}
                 value={this.state.inputNewPassword} />
               <input type="password" placeholder="Confirm New Password..." 
                 onChange={(event) => { 
                   this.setState({ inputConfirmPassword: event.currentTarget.value }) 
                   this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, event.currentTarget.value);
-                }} 
+                }}
+                onKeyPress={this.handleEnterKeyPress}
                 value={this.state.inputConfirmPassword}/>
               <div className='error' hidden={this.state.feedBackMessage === ""}>{this.state.feedBackMessage}</div>
-              <button onClick={async() => {
-                this.setState({feedBackMessage : ""});
-                let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
-                this.setState({
-                  oldPasswordIsCorrect: oldPasswordIsCorrect
-                })
-                if (oldPasswordIsCorrect) {
-                  router.push("/")
-                }
-                else {
-                  this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
-                  this.setState({
-                    inputConfirmPassword: "",
-                    inputOldPassword: "",
-                    inputNewPassword: "",
-                  })
-
-                }
-              }}> 
-                Change Password 
-              </button>
+              <button onClick={this.onPasswordChangeButtonClick}> Change Password </button>
             </div>
             <div className={styles.right}>
             <div className="image">
