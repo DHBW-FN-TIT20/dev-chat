@@ -128,6 +128,7 @@ class Register extends Component<RegisterProps, RegisterState> {
                 <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
 
                 <button onClick={async () => {
+                  this.setState({feedbackMessage : ""});
                   let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
                   let vNewUsernameValid: boolean = true;
                   let vNewPasswordValid: boolean = true;

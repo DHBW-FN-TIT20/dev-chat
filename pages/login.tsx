@@ -8,10 +8,11 @@ import Header from './header'
 
 export interface LoginState {
   isNotLoggedIn: boolean,
+  feedbackMessage: String,
 }
 
 export interface LoginProps extends WithRouterProps {
-  showError: boolean;
+
 }
 
 /**
@@ -25,6 +26,7 @@ class Login extends Component<LoginProps, LoginState> {
     super(props)
     this.state = {
       isNotLoggedIn: false,
+      feedbackMessage: "",
     }
     
   }
@@ -98,16 +100,15 @@ class Login extends Component<LoginProps, LoginState> {
               </h1>
               <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
               <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
-                {
-                  this.props.showError && 
-                  <div className='error' id={styles.error1}> 
-                    Incorrect username or password. 
-                  </div>
-                }
+              <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
                 <button onClick={async () => {
+                  this.setState({feedbackMessage: ""});
                   if (await DevChatController.loginUser(this.username, this.password)) {
                     router.push("/")
                   } // change to state later
+                  else{
+                    this.setState({feedbackMessage: "Incorrect Username or Password"});
+                  }
                 }}> Login </button>
                 <div className='create'>
                   Or&nbsp; 
