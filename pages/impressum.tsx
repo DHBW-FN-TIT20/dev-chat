@@ -170,7 +170,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
 
 <p>Soweit Sie uns durch Ihre Browsereinstellungen oder Zustimmung die Verwendung von Cookies erlauben, können folgende Cookies auf unseren Webseiten zum Einsatz kommen:</p> 
 
-<p><br  /><br  />Benutzername und Passwort - diese werden bis zum Logout abgespeichert</p> 
+<p><br  /><br  />Benutzername - dieser wird bis zum Logout abgespeichert</p> 
 
 <h2>Technisch notwendige Cookies </h2> 
 
