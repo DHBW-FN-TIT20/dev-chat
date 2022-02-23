@@ -13,6 +13,7 @@ import { CalcCommand } from '../../console_commands/calc';
 import { ReportCommand } from '../../console_commands/report';
 import { ShowCommand } from '../../console_commands/show';
 import { ExpireCommand } from '../../console_commands/expire';
+import { HelpCommmand } from '../../console_commands/help';
 import chat from '../chat';
 
 //#endregion
@@ -47,6 +48,7 @@ export class SupabaseConnection {
       new ShowCommand,
       new ExpireCommand,
     ];
+    this.commands.push(new HelpCommmand(this.commands))
   }
 
   //#endregion
