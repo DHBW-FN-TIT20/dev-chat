@@ -35,6 +35,7 @@ class Main extends Component<MainProps, MainState> {
   componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
+    this.connectToParamChatKey()
   }
   
   /**
@@ -191,6 +192,31 @@ class Main extends Component<MainProps, MainState> {
       )
     }
   }
+
+  /**
+   * This method checks whether there is a parameter chatKey in the URL.
+   * If there is, it connects to the chat with the chatKey.
+   */
+  private async connectToParamChatKey() {
+
+    // check for parameter "chatkey" in url
+    let urlParams = new URLSearchParams(window.location.search);
+    let chatKey = urlParams.get("chatkey") || urlParams.get("chatKey") || "";
+
+    // if there is a chatKey, check if it exists and connect to the chat
+    if (chatKey !== "") {
+      const { router } = this.props
+      let doesChatKeyExists = await DevChatController.doesChatKeyExists(chatKey)      
+      if(doesChatKeyExists) {
+        console.log("EXISTS")
+        DevChatController.setChatKeyCookie(chatKey);
+        router.push("/chat")
+      } else {
+        console.log("NOT EXISTS")
+      }
+    }
+  }
 }
+
 
 export default withRouter(Main)
