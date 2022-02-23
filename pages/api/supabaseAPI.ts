@@ -37,7 +37,7 @@ export class SupabaseConnection {
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
-    SupabaseConnection.KEY = "Krasser Schlüssel";
+    SupabaseConnection.KEY = process.env.HASH_KEY || '';
     this.commands = [
       // add all command classes here
       new ExampleCommand,
