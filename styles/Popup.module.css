@@ -1,66 +1,30 @@
-.box {
-  width: 40%;
-  margin: 0 auto;
-  background: rgba(255,255,255,0.2);
-  padding: 35px;
-  border: 2px solid #fff;
-  border-radius: 20px/50px;
-  background-clip: padding-box;
-  text-align: center;
+.popup {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0,0,0, 0.5);
 }
 
-.return {
+  
+.buttonPopup{
   cursor: pointer;
   transition: all 0.3s ease-out;
 }
 
-.button1 {
-  width: 100%;
-  padding-left: 20pt;
-  padding-right: 20pt;
-  bottom: 0;
-  position: absolute;
-  bottom: 10pt;
-}
-
-.overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  transition: opacity 500ms;
-  visibility: hidden;
-  opacity: 0;
-}
-
-.overlay:target {
-  visibility: visible;
-  opacity: 1;
-}
-
-
-
 .delacc {
   border-bottom: solid black 2px;
-  padding: 2pt;
+  padding: 4pt;
   height: 30pt; 
   width: 100%;
 }
 
 .delacchead {
   margin-top: 0;
-}
-
-.popup .content {
-  margin-top: 20pt;
-  padding: 20pt;
-  max-height: 50%;
-  width: 80%;
-  float: right;
-  overflow: hidden;
-  bottom: 0;
 }
 
 .attention {
@@ -78,27 +42,33 @@
   color: blue;
 }
 
-/* for testing only*/
-.button {
-  font-size: 1em;
-  padding: 10px;
-  color: #fff;
-  border: 2px solid #06D85F;
-  border-radius: 20px/50px;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all 0.3s ease-out;
+.popup .content {
+  margin-top: 20pt;
+  padding: 20pt;
+  max-height: 50%;
+  width: 70%;
+  float: right;
+  overflow: hidden;
+  bottom: 0;
+  word-break: normal;
 }
-.button:hover {
-  background: #06D85F;
+
+.button1 {
+  width: 100%;
+  padding-left: 20pt;
+  padding-right: 20pt;
+  bottom: 0;
+  position: absolute;
+  bottom: 10pt;
 }
-/* -------------- */
+
+
 @media screen and (min-width: 1280px) {
-  .popup {
+  .popup_inner {
     margin: 70px auto;
     background: #1A1A1A;
     border: solid black 2px;
-    width: 40%;
+    width: 80%;
     height: 30%;
     position: relative;
     transition: all 3s;
@@ -106,7 +76,7 @@
 }
 
 @media screen and (max-width: 1280px) {
-  .popup {
+  .popup_inner {
     margin: 70px auto;
     background: #1A1A1A;
     border: solid black 2px;
@@ -118,7 +88,7 @@
 }
 
 @media screen and (max-width: 900px) {
-  .popup {
+  .popup_inner {
     margin: 70px auto;
     background: #1A1A1A;
     border: solid black 2px;
@@ -126,5 +96,6 @@
     height: 30%;
     position: relative;
     transition: all 3s;
+    
   }
 }

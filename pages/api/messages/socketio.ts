@@ -24,23 +24,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const io = new ServerIO(httpServer, { path: "/api/messages/socketio" });
     res.socket.server.io = io;
     
-    // print every minute a list of clients connected to the server
-    const logAllClients = async () => {
-      let clients = await io.sockets.fetchSockets();
-      console.log(`${new Date().toLocaleString()}: ${clients.length} clients connected`);
-      clients.forEach(socket => {
-        const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address;
-        console.log(`Client ${socket.id} connected to the server with IP: ${ip}`);
-      });
-    }
-    logAllClients();
-    setInterval(logAllClients, 60000);
-
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
     const supabase = createClient(supabaseUrl, supabaseKey);
     let supabaseConnection = new SupabaseConnection();
+
+    // print every minute a list of clients connected to the server
+    const logAllClients = async () => {
+      let clients = await io.sockets.fetchSockets();
+      console.log(`${new Date().toLocaleString("de-DE")}: ${clients.length} clients connected`);
+      clients.forEach(async socket => {
+        const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address || "";
+        const chatKey = socket.handshake.auth.headers["chatKey"] || "";
+        const user = await supabaseConnection.getIUserByUsername(supabaseConnection.getUsernameFromToken(socket.handshake.auth.headers["userToken"] || "")) || "";
+        console.log(`↳ ID: ${socket.id}, IP: ${ip}, user: ${user.name} chatKey: ${chatKey}`);
+      });
+    }
+    logAllClients();
+    setInterval(logAllClients, 60000);
 
     // subscribe to the ChatMessages table 
     const ChatMessageSubscription = supabase

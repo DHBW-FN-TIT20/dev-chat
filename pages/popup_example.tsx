@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import Popup from './popup';
+import Popup from '../components/popup';
 
 export interface PopupExampleState {
     showPopup: boolean
@@ -32,8 +32,8 @@ export default class PopupExample extends Component<PopupExampleProps, PopupExam
             <button onClick={this.togglePopup.bind(this)}>show Popup</button>
             {this.state.showPopup ? 
               <Popup
-                headerText='PopUp Caption'
-                textDisplay='This is nice PopUp made by good Programmer'
+                headerText='Delete User'
+                textDisplay='The User "Henry" was succesfully deleted. You will be returned to the login page.'
                 closePopup={this.togglePopup.bind(this)}
               />
               : null

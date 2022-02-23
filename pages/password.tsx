@@ -117,6 +117,7 @@ class Password extends Component<PasswordProps, PasswordState> {
                 value={this.state.inputConfirmPassword}/>
               <div className='error' hidden={this.state.feedBackMessage === ""}>{this.state.feedBackMessage}</div>
               <button onClick={async() => {
+                this.setState({feedBackMessage : ""});
                 let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
                 this.setState({
                   oldPasswordIsCorrect: oldPasswordIsCorrect
