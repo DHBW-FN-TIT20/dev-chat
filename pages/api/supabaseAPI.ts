@@ -701,6 +701,29 @@ export class SupabaseConnection {
 
   //#region ChatKey Methods
 
+  public changeExpirationDate = async(token:string, chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .update({ 'ExpirationDate': newExpirationDate })
+      .eq('ChatKeyID', chatKeyID)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong with the promotion!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+
   public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
 
     let userIsValid: boolean = await this.getIsAdminFromToken(userToken);

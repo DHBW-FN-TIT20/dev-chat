@@ -317,6 +317,23 @@ export class DevChatController {
 
   //#region ChatKey Methods
 
+
+  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/changeExpiration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToAlter: chatKeyToAlter,
+        expirationDate: expirationDate,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
   public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
     let response = await fetch('./api/chatkeys/delete', {
       method: 'POST',

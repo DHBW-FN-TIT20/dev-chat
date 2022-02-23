@@ -7,6 +7,7 @@ import Header from './header'
 import DevChatController from '../controller'
 import { IUser, ISurvey, IBugTicket, IChatKey } from '../public/interfaces'
 import Popup from './popup';
+import chat from './chat'
 
 
 export interface AdminState {
@@ -16,6 +17,7 @@ export interface AdminState {
   allTicketsState: IBugTicket[],
   allChatKeysState: IChatKey[],
   usernameForSurveys: string[],
+  wantedExpirationDate: Date,
   showPopup: boolean,
 }
 
@@ -33,7 +35,7 @@ class Admin extends Component<AdminProps, AdminState> {
       allTicketsState: [],
       allChatKeysState:[],
       usernameForSurveys: [],
-      
+      wantedExpirationDate: new Date(0),
       showPopup: false,
     }
   }
@@ -86,12 +88,20 @@ class Admin extends Component<AdminProps, AdminState> {
     }
   }
 
-  // Function for showing the Popup, via boolean 
-togglePopup() {
-    console.log("Showing the Popup!");
-    this.setState({
-    showPopup: !this.state.showPopup
-    });
+/**
+ * This function is used to change the expirationDate of a certain ChatKey
+ * @param chatKeyID - the ID of the ChatKey that should be altered
+ */
+async chatKeySetTime(chatKeyID: number | undefined){
+  let wantedExpirationDate = new Date((document.getElementById(String(chatKeyID)) as HTMLInputElement).value);
+  
+    console.log("wantedExpirationDate: " + wantedExpirationDate);
+    let currentToken = DevChatController.getUserToken();
+   /* let wasSuccessful = await DevChatController.changeChatKeyExpirationDate(currentToken,chatKeyID,wantedExpirationDate);
+    if(wasSuccessful){
+      console.log("Das expirationDate von Raum Nummer " + chatKeyID + " wurde geändert.");
+    }*/
+
 }
 
 handleAddKeyClick(){
@@ -277,15 +287,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                             })}
                           </p>
                           </td>
-                          <td><a onClick={() => this.togglePopup()}>Set Time</a></td>
-                          {this.state.showPopup ? 
-                            <Popup
-                              headerText='Set Time for Room'
-                              textDisplay= "<input type='datetime-local' className={styles.inputDate}></input>"
-                              closePopup={this.togglePopup.bind(this)}
-                            />
-                            : null
-                          }
+                          <td><a onClick={() => this.chatKeySetTime(ChatKey.id)}><input type="datetime-local" className={styles.inputDate} id={String(ChatKey.id)}/>Set Time</a></td>
                           <td><a href="" onClick={() => this.chatClickDelete(ChatKey.id)}>Delete</a></td>
                       </tr>
                     ))} 
@@ -296,7 +298,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                         onChange={(event) => {this.inputChatKey = event.target.value}}/>
                       </td>
                       <td></td>
-                      <input type="datetime-local" className={styles.inputDate} id="inputDateTimeCustom"/>
+                      <td><input type="datetime-local" className={styles.inputDate} id="inputDateTimeCustoml"/></td>
                       <td><a onClick={() => this.handleAddKeyClick()}>Add</a></td>
                     </tr>
                   </tbody>
