@@ -6,6 +6,8 @@ import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
 import { IUser, ISurvey, IBugTicket, IChatKey } from '../public/interfaces'
+import Popup from './popup';
+
 
 export interface AdminState {
   isLoggedIn: boolean,
@@ -14,12 +16,14 @@ export interface AdminState {
   allTicketsState: IBugTicket[],
   allChatKeysState: IChatKey[],
   usernameForSurveys: string[],
-  inputChatKey: string,
+  showPopup: boolean,
 }
 
 export interface AdminProps extends WithRouterProps {}
 
 class Admin extends Component<AdminProps, AdminState> {
+  inputChatKey = "";
+  inputDateCustomChatKey: Date = new Date(0);
   constructor(props: AdminProps) {
     super(props)
     this.state = {
@@ -29,7 +33,8 @@ class Admin extends Component<AdminProps, AdminState> {
       allTicketsState: [],
       allChatKeysState:[],
       usernameForSurveys: [],
-      inputChatKey: "",
+      
+      showPopup: false,
     }
   }
 
@@ -47,7 +52,6 @@ class Admin extends Component<AdminProps, AdminState> {
     this.setState({allTicketsState: tempallTickets});
     const tempallChatKeys = await DevChatController.getAllChatKeys();
     this.setState({allChatKeysState: tempallChatKeys});
-    console.log("Alle ChatKeys" + this.state.allChatKeysState.map(Chatter => (Chatter.id)))
   }
   
   /**
@@ -82,6 +86,20 @@ class Admin extends Component<AdminProps, AdminState> {
     }
   }
 
+  // Function for showing the Popup, via boolean 
+togglePopup() {
+    console.log("Showing the Popup!");
+    this.setState({
+    showPopup: !this.state.showPopup
+    });
+}
+
+handleAddKeyClick(){
+  console.log("ChatKey ist: " + this.inputChatKey);
+  //let inputValue = (<HTMLInputElement>document.getElementById(elementId)).value;
+ 
+}
+
 giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   if(boolToPrint){
     return "Done";
@@ -111,9 +129,6 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
   return "";
 }
 
-handleSetTimePopUp(){
-
-}
   /**
    * This function is used to delete a user via admin interface
    * @param name username to delete
@@ -174,6 +189,8 @@ handleSetTimePopUp(){
    * @returns JSX Output
    */
   render() {
+
+    const { router } = this.props
     if (this.state.isLoggedIn) {
       return (
         <div>
@@ -260,21 +277,27 @@ handleSetTimePopUp(){
                             })}
                           </p>
                           </td>
-                          <td><a href="" onClick={() => this.handleSetTimePopUp()}>Set Time</a></td>
+                          <td><a onClick={() => this.togglePopup()}>Set Time</a></td>
+                          {this.state.showPopup ? 
+                            <Popup
+                              headerText='Set Time for Room'
+                              textDisplay= "<input type='datetime-local' className={styles.inputDate}></input>"
+                              closePopup={this.togglePopup.bind(this)}
+                            />
+                            : null
+                          }
                           <td><a href="" onClick={() => this.chatClickDelete(ChatKey.id)}>Delete</a></td>
                       </tr>
                     ))} 
-                    <tr key={this.state.inputChatKey}>        
+                    <tr key={this.inputChatKey}>        
                       <td><input 
-                          type="text" placeholder="Enter Custom Chat Key"
-                          onChange={(event) => { 
-                          this.setState({ inputChatKey: event.currentTarget.value})       
-                          }} 
-                          value={this.state.inputChatKey} />
+                        type="text" 
+                        placeholder="Custom Chat Key here" 
+                        onChange={(event) => {this.inputChatKey = event.target.value}}/>
                       </td>
                       <td></td>
-                      <input type="datetime-local" className={styles.inputDate}></input>
-                      <td><a href="">Add</a></td>
+                      <input type="datetime-local" className={styles.inputDate} id="inputDateTimeCustom"/>
+                      <td><a onClick={() => this.handleAddKeyClick()}>Add</a></td>
                     </tr>
                   </tbody>
                 </table>
