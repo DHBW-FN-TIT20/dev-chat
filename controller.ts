@@ -315,9 +315,6 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
-    /**
- * This Method is used to get all surveys | It is called by admin.ts when displaying Admin Settings for Surveys
- */
      /**
       *  A function that is used to delete a certain survey
       * @param userToken - userToken of the current user
