@@ -14,10 +14,14 @@ const supabaseConnection = new SupabaseConnection();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken = req.body.userToken;
-  let chatKeyToAlter = req.body.chatKeyToAlter;
-  let expirationDate = req.body.expirationDate;
-
-  let wasSuccessfull = await supabaseConnection.changeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
-
+  let customChatKey = req.body.customChatKey
+  let wasSuccessfull: boolean = false;
+  
+  if(supabaseConnection.getIsAdminFromToken(userToken)){
+    wasSuccessfull = await supabaseConnection.addChatKey(customChatKey);
+  }
+  else{
+      console.log("You are allowed to create a custom ChatKey");
+  }
   res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }

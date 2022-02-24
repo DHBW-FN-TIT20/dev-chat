@@ -17,7 +17,6 @@ export interface AdminState {
   allTicketsState: IBugTicket[],
   allChatKeysState: IChatKey[],
   usernameForSurveys: string[],
-  wantedExpirationDate: Date,
   showPopup: boolean,
 }
 
@@ -35,7 +34,6 @@ class Admin extends Component<AdminProps, AdminState> {
       allTicketsState: [],
       allChatKeysState:[],
       usernameForSurveys: [],
-      wantedExpirationDate: new Date(0),
       showPopup: false,
     }
   }
@@ -94,20 +92,39 @@ class Admin extends Component<AdminProps, AdminState> {
  */
 async chatKeySetTime(chatKeyID: number | undefined){
   let wantedExpirationDate = new Date((document.getElementById(String(chatKeyID)) as HTMLInputElement).value);
-  
+  wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
     console.log("wantedExpirationDate: " + wantedExpirationDate);
     let currentToken = DevChatController.getUserToken();
-   /* let wasSuccessful = await DevChatController.changeChatKeyExpirationDate(currentToken,chatKeyID,wantedExpirationDate);
+    let wasSuccessful = await DevChatController.changeChatKeyExpirationDate(currentToken,chatKeyID,wantedExpirationDate);
     if(wasSuccessful){
       console.log("Das expirationDate von Raum Nummer " + chatKeyID + " wurde geändert.");
-    }*/
+    }
 
 }
 
-handleAddKeyClick(){
+async surveySetTime(surveyID: number | undefined){
+  let wantedExpirationDate = new Date((document.getElementById(String(surveyID)) as HTMLInputElement).value);
+  wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
+    console.log("wantedExpirationDate: " + wantedExpirationDate);
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.changeSurveyExpirationDate(currentToken,surveyID,wantedExpirationDate);
+    if(wasSuccessful){
+      console.log("Das expirationDate von Survey Nummer " + surveyID + " wurde geändert.");
+    }
+
+}
+
+/**
+ * This function handles the click of the "Add" Button in the ChatKey Section
+ */
+async handleAddKeyClick(){
   console.log("ChatKey ist: " + this.inputChatKey);
-  //let inputValue = (<HTMLInputElement>document.getElementById(elementId)).value;
- 
+
+    let currentToken = DevChatController.getUserToken();
+    let wasSuccessful = await DevChatController.addCustomChatKey(currentToken, this.inputChatKey);
+    if(wasSuccessful){
+      console.log("Der Raum: " + this.inputChatKey + " wurde erstellt.");
+    }
 }
 
 giveBoolStringTicket(boolToPrint: boolean | undefined):string{
@@ -117,6 +134,16 @@ giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   else{
     return "To-Do";
   }
+}
+
+giveAdminOrUser(userAccessLevel: number | undefined):string{
+  if(userAccessLevel === 1){
+    return "Admin";
+  }
+  else{
+    return "User";
+  }
+
 }
 
 async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean | undefined ):Promise<boolean>{
@@ -242,7 +269,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
 
                           <td>
                           <p>
-                            {user.accessLevel}
+                            {this.giveAdminOrUser(user.accessLevel)}
                           </p>
                           </td>
                           <td><a href="" onClick={() => this.promoteUser(user.name)}>Promote</a> | <a href="" onClick={() => this.demoteUser(user.name)}>Demote</a></td>
@@ -287,7 +314,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                             })}
                           </p>
                           </td>
-                          <td><a onClick={() => this.chatKeySetTime(ChatKey.id)}><input type="datetime-local" className={styles.inputDate} id={String(ChatKey.id)}/>Set Time</a></td>
+                          <td><input type="datetime-local" className={styles.inputDate} id={String(ChatKey.id)}/><a href="" onClick={() => this.chatKeySetTime(ChatKey.id)}>Set Time</a></td>
                           <td><a href="" onClick={() => this.chatClickDelete(ChatKey.id)}>Delete</a></td>
                       </tr>
                     ))} 
@@ -298,8 +325,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                         onChange={(event) => {this.inputChatKey = event.target.value}}/>
                       </td>
                       <td></td>
-                      <td><input type="datetime-local" className={styles.inputDate} id="inputDateTimeCustoml"/></td>
-                      <td><a onClick={() => this.handleAddKeyClick()}>Add</a></td>
+                      <td></td>
+                      <td><a href="" onClick={() => this.handleAddKeyClick()}>Add</a></td>
                     </tr>
                   </tbody>
                 </table>
@@ -345,7 +372,7 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                             </div> 
                           ))}
                           </td>
-                          <td><a href="">Set Time</a></td>
+                          <td><input type="datetime-local" className={styles.inputDate} id={String(survey.id)}/><a href="" onClick={() => this.surveySetTime(survey.id)}>Set Time</a></td>
                           <td><a href="" onClick={() => this.surveyClickDelete(survey.id)}>Delete</a></td>
                       </tr>
                     ))}

@@ -235,6 +235,26 @@ export class DevChatController {
     }
     return data.wasSuccessfull;
   }
+
+  /**
+   * Function to create a custom ChatKey and add it to DB
+   * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
+  **/
+   public async addCustomChatKey(userToken: string, customChatKey: string): Promise<boolean> {
+    //Creates new chat Key and adds to DB
+    let response = await fetch('./api/chatkeys/add_custom_chat_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        customChatKey: customChatKey
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
   
   //#endregion 
 
@@ -271,6 +291,29 @@ export class DevChatController {
   //#endregion
 
   //#region Survey Methods
+
+  /**
+   * This function is used to change the expiration Date of a survey
+   * @param userToken 
+   * @param surveyIDToAlter 
+   * @param expirationDate 
+   * @returns 
+   */
+  public changeSurveyExpirationDate = async (userToken: string, surveyIDToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+    let response = await fetch('./api/surveys/changeExpiration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        surveyIDToAlter: surveyIDToAlter,
+        expirationDate: expirationDate,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
 
     /**
  * This Method is used to get all surveys | It is called by admin.ts when displaying Admin Settings for Surveys

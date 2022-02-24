@@ -701,7 +701,7 @@ export class SupabaseConnection {
 
   //#region ChatKey Methods
 
-  public changeExpirationDate = async(token:string, chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
+  public changeChatKeyExpirationDate = async(token:string, chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
     let changedSucessfully: boolean = false;
     let userIsValid: boolean = await this.getIsAdminFromToken(token);
 
@@ -717,7 +717,7 @@ export class SupabaseConnection {
       .eq('ChatKeyID', chatKeyID)
 
     if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log("Something went wrong with the promotion!");
+      console.log("Something went wrong while altering the table!");
       return changedSucessfully;
     }
     changedSucessfully = true;
@@ -809,10 +809,10 @@ export class SupabaseConnection {
   */
   public updateExpirationDateFromCurrentChatKey = async (chatKeyID: number, newExpirationDate: Date): Promise<IChatKey | null> => {
     let chatKey: IChatKey | null = null;
-
+    
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatKey')
-      .update({ 'ExpirationDate': newExpirationDate })
+      .update({ 'ExpirationDate': newExpirationDate})
       .eq('ChatKeyID', chatKeyID)
 
     // check if data was received
@@ -1233,6 +1233,30 @@ export class SupabaseConnection {
   //#endregion
 
   //#region Survey Methods
+
+  public changeSurveyExpirationDate = async(token:string, surveyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .update({ 'ExpirationDate': newExpirationDate })
+      .eq('SurveyID', surveyID)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong while altering the table!");
+      console.log(UpdateStatus.error);
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
 
 
   public deleteSurveyOption = async (surveyIDToDelete: number | undefined): Promise<boolean> => {

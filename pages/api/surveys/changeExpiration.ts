@@ -14,10 +14,10 @@ const supabaseConnection = new SupabaseConnection();
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken = req.body.userToken;
-  let chatKeyToAlter = req.body.chatKeyToAlter;
+  let surveyIDToAlter = req.body.surveyIDToAlter;
   let expirationDate = req.body.expirationDate;
 
-  let wasSuccessfull = await supabaseConnection.changeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
+  let wasSuccessfull = await supabaseConnection.changeSurveyExpirationDate(userToken, surveyIDToAlter, expirationDate);
 
   res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }
