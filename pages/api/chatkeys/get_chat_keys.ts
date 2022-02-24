@@ -10,8 +10,7 @@ type Data = {
 const supabaseConnection = new SupabaseConnection();
 
 /**
- * Wusste nich wem die Funktion gehört / Sorry falls ich jemandem die Arbeit geklaut hab :P - Nico 
- * This is a api route get chat keys.
+ * This is a api route to get all chat keys.
  * @param req the request object 
  * @param res the response object 
  */
