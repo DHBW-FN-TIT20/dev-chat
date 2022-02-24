@@ -4,17 +4,22 @@ import { IChatKey } from '../../../public/interfaces';
 import { SupabaseConnection } from '../supabaseAPI';
 
 type Data = {
-  placeholder: any
+  allChatKeys : IChatKey[];
 }
 
 const supabaseConnection = new SupabaseConnection();
 
 /**
- * !!! not working yet !!!
- * This is a api route get chat keys.
+ * This is a api route to get all chat keys.
  * @param req the request object 
  * @param res the response object 
  */
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  res.status(200).json({ placeholder: "messages" });
+
+  let userToken: string = req.body.userToken;
+  supabaseConnection.deleteOldChatKeys();
+
+  let allChatKeys = await supabaseConnection.fetchAllChatKeys(userToken);
+
+  res.status(200).json({ allChatKeys: allChatKeys});
 }
