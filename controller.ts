@@ -336,6 +336,10 @@ export class DevChatController {
       return data.wasSuccessfull;
     }
 
+     /**
+      * This function is used to get all Surveys
+      * @returns Array of ISurveys
+      */
      public getAllSurveys = async (): Promise<ISurvey[]> => {
       let allSurveys: ISurvey[] = [];
       let userToken = this.getUserToken();
@@ -358,6 +362,13 @@ export class DevChatController {
   //#region ChatKey Methods
 
 
+  /**
+   * This function is used to change the expiration Date of a certain ChatKey
+   * @param userToken current User
+   * @param chatKeyToAlter 
+   * @param expirationDate wanted date
+   * @returns bool was sucessfull
+   */
   public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
     let response = await fetch('./api/chatkeys/changeExpiration', {
       method: 'POST',
@@ -374,6 +385,12 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+  /**
+   * This function deletes a certain chatKey
+   * @param userToken current User
+   * @param chatKeyToDelete 
+   * @returns bool was successfull
+   */
   public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
     let response = await fetch('./api/chatkeys/delete', {
       method: 'POST',
@@ -389,6 +406,10 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+  /**
+   * This functions is used to get all chatKeys 
+   * @returns all IChatKeys in an array
+   */
   public getAllChatKeys = async (): Promise<IChatKey[]> => {
     let allChatKeys: IChatKey[] = [];
     let userToken = this.getUserToken();
@@ -432,6 +453,10 @@ export class DevChatController {
     return data.wasSuccessfull;
   }
 
+  /**
+   * This function is used to get all Tickets
+   * @returns all IBugTickets in an array
+   */
   public getAllTickets = async (): Promise<IBugTicket[]> => {
     let allTickets: IBugTicket[] = [];
     let userToken = this.getUserToken();
@@ -473,9 +498,11 @@ export class DevChatController {
     console.log(username);
     return username;
   }
-   /**
- * This Method is used to get all users
- */
+
+    /**
+     * This Method is used to get an Array of all Users
+     * @returns array of all IUsers
+     */
     public getAllUsers = async (): Promise<IUser[]> => {
       let allUsers: IUser[] = [];
       let userToken = this.getUserToken();
@@ -493,7 +520,8 @@ export class DevChatController {
      return allUsers;
      }
    
-   /**
+
+    /**
     * This method is used to promote a certain user
     */
      public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
@@ -511,6 +539,12 @@ export class DevChatController {
        return data.wasSuccessfull;
      }
 
+     /**
+      * This function is used to reset the password of a certain user, it calls the supabase handler (resetPassword.ts)
+      * @param userToken 
+      * @param usernameToReset 
+      * @returns 
+      */
      public resetPassword = async (userToken: string, usernameToReset: string | undefined): Promise<boolean> => {
       let response = await fetch('./api/users/resetPassword', {
         method: 'POST',

@@ -102,6 +102,10 @@ async chatKeySetTime(chatKeyID: number | undefined){
 
 }
 
+/**
+ * This function sets the expiration Time of a survey
+ * @param surveyID ID of the survey whose time should be changed
+ */
 async surveySetTime(surveyID: number | undefined){
   let wantedExpirationDate = new Date((document.getElementById(String(surveyID)) as HTMLInputElement).value);
   wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
@@ -127,6 +131,11 @@ async handleAddKeyClick(){
     }
 }
 
+/**
+ * This function takes in a bool and prints out the wanted string
+ * @param boolToPrint the bool that should be printed
+ * @returns string, either "Done" or "To-Do"
+ */
 giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   if(boolToPrint){
     return "Done";
@@ -136,6 +145,11 @@ giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   }
 }
 
+/**
+ * Same principle as 'giveBoolStringTicket' - gives out String for a bool
+ * @param userAccessLevel 
+ * @returns string, either "Admin" or "User"
+ */
 giveAdminOrUser(userAccessLevel: number | undefined):string{
   if(userAccessLevel === 1){
     return "Admin";
@@ -146,6 +160,12 @@ giveAdminOrUser(userAccessLevel: number | undefined):string{
 
 }
 
+/**
+ * Function to handle a click to change the solved State of a ticket
+ * @param ticketID ticket that should be changed
+ * @param currentState currentState of the ticket (0 or 1)
+ * @returns 
+ */
 async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean | undefined ):Promise<boolean>{
   let currentToken = DevChatController.getUserToken();
   let wasSuccessful = await DevChatController.changeSolvedState(currentToken,ticketID,currentState);
@@ -159,6 +179,13 @@ async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean
   return wasSuccessful;
 }
 
+/**
+ * This function returns the Username for a certain UserID
+ * @param userID 
+ * @param username 
+ * @param ownerID 
+ * @returns 
+ */
 matchingUsername(userID: number | undefined, username: string | undefined, ownerID: number | undefined): string | undefined{
   if(userID === ownerID){
     return username;
@@ -179,6 +206,10 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     }
   }
 
+  /**
+   * This function is used to handle the delete click of a chatKey
+   * @param chatID 
+   */
   async chatClickDelete(chatID: number | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.deleteChatKey(currentToken,chatID);
@@ -188,6 +219,10 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     }
   }
 
+  /**
+   * This function is used to handle the delet click of a survey
+   * @param surveyID 
+   */
   async surveyClickDelete(surveyID: number | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.deleteSurvey(currentToken,surveyID);
@@ -197,6 +232,10 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     }
   }
 
+  /**
+   * This function is used to promote a certain user, identified by its username
+   * @param name 
+   */
   async promoteUser(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.promoteUser(currentToken,name);
@@ -205,6 +244,10 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     }
   }
 
+  /**
+   * This function is used to demote a certain user, identified by its username
+   * @param name 
+   */
   async demoteUser(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.demoteUser(currentToken,name);
@@ -213,6 +256,10 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
     }
   }
 
+  /**
+   * This function is used to reset the password of a certain user, identified by its username
+   * @param name 
+   */
   async resetPassword(name: string | undefined){
     let currentToken = DevChatController.getUserToken();
     let wasSuccessful = await DevChatController.resetPassword(currentToken,name);

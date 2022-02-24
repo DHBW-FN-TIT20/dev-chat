@@ -1234,6 +1234,13 @@ export class SupabaseConnection {
 
   //#region Survey Methods
 
+  /**
+   * change the expiration Date of a certain survey inside supabase
+   * @param token 
+   * @param surveyID 
+   * @param newExpirationDate 
+   * @returns bool if sucessfull
+   */
   public changeSurveyExpirationDate = async(token:string, surveyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
     let changedSucessfully: boolean = false;
     let userIsValid: boolean = await this.getIsAdminFromToken(token);
@@ -1258,7 +1265,11 @@ export class SupabaseConnection {
     return changedSucessfully;
   }
 
-
+  /**
+   * deletes a survey inside supabase
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
   public deleteSurveyOption = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
 
     const { data, error } = await SupabaseConnection.CLIENT
@@ -1277,6 +1288,11 @@ export class SupabaseConnection {
     }
   }
 
+  /**
+   * function that deletes all votes of a certain survey
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
   public deleteSurveyVote = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
 
     const { data, error } = await SupabaseConnection.CLIENT
@@ -1295,6 +1311,12 @@ export class SupabaseConnection {
     }
   }
 
+  /**
+   * deletes a survey inside supabase
+   * @param userToken 
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
   public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
 
     let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
