@@ -7,8 +7,10 @@ import DevChatController from '../controller'
 import Header from './header'
 
 export interface LoginState {
-  isNotLoggedIn: boolean,
+  isNotLoggedIn: Boolean,
   feedbackMessage: String,
+  inputUserName: string,
+  inputPassword: string,
 }
 
 export interface LoginProps extends WithRouterProps {
@@ -27,6 +29,8 @@ class Login extends Component<LoginProps, LoginState> {
     this.state = {
       isNotLoggedIn: false,
       feedbackMessage: "",
+      inputUserName: "",
+      inputPassword: "",
     }
     
   }
@@ -98,8 +102,19 @@ class Login extends Component<LoginProps, LoginState> {
                 <h1>
                 Login
               </h1>
-              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
-              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
+              <input type="text" placeholder="Username..." 
+              onChange={(event) => {
+                this.username = event.target.value
+                this.setState({inputUserName: event.target.value})
+                }}
+                value={this.state.inputUserName}/>
+              <input type="password" placeholder="Password..."
+              onChange={(event) => {
+                this.password = event.target.value
+                this.setState({inputPassword: event.target.value})
+                }}
+                value={this.state.inputPassword}
+                />
               <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
                 <button onClick={async () => {
                   this.setState({feedbackMessage: ""});
