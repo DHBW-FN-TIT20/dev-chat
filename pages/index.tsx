@@ -142,6 +142,7 @@ class Main extends Component<MainProps, MainState> {
           <main>
           <div className={styles.container}>
             <div className={styles.left}>
+            <a hidden={false} href="/project-docs.pdf">Docs</a>
               <h1>
                 Join Room
               </h1>

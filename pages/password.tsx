@@ -5,6 +5,7 @@ import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
+import Popup from '../components/popup';
 
 export interface PasswordState {
   isLoggedIn: boolean,
@@ -13,6 +14,7 @@ export interface PasswordState {
   inputConfirmPassword: string,
   feedBackMessage: string,
   oldPasswordIsCorrect: boolean,
+  showPopup: boolean,
 }
 
 export interface PasswordProps extends WithRouterProps {}
@@ -27,6 +29,7 @@ class Password extends Component<PasswordProps, PasswordState> {
       inputConfirmPassword: "",
       feedBackMessage: "",
       oldPasswordIsCorrect: true,
+      showPopup: false,
     }
     
   }
@@ -106,6 +109,25 @@ class Password extends Component<PasswordProps, PasswordState> {
 
     }
   }
+  
+  /**
+   * Function which toogles the PopUp
+   */
+  togglePopup() {
+    if(this.state.showPopup == true){
+      const { router } = this.props;
+      router.push("/");
+      this.setState({
+        showPopup: !this.state.showPopup
+        });
+    }
+    else{
+      this.setState({
+        showPopup: !this.state.showPopup
+        });
+    }
+    
+}
 
   /**
    * Generates the JSX Output for the Client
@@ -170,6 +192,14 @@ class Password extends Component<PasswordProps, PasswordState> {
             </div>
             </div>
             </div>
+            {this.state.showPopup ? 
+              <Popup
+                headerText='Change Password'
+                textDisplay='The Password was changed sucessfully.'
+                closePopup={this.togglePopup.bind(this)}
+              />
+              : null
+            }
           </main>
         </div>
       )
