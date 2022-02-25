@@ -113,12 +113,27 @@ class Register extends Component<RegisterProps, RegisterState> {
         //Password and username not Valid
         vNewUsernameValid = false;
         vNewPasswordValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
       }
       else if (registerUserReturnString == "error_username") {
         vNewUsernameValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
       }
       else if (registerUserReturnString == "error_password") {
         vNewPasswordValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
       }
     }
     this.setState({ newPasswordValid: vNewPasswordValid, newUsernameValid: vNewUsernameValid });
