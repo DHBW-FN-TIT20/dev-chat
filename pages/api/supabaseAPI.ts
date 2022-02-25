@@ -770,6 +770,7 @@ export class SupabaseConnection {
       let ChatKeyResponse = await SupabaseConnection.CLIENT
         .from('ChatKey')
         .select('ChatKeyID,ChatKey,ExpirationDate')
+        .order('ChatKeyID', { ascending: true })
   
       if (ChatKeyResponse.data === null || ChatKeyResponse.error !== null || ChatKeyResponse.data.length === 0) {
         console.log("No Chat Keys found!")
