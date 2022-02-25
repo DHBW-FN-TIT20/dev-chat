@@ -8,8 +8,8 @@ import Header from './header'
 import { eventNames } from 'process'
 
 export interface LoginState {
-  isNotLoggedIn: Boolean,
-  feedbackMessage: String,
+  isNotLoggedIn: boolean,
+  feedbackMessage: string,
   inputUserName: string,
   inputPassword: string,
 }
