@@ -35,6 +35,7 @@ class Main extends Component<MainProps, MainState> {
   componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
+    this.connectToParamChatKey()
   }
   
   /**
@@ -72,14 +73,49 @@ class Main extends Component<MainProps, MainState> {
   private updateFeedbackMessage(doesChatKeyExists: boolean) {
     console.log("updateFeedbackMessage()");
     let feedbackMessage: string = "";
-    
-    if(!doesChatKeyExists) {
+
+    if (!doesChatKeyExists) {
       feedbackMessage = "Chat-Key does not exists";
-    } 
+    }
 
     this.setState({ feedbackMessage: feedbackMessage });
   }
-  
+
+  /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   * @param event Occurred Event
+   */
+  handleJoinEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onJoinButtonClick(event);
+    }
+  }
+
+  /**
+   * Handle for On Click Event of the Button
+   * @param event 
+   */
+  onJoinButtonClick = async (event: any) => {
+    const { router } = this.props;
+    this.setState({feedbackMessage : ""});
+    let doesChatKeyExists = await DevChatController.doesChatKeyExists(this.state.inputChatKey)
+    this.setState({
+      doesChatKeyExists: doesChatKeyExists
+    })
+    if(this.state.doesChatKeyExists)
+    {
+      console.log("EXISTS")
+      DevChatController.setChatKeyCookie(this.state.inputChatKey);
+      router.push("/chat")
+    }
+    else {
+      console.log("NOT EXISTS")
+    }
+    this.updateFeedbackMessage(this.state.doesChatKeyExists);
+  }
+
+
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
@@ -106,34 +142,18 @@ class Main extends Component<MainProps, MainState> {
           <main>
           <div className={styles.container}>
             <div className={styles.left}>
+            <a hidden={false} href="/project-docs.pdf">Docs</a>
               <h1>
                 Join Room
               </h1>
               <input type="text" placeholder="Chat-Key..." className='input' 
                 onChange={(event) => { 
                   this.setState({ inputChatKey: event.currentTarget.value})       
-                }} 
+                }}
+                onKeyPress={this.handleJoinEnterKeyPress}
                 value={this.state.inputChatKey} />           
               <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
-
-              <button onClick={async() => {
-                let doesChatKeyExists = await DevChatController.doesChatKeyExists(this.state.inputChatKey)
-                this.setState({
-                  doesChatKeyExists: doesChatKeyExists
-                })
-                if(this.state.doesChatKeyExists)
-                {
-                  console.log("EXISTS")
-                  DevChatController.setChatKeyCookie(this.state.inputChatKey);
-                  router.push("/chat")
-                }
-                else {
-                  console.log("NOT EXISTS")
-                }
-                this.updateFeedbackMessage(this.state.doesChatKeyExists);        
-              }}> 
-                Join
-              </button>
+              <button onClick={this.onJoinButtonClick}> Join </button>
               <h1>
                 Create Room
               </h1>
@@ -190,6 +210,31 @@ class Main extends Component<MainProps, MainState> {
       )
     }
   }
+
+  /**
+   * This method checks whether there is a parameter chatKey in the URL.
+   * If there is, it connects to the chat with the chatKey.
+   */
+  private async connectToParamChatKey() {
+
+    // check for parameter "chatkey" in url
+    let urlParams = new URLSearchParams(window.location.search);
+    let chatKey = urlParams.get("chatkey") || urlParams.get("chatKey") || "";
+
+    // if there is a chatKey, check if it exists and connect to the chat
+    if (chatKey !== "") {
+      const { router } = this.props
+      let doesChatKeyExists = await DevChatController.doesChatKeyExists(chatKey)      
+      if(doesChatKeyExists) {
+        console.log("EXISTS")
+        DevChatController.setChatKeyCookie(chatKey);
+        router.push("/chat")
+      } else {
+        console.log("NOT EXISTS")
+      }
+    }
+  }
 }
+
 
 export default withRouter(Main)

@@ -8,10 +8,11 @@ import Header from './header'
 
 export interface LoginState {
   isNotLoggedIn: boolean,
+  feedbackMessage: String,
 }
 
 export interface LoginProps extends WithRouterProps {
-  showError: boolean;
+
 }
 
 /**
@@ -25,6 +26,7 @@ class Login extends Component<LoginProps, LoginState> {
     super(props)
     this.state = {
       isNotLoggedIn: false,
+      feedbackMessage: "",
     }
     
   }
@@ -66,6 +68,32 @@ class Login extends Component<LoginProps, LoginState> {
       this.setState({isNotLoggedIn: true})
     }
   }
+
+  /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   * @param event Occurred Event
+   */
+  handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onLoginButtonClick(event);
+    }
+  }
+
+  /**
+   * Handle of On click Event from Button
+   * @param event 
+   */
+  onLoginButtonClick = async (event: any) => {
+    const { router } = this.props;
+    this.setState({ feedbackMessage: "" });
+    if (await DevChatController.loginUser(this.username, this.password)) {
+      router.push("/")
+    } // change to state later
+    else{
+      this.setState({ feedbackMessage: "Incorrect Username or Password" });
+    }
+  }
   
   /**
    * Generates the JSX Output for the Client
@@ -96,19 +124,10 @@ class Login extends Component<LoginProps, LoginState> {
                 <h1>
                 Login
               </h1>
-              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
-              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
-                {
-                  this.props.showError && 
-                  <div className='error' id={styles.error1}> 
-                    Incorrect username or password. 
-                  </div>
-                }
-                <button onClick={async () => {
-                  if (await DevChatController.loginUser(this.username, this.password)) {
-                    router.push("/")
-                  } // change to state later
-                }}> Login </button>
+              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}} onKeyPress={this.handleEnterKeyPress} />
+              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}} onKeyPress={this.handleEnterKeyPress} />
+              <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+                <button onClick={this.onLoginButtonClick}> Login </button>
                 <div className='create'>
                   Or&nbsp; 
                   <a onClick={() => router.push("/register")}>

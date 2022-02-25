@@ -5,6 +5,7 @@ import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
+import Popup from '../components/popup';
 
 export interface PasswordState {
   isLoggedIn: boolean,
@@ -13,6 +14,7 @@ export interface PasswordState {
   inputConfirmPassword: string,
   feedBackMessage: string,
   oldPasswordIsCorrect: boolean,
+  showPopup: boolean,
 }
 
 export interface PasswordProps extends WithRouterProps {}
@@ -27,6 +29,7 @@ class Password extends Component<PasswordProps, PasswordState> {
       inputConfirmPassword: "",
       feedBackMessage: "",
       oldPasswordIsCorrect: true,
+      showPopup: false,
     }
     
   }
@@ -72,6 +75,61 @@ class Password extends Component<PasswordProps, PasswordState> {
   }
 
   /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   * @param event Occurred Event
+   */
+  handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onPasswordChangeButtonClick(event);
+    }
+  }
+
+  /**
+   * Handle of On click Event from Button
+   * @param event 
+   */
+  onPasswordChangeButtonClick = async (event: any) => {
+    const { router } = this.props;
+    this.setState({feedBackMessage : ""});
+    let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
+    this.setState({
+      oldPasswordIsCorrect: oldPasswordIsCorrect
+    })
+    if (oldPasswordIsCorrect) {
+      router.push("/")
+    }
+    else {
+      this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
+      this.setState({
+        inputConfirmPassword: "",
+        inputOldPassword: "",
+        inputNewPassword: "",
+      })
+
+    }
+  }
+  
+  /**
+   * Function which toogles the PopUp
+   */
+  togglePopup() {
+    if(this.state.showPopup == true){
+      const { router } = this.props;
+      router.push("/");
+      this.setState({
+        showPopup: !this.state.showPopup
+        });
+    }
+    else{
+      this.setState({
+        showPopup: !this.state.showPopup
+        });
+    }
+    
+}
+
+  /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
    */
@@ -101,41 +159,25 @@ class Password extends Component<PasswordProps, PasswordState> {
               onChange={(event) => { 
                 this.setState({inputOldPassword: event.currentTarget.value}) 
                 this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, event.currentTarget.value, this.state.inputNewPassword, this.state.inputConfirmPassword); 
-              }} 
+              }}
+              onKeyPress={this.handleEnterKeyPress} 
               value={this.state.inputOldPassword}/>
               <input type="password" placeholder="New Password..." 
                 onChange={(event) => { 
                   this.setState({inputNewPassword: event.currentTarget.value }) 
                   this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, event.currentTarget.value, this.state.inputConfirmPassword); 
-                }} 
+                }}
+                onKeyPress={this.handleEnterKeyPress}
                 value={this.state.inputNewPassword} />
               <input type="password" placeholder="Confirm New Password..." 
                 onChange={(event) => { 
                   this.setState({ inputConfirmPassword: event.currentTarget.value }) 
                   this.updateFeedbackMessage(this.state.oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, event.currentTarget.value);
-                }} 
+                }}
+                onKeyPress={this.handleEnterKeyPress}
                 value={this.state.inputConfirmPassword}/>
               <div className='error' hidden={this.state.feedBackMessage === ""}>{this.state.feedBackMessage}</div>
-              <button onClick={async() => {
-                let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
-                this.setState({
-                  oldPasswordIsCorrect: oldPasswordIsCorrect
-                })
-                if (oldPasswordIsCorrect) {
-                  router.push("/")
-                }
-                else {
-                  this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword)
-                  this.setState({
-                    inputConfirmPassword: "",
-                    inputOldPassword: "",
-                    inputNewPassword: "",
-                  })
-
-                }
-              }}> 
-                Change Password 
-              </button>
+              <button onClick={this.onPasswordChangeButtonClick}> Change Password </button>
             </div>
             <div className={styles.right}>
             <div className="image">
@@ -150,6 +192,14 @@ class Password extends Component<PasswordProps, PasswordState> {
             </div>
             </div>
             </div>
+            {this.state.showPopup ? 
+              <Popup
+                headerText='Change Password'
+                textDisplay='The Password was changed sucessfully.'
+                closePopup={this.togglePopup.bind(this)}
+              />
+              : null
+            }
           </main>
         </div>
       )
