@@ -6,7 +6,6 @@ import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
 import { IUser, ISurvey, IBugTicket, IChatKey } from '../public/interfaces'
-import Popup from './popup';
 import chat from './chat'
 
 
