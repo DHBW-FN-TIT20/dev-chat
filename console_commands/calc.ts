@@ -21,14 +21,17 @@ export class CalcCommand extends Command {
 
        // check if there is more than one argument
        if (args.length != 1) {
+         console.log("only one argument please!");
          argsValid = false;
        }
        // if argument is invalid, return nothing
        if (!argsValid) {
+         console.log("Argument invalid");
         return [];
       }
        // if argument is not a number, return nothing
-      if(isNaN(Number(args[0]))){
+      if(isNaN(eval(args[0]))){
+        console.log("Argument is not a number!");
         return [];
       }
 

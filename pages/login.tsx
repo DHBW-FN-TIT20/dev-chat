@@ -72,6 +72,32 @@ class Login extends Component<LoginProps, LoginState> {
       this.setState({isNotLoggedIn: true})
     }
   }
+
+  /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   * @param event Occurred Event
+   */
+  handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onLoginButtonClick(event);
+    }
+  }
+
+  /**
+   * Handle of On click Event from Button
+   * @param event 
+   */
+  onLoginButtonClick = async (event: any) => {
+    const { router } = this.props;
+    this.setState({ feedbackMessage: "" });
+    if (await DevChatController.loginUser(this.username, this.password)) {
+      router.push("/")
+    } // change to state later
+    else{
+      this.setState({ feedbackMessage: "Incorrect Username or Password" });
+    }
+  }
   
   /**
    * Generates the JSX Output for the Client
@@ -102,29 +128,10 @@ class Login extends Component<LoginProps, LoginState> {
                 <h1>
                 Login
               </h1>
-              <input type="text" placeholder="Username..." 
-              onChange={(event) => {
-                this.username = event.target.value
-                this.setState({inputUserName: event.target.value})
-                }}
-                value={this.state.inputUserName}/>
-              <input type="password" placeholder="Password..."
-              onChange={(event) => {
-                this.password = event.target.value
-                this.setState({inputPassword: event.target.value})
-                }}
-                value={this.state.inputPassword}
-                />
+              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}} onKeyPress={this.handleEnterKeyPress} value={this.state.inputUserName}/>
+              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}} onKeyPress={this.handleEnterKeyPress} value={this.state.inputPassword} />
               <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
-                <button onClick={async () => {
-                  this.setState({feedbackMessage: ""});
-                  if (await DevChatController.loginUser(this.username, this.password)) {
-                    router.push("/")
-                  } // change to state later
-                  else{
-                    this.setState({feedbackMessage: "Incorrect Username or Password"});
-                  }
-                }}> Login </button>
+                <button onClick={this.onLoginButtonClick}> Login </button>
                 <div className='create'>
                   Or&nbsp; 
                   <a onClick={() => router.push("/register")}>

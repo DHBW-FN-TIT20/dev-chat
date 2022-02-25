@@ -3,7 +3,7 @@
 export interface IChatKey {
     id?: number;
     threeWord?: string;
-    expirationDate?: Date; // maybe change later
+    expirationDate: Date; // maybe change later
 }
 
 export var emptyChatKey: IChatKey = {
@@ -107,7 +107,7 @@ export interface ISurveyState {
 export interface IBugTicket {
     id?: number;
     submitter: IUser;
-    date?: Date; // maybe change later
+    date: Date; // maybe change later
     message: string;
     solved?: boolean;
 }
