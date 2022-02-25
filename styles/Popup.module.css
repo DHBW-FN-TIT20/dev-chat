@@ -62,6 +62,16 @@
   bottom: 10pt;
 }
 
+@media screen and (max-height: 830px) {
+  .popup_inner {
+    height: 50% !important; 
+  }
+}
+@media screen and (max-height: 400px) {
+  .popup_inner {
+    height: 70% !important; 
+  }
+}
 
 @media screen and (min-width: 1280px) {
   .popup_inner {

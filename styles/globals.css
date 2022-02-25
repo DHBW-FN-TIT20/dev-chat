@@ -1,4 +1,9 @@
 /** Background */
+@media screen and (max-height: 830px) {
+  html {
+    overflow: scroll !important;
+  }
+}
 
 @media screen and (max-width: 550px) {
   html,
