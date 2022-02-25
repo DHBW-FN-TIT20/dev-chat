@@ -127,6 +127,8 @@ async handleAddKeyClick(){
     let wasSuccessful = await DevChatController.addCustomChatKey(currentToken, this.inputChatKey);
     if(wasSuccessful){
       console.log("Der Raum: " + this.inputChatKey + " wurde erstellt.");
+      location.reload();
+      
     }
 }
 
@@ -368,7 +370,14 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
                       <td><input 
                         type="text" 
                         placeholder="Custom Chat Key here" 
-                        onChange={(event) => {this.inputChatKey = event.target.value}}/>
+                        onChange={(event) => {this.inputChatKey = event.target.value}}
+                        onKeyPress={(event) => {
+                          if (event.key === 'Enter') {
+                            this.handleAddKeyClick()
+                          }
+                        }
+                        
+                      }/>
                       </td>
                       <td></td>
                       <td></td>

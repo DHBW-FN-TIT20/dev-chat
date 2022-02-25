@@ -5,6 +5,7 @@ import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
 import DevChatController from '../controller'
 import Header from './header'
+import { eventNames } from 'process'
 
 export interface LoginState {
   isNotLoggedIn: Boolean,
@@ -95,7 +96,12 @@ class Login extends Component<LoginProps, LoginState> {
       router.push("/")
     } // change to state later
     else{
-      this.setState({ feedbackMessage: "Incorrect Username or Password" });
+      this.setState({ 
+        feedbackMessage: "Incorrect Username or Password",
+        inputPassword: "",
+        inputUserName: "",
+      });
+
     }
   }
   
@@ -128,8 +134,20 @@ class Login extends Component<LoginProps, LoginState> {
                 <h1>
                 Login
               </h1>
-              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}} onKeyPress={this.handleEnterKeyPress} value={this.state.inputUserName}/>
-              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}} onKeyPress={this.handleEnterKeyPress} value={this.state.inputPassword} />
+              <input type="text" placeholder="Username..." 
+                onChange={(event) => {
+                  this.username = event.target.value,
+                  this.setState({inputUserName: event.target.value})
+                }} 
+                onKeyPress={this.handleEnterKeyPress}
+                value={this.state.inputUserName}/>
+              <input type="password" placeholder="Password..." 
+                onChange={(event) => {
+                  this.password = event.target.value,
+                  this.setState({inputPassword: event.target.value})
+                }} 
+                onKeyPress={this.handleEnterKeyPress}
+                value={this.state.inputPassword} />
               <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
                 <button onClick={this.onLoginButtonClick}> Login </button>
                 <div className='create'>

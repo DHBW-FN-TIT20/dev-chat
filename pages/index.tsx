@@ -5,6 +5,7 @@ import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import Header from './header'
 import DevChatController from '../controller'
+import { stringify } from 'querystring'
 
 export interface MainState {
   isLoggedIn: boolean,
@@ -25,7 +26,7 @@ class Main extends Component<MainProps, MainState> {
       isLoggedIn: false,
       inputChatKey: "",
       feedbackMessage: "",
-      doesChatKeyExists: false
+      doesChatKeyExists: false,
     }
   }
 
@@ -111,6 +112,7 @@ class Main extends Component<MainProps, MainState> {
     }
     else {
       console.log("NOT EXISTS")
+      this.setState({ inputChatKey: ""})
     }
     this.updateFeedbackMessage(this.state.doesChatKeyExists);
   }
@@ -148,7 +150,7 @@ class Main extends Component<MainProps, MainState> {
               </h1>
               <input type="text" placeholder="Chat-Key..." className='input' 
                 onChange={(event) => { 
-                  this.setState({ inputChatKey: event.currentTarget.value})       
+                  this.setState({ inputChatKey: event.currentTarget.value})
                 }}
                 onKeyPress={this.handleJoinEnterKeyPress}
                 value={this.state.inputChatKey} />           
