@@ -32,7 +32,7 @@ export class ShowCommand extends Command {
     const supabaseConnection = new SupabaseConnection();
     
     // get the survey with the given id
-    let survey: ISurveyState | null = await supabaseConnection.getCurrentSurveyState(Number(args[0]));
+    let survey: ISurveyState | null = await supabaseConnection.getCurrentSurveyState(Number(args[0]), currentChatKeyID);
 
     // check if the vote was added successfully 
     if (survey === null) {
