@@ -96,6 +96,11 @@ class Chat extends Component<ChatProps, ChatState> {
         const tempChatMessages:IChatMessage[] = await DevChatController.updateChatMessages();
         this.setState({messages: tempChatMessages})
         this.blockFetchMessages = false;
+        // Check for scrolling (If user can see one of the newest three lines (is at bottom of page))
+        let elem = document.getElementById("chatTable");
+        if (elem !== null && elem.scrollTop >= -100) {
+          elem.scrollTo(0, 0);
+        }
       }
     });
   }
@@ -209,12 +214,12 @@ class Chat extends Component<ChatProps, ChatState> {
 
           <main>
             <div>
-              <div className={styles.messageTableDiv}> 
+              <div className={styles.messageTableDiv}  id="chatTable"> 
                 <table>
                   <tbody>
                     {this.state.messages.map(message => (
                       <tr key={message.id}>
-                          <td className={styles.msg}>
+                        <td className={styles.msg}>
                           <p className={styles.tableUser}>
                             {setStringOnFixLength(String(message.user), 16)}
                           </p>
@@ -237,7 +242,7 @@ class Chat extends Component<ChatProps, ChatState> {
                           <p className={styles.tableMessage}>
                             {message.message}
                           </p>
-                          </td>
+                        </td>
                       </tr>
                     ))}
                   </tbody>
