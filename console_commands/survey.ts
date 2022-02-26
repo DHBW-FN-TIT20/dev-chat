@@ -38,7 +38,7 @@ export class SurveyCommand extends Command {
       }
 
       // if arguments are not valid, return an empty array to indicate that the command was not executed successfully
-      if (!argsValid) {
+      if (!argsValid || currentUser.id === undefined) {
         return [];
       }
 
@@ -51,6 +51,7 @@ export class SurveyCommand extends Command {
         expirationDate: expirationDate ? expirationDate : new Date(),
         options: args.slice(3).map(option => { return { name: option } }),
         ownerID: currentUser.id,
+        chatKeyID: currentChatKeyID,
       };
 
       // add the surves to the database
@@ -61,6 +62,12 @@ export class SurveyCommand extends Command {
         answerLines.push("Error: Could not add survey to database.");
         return answerLines;
       }
+
+      // send message to all that survey was created
+      await supabaseConnection.addChatMessage(
+        await supabaseConnection.getUsernameByUserID(addedSurvey.ownerID) + " created the Survey '" + addedSurvey.name + "' with the ID: " + addedSurvey.id + " which expires at " + addedSurvey.expirationDate.toLocaleString(), 
+        addedSurvey.chatKeyID, 
+        addedSurvey.ownerID);
 
       answerLines.push("Survey started successfully!");
       answerLines.push("ID: " + addedSurvey.id);

@@ -86,7 +86,8 @@ export interface ISurvey {
     name: string;
     description: string;
     expirationDate: Date;
-    ownerID?: number;
+    ownerID: number;
+    chatKeyID: number;
     options: ISurveyOption[];
 }
 
