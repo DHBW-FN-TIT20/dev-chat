@@ -21,7 +21,7 @@ export class MsgCommand extends Command {
         // check if the arguments are valid 
         let argsValid: boolean = true;
 
-        if (args.length <= 2) {
+        if (args.length < 2) {
             argsValid = false;
         }
 
