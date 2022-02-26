@@ -825,9 +825,9 @@ export class SupabaseConnection {
       return true;
     }
     else {
-      if(await this.addChatMessage(message, chatKeyId, userId)) {
+      if (await this.addChatMessage(message, chatKeyId, userId)) {
         return true;
-      }   
+      }
     }
     return false;
   };
@@ -841,28 +841,26 @@ export class SupabaseConnection {
   * @param {number} userId the Id of the User
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
   */
-  public addChatMessage = async (message: string, chatKeyId: number, targetUserId?: number, userId?: number): Promise<boolean> => {
-    let targetID: number | undefined = 0
-    if(targetUserId !== 0 || targetUserId !== undefined) {
-      targetID = targetUserId
+  public addChatMessage = async (message: string, chatKeyId: number, userId: number, targetUserId: number = 0): Promise<boolean> => {
+    if (await this.getChatKey(chatKeyId) !== null) {
+      console.log("UserID: " + targetUserId);
+
+      const { data, error } = await SupabaseConnection.CLIENT
+        .from('ChatMessage')
+        .insert([
+          { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetUserId, Message: message },
+        ])
+
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // Message was not added -> return false
+        return false;
+      } else {
+        // Message was added -> return true
+        return true;
+      }
     }
-
-    console.log("UserID: " + targetID); 
-
-    const { data, error } = await SupabaseConnection.CLIENT
-      .from('ChatMessage')
-      .insert([
-        { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetID, Message: message },
-      ])
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // Message was not added -> return false
-      return false;
-    } else {
-      // Message was added -> return true
-      return true;
-    }
+    return false;
   };
 
   /**

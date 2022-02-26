@@ -4,7 +4,7 @@ import { Command } from "./baseclass";
 
 
 /**
- * This command is used to report a bug
+ * This command is to send a direct message
  * It is triggerd by the command "/msg"
  * Pattern: /msg <targetUsername> <message>
  */
@@ -12,7 +12,7 @@ export class MsgCommand extends Command {
     public constructor() {
         super();
         this.callString = "msg";
-        this.helpText = "run '/msg <targetUsername> <message> to direct message a user! ";
+        this.helpText = "run '/msg <targetUsername> <message>' to direct message a user! ";
     }
 
     public async execute(args: string[], currentUser: IUser, currentChatKeyID: number): Promise<string[]> {
@@ -21,7 +21,7 @@ export class MsgCommand extends Command {
         // check if the arguments are valid 
         let argsValid: boolean = true;
 
-        if (args.length !== 2) {
+        if (args.length >= 2) {
             argsValid = false;
         }
 
@@ -37,7 +37,7 @@ export class MsgCommand extends Command {
 
         console.log(args)
         let targetUsername: string = args[0];
-        let targetUserId: number = 0;
+        let targetUserId: number = NaN;
 
         if (targetUsername !== "" || targetUsername !== undefined) {
             targetUserId = await supabaseConnection.getUserIDByUsername(targetUsername)
@@ -45,7 +45,7 @@ export class MsgCommand extends Command {
 
         let message: string = args[1]
         let commandExecutable: boolean = false;
-        if(targetUserId !== NaN && message !== "") {
+        if(!isNaN(targetUserId) && message !== "") {
           commandExecutable = true;
         }
         
@@ -60,7 +60,7 @@ export class MsgCommand extends Command {
                 answerLines.push("The message was send to " + targetUsername + " succesfully.");
             }
             else {
-                answerLines.push("Error.");
+                answerLines.push("Nachricht konnte nicht zugestellt werden.");
             }
         }
         return answerLines;
