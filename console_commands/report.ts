@@ -23,6 +23,7 @@ export class ReportCommand extends Command {
       let bugToReport: IBugTicket = {
         submitter: currentUser,
         message: args.join(" "),
+        date: new Date(),
       };
       // add the ticket to the database
       let addedTicket: IBugTicket | null = await supabaseConnection.addNewTicket(bugToReport);
