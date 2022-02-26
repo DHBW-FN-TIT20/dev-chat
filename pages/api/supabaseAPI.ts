@@ -1456,6 +1456,7 @@ export class SupabaseConnection {
         description: survey.Description,
         expirationDate: new Date(survey.ExpirationDate),
         ownerID: survey.OwnerID,
+        chatKeyID: survey.ChatKeyID,
         options: []
       }
     })
@@ -1480,6 +1481,7 @@ export class SupabaseConnection {
           Description: surveyToAdd.description,
           ExpirationDate: new Date(surveyToAdd.expirationDate),
           OwnerID: surveyToAdd.ownerID,
+          ChatKeyID: surveyToAdd.chatKeyID,
         },
       ])
 
@@ -1493,6 +1495,7 @@ export class SupabaseConnection {
       description: surveyResponse.data[0].Description,
       expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
+      chatKeyID: surveyResponse.data[0].ChatKeyID,
       options: [],
     }
 
