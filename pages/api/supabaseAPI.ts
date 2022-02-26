@@ -15,6 +15,7 @@ import { ShowCommand } from '../../console_commands/show';
 import { ExpireCommand } from '../../console_commands/expire';
 import { HelpCommmand } from '../../console_commands/help';
 import chat from '../chat';
+import { MsgCommand } from '../../console_commands/msg';
 import { DevChatController } from '../../controller';
 
 //#endregion
@@ -48,6 +49,7 @@ export class SupabaseConnection {
       new ReportCommand,
       new ShowCommand,
       new ExpireCommand,
+      new MsgCommand,
     ];
     this.commands.push(new HelpCommmand(this.commands))
   }
@@ -1035,14 +1037,14 @@ export class SupabaseConnection {
 
   /** 
   * //TODO adding the cmd messages in the executeCommand Function
-  * API function to add a Chat Message to the database 
+  * API function to handle a Chat Message
   * @param {string} message the message of the user
   * @param {number} chatKeyId the chatKeyId of the Chatroom
   * @param {string} userToken the token from the logged in user
   * @param {number} userId the Id of the User
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+  * @returns {Promise<boolean>} a promise that resolves to an boolean that the command or message was executed succesfully.
   */
-  public addChatMessage = async (message: string, chatKeyId: number, userToken?: string, userId?: number): Promise<boolean> => {
+  public handleChatMessage = async (message: string, chatKeyId: number, userToken?: string, userId?: number): Promise<boolean> => {
     if (userId === undefined && userToken !== undefined) {
       if (await this.isUserTokenValid(userToken)) {
         userId = await this.getUserIDFromToken(userToken);
@@ -1063,10 +1065,30 @@ export class SupabaseConnection {
       return true;
     }
     else {
+      if (await this.addChatMessage(message, chatKeyId, userId)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  /** 
+  * //TODO adding the cmd messages in the executeCommand Function
+  * API function to add a Chat Message to the database 
+  * @param {string} message the message of the user
+  * @param {number} chatKeyId the chatKeyId of the Chatroom  
+  * @param {number} targetUserId the Id of the User
+  * @param {number} userId the Id of the User
+  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+  */
+  public addChatMessage = async (message: string, chatKeyId: number, userId: number, targetUserId: number = 0): Promise<boolean> => {
+    if (await this.getChatKey(chatKeyId) !== null) {
+      console.log("UserID: " + targetUserId);
+
       const { data, error } = await SupabaseConnection.CLIENT
         .from('ChatMessage')
         .insert([
-          { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: '0', Message: message },
+          { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetUserId, Message: message },
         ])
 
       // check if data was received
@@ -1078,7 +1100,7 @@ export class SupabaseConnection {
         return true;
       }
     }
-
+    return false;
   };
 
   /**
@@ -1089,7 +1111,7 @@ export class SupabaseConnection {
    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
    */
   public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
-    
+
     // verify if user is valid
     if (!this.isUserTokenValid(userToken)) {
       return false;
@@ -1109,9 +1131,9 @@ export class SupabaseConnection {
 
     // send the message to the chatroom
     if (joinOrLeave === "join") {
-      return await this.addChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
+      return await this.handleChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
     } else if (joinOrLeave === "leave") {
-      return await this.addChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
+      return await this.handleChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
     } else {
       return false;
     }
