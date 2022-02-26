@@ -21,7 +21,7 @@ export class MsgCommand extends Command {
         // check if the arguments are valid 
         let argsValid: boolean = true;
 
-        if (args.length >= 2) {
+        if (args.length <= 2) {
             argsValid = false;
         }
 
@@ -43,7 +43,11 @@ export class MsgCommand extends Command {
             targetUserId = await supabaseConnection.getUserIDByUsername(targetUsername)
         }
 
-        let message: string = args[1]
+        let message: string = "";
+        console.log(args.length);
+        for(let i = 1; i < args.length; i++) {
+            message += args[i] + " ";
+        }
         let commandExecutable: boolean = false;
         if(!isNaN(targetUserId) && message !== "") {
           commandExecutable = true;
@@ -54,9 +58,9 @@ export class MsgCommand extends Command {
         console.log("targetUserId " + targetUserId);
         console.log("currentUser.id " + currentUser.id);
 
-        if(commandExecutable) {
+        if(commandExecutable && currentUser.id !== undefined) {
             let whisperMessage: string = currentUser.name + " whispers to you: " + message
-            if(await supabaseConnection.addChatMessage(whisperMessage, currentChatKeyID, targetUserId, currentUser.id)) {
+            if(await supabaseConnection.addChatMessage(whisperMessage, currentChatKeyID, currentUser.id, targetUserId)) {
                 answerLines.push("The message was send to " + targetUsername + " succesfully.");
             }
             else {
