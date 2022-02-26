@@ -1415,6 +1415,7 @@ export class SupabaseConnection {
       description: surveyResponse.data[0].Description,
       expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
+      chatKeyID: surveyResponse.data[0].ChatKeyID,
       options: optionResponse.data.map(option => {
         let countVotes = 0;
         if (voteResponse.data !== null && voteResponse.data.length > 0) {
@@ -1435,15 +1436,26 @@ export class SupabaseConnection {
 
 
   /**
-  * This function is used to get all surveys and it is called by the /show command.
-  * @returns {Promise<ISurvey[]>} all surveys in the database
+  * This function is used to get all surveys (optionally only for one room).
+  * @param {number | undefined} chatKeyID Optional chatKey filter argument
+  * @returns {Promise<ISurvey[]>} all surveys in the database (for the chatKey)
   */
-  public getAllSurveys = async (): Promise<ISurvey[]> => {
+  public getAllSurveys = async (chatKeyID?: number): Promise<ISurvey[]> => {
     let surveys: ISurvey[] = [];
 
-    let surveyResponse = await SupabaseConnection.CLIENT
-      .from('Survey')
-      .select()
+    let surveyResponse;
+
+    if (chatKeyID === undefined) {
+      surveyResponse = await SupabaseConnection.CLIENT
+        .from('Survey')
+        .select();
+    } else {
+      surveyResponse = await SupabaseConnection.CLIENT
+        .from('Survey')
+        .select()
+        .match({ ChatKeyID: chatKeyID });
+    }
+    
 
     if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
       return surveys;
