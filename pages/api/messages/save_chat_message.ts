@@ -18,6 +18,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userToken = req.body.userToken;
   let chatKey = req.body.chatKey;
 
-  let addedSucessfully = await supabaseConnection.addChatMessage(message, await supabaseConnection.getChatKeyID(chatKey), userToken = userToken);
+  let addedSucessfully = await supabaseConnection.handleChatMessage(message, await supabaseConnection.getChatKeyID(chatKey), userToken = userToken);
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
