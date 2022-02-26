@@ -21,7 +21,7 @@ export class VoteCommand extends Command {
       
       // check if there are 2 arguments and the ids are numbers
       if (args.length !== 2 || isNaN(Number(args[0])) || isNaN(Number(args[1])) || currentUser.id === undefined) {
-        return ["Error: Invalid arguments."];
+        return [];
       }
 
       // ----------------------------------------------------------------
@@ -32,6 +32,11 @@ export class VoteCommand extends Command {
         optionID: Number(args[1]),
         userID: currentUser.id,
       };
+
+      // check if the survey is in the current room
+      if (! await supabaseConnection.isSurveyInRoom(voteToAdd.surveyID, currentChatKeyID)) {
+        return ["Error: Cannot find survey in this room."]
+      }
       
       // add the vote to the database
       let addedVote: ISurveyVote | null = await supabaseConnection.addNewVote(voteToAdd);

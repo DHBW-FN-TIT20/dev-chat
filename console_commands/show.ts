@@ -20,7 +20,7 @@ export class ShowCommand extends Command {
     let answerLines: string[] = [];
 
     if(args.length === 0) {
-      answerLines = await this.showAllCurrentSurveys();
+      answerLines = await this.showAllCurrentSurveys(currentChatKeyID);
       return answerLines;
     } 
     
@@ -32,7 +32,7 @@ export class ShowCommand extends Command {
     const supabaseConnection = new SupabaseConnection();
     
     // get the survey with the given id
-    let survey: ISurveyState | null = await supabaseConnection.getCurrentSurveyState(Number(args[0]));
+    let survey: ISurveyState | null = await supabaseConnection.getCurrentSurveyState(Number(args[0]), currentChatKeyID);
 
     // check if the vote was added successfully 
     if (survey === null) {
@@ -54,16 +54,17 @@ export class ShowCommand extends Command {
 
 
   /**
-   * This function shows all current surveys.
-   * @returns the answer lines for the command "/show" with all current surveys
+   * This function shows all current surveys for the current room.
+   * @param {number} currentChatKeyID chat room that the user is in
+   * @returns {string[]} the answer lines for the command "/show" with all current surveys
    */
-  async showAllCurrentSurveys(): Promise<string[]> {
+  async showAllCurrentSurveys(currentChatKeyID: number): Promise<string[]> {
     let answerLines: string[] = [];
 
     const supabaseConnection = new SupabaseConnection();
 
     // get all surveys
-    let surveys: ISurvey[] = await supabaseConnection.getAllSurveys();
+    let surveys: ISurvey[] = await supabaseConnection.getAllSurveys(currentChatKeyID);
 
     answerLines.push("Current Surveys:");
 

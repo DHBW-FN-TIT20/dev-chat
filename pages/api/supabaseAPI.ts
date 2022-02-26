@@ -1378,13 +1378,13 @@ export class SupabaseConnection {
   * @param {number} surveyID the surveyID of the survey 
   * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
   */
-  public getCurrentSurveyState = async (surveyID: number): Promise<ISurveyState | null> => {
+  public getCurrentSurveyState = async (surveyID: number, chatKeyID: number): Promise<ISurveyState | null> => {
     let survey: ISurveyState;
 
     let surveyResponse = await SupabaseConnection.CLIENT
       .from('Survey')
       .select()
-      .match({ SurveyID: surveyID });
+      .match({ SurveyID: surveyID, ChatKeyID: chatKeyID });
 
     if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
       return null;
@@ -1415,6 +1415,7 @@ export class SupabaseConnection {
       description: surveyResponse.data[0].Description,
       expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
       ownerID: surveyResponse.data[0].OwnerID,
+      chatKeyID: surveyResponse.data[0].ChatKeyID,
       options: optionResponse.data.map(option => {
         let countVotes = 0;
         if (voteResponse.data !== null && voteResponse.data.length > 0) {
@@ -1435,15 +1436,26 @@ export class SupabaseConnection {
 
 
   /**
-  * This function is used to get all surveys and it is called by the /show command.
-  * @returns {Promise<ISurvey[]>} all surveys in the database
+  * This function is used to get all surveys (optionally only for one room).
+  * @param {number | undefined} chatKeyID Optional chatKey filter argument
+  * @returns {Promise<ISurvey[]>} all surveys in the database (for the chatKey)
   */
-  public getAllSurveys = async (): Promise<ISurvey[]> => {
+  public getAllSurveys = async (chatKeyID?: number): Promise<ISurvey[]> => {
     let surveys: ISurvey[] = [];
 
-    let surveyResponse = await SupabaseConnection.CLIENT
-      .from('Survey')
-      .select()
+    let surveyResponse;
+
+    if (chatKeyID === undefined) {
+      surveyResponse = await SupabaseConnection.CLIENT
+        .from('Survey')
+        .select();
+    } else {
+      surveyResponse = await SupabaseConnection.CLIENT
+        .from('Survey')
+        .select()
+        .match({ ChatKeyID: chatKeyID });
+    }
+    
 
     if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
       return surveys;
@@ -1602,6 +1614,25 @@ export class SupabaseConnection {
     }
 
     return new Date(surveyResponse.data[0].ExpirationDate) < new Date();
+  }
+
+  /**
+   * This function is used to check if a survey is in a room or not.
+   * @param {number} surveyID the surveyID of the survey to check
+   * @param {number} chatKeyID the chatKeyID of the room to check
+   * @returns {boolean} true if the survey is in the room or not
+   */
+  public isSurveyInRoom = async (surveyID: number, chatKeyID: number): Promise<boolean> => {
+    // fetch the supabase database
+    const surveyResponse = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .select()
+      .match({SurveyID: surveyID, ChatKeyID: chatKeyID});
+    
+    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
+      return false;
+    }
+    return true;
   }
 
   //#endregion

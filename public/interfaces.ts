@@ -98,6 +98,7 @@ export interface ISurveyState {
     description: string;
     expirationDate: Date;
     ownerID?: number;
+    chatKeyID: number;
     options: {
         option: ISurveyOption, votes: number
     }[];
