@@ -18,8 +18,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   let removedSuccessfully = await supabaseConnection.deleteUser(userToken, usernameToDelete);
 
-  console.log("Hallo")
-  console.log(String(removedSuccessfully))
-
   res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }

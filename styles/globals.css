@@ -1,4 +1,21 @@
 /** Background */
+@media screen and (max-height: 830px) {
+  html {
+    overflow: scroll !important;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  html,
+  body {
+    padding: 0;
+    margin: 0;
+    background-color: #1A1A1A;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #D7BA7D;
+    font-size: 12pt;
+  }
+}
 
 @media screen and (max-width: 900px) {
   html,
@@ -267,6 +284,9 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
     width: max-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   
   table td {
@@ -276,6 +296,9 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
     overflow: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   table td input {

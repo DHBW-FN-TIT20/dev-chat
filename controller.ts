@@ -2,8 +2,9 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IChatMessage } from './public/interfaces';
+import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from './public/interfaces';
 import chat from './pages/chat';
+import { SupabaseConnection } from './pages/api/supabaseAPI';
 
 //#endregion
 
@@ -234,6 +235,26 @@ export class DevChatController {
     }
     return data.wasSuccessfull;
   }
+
+  /**
+   * Function to create a custom ChatKey and add it to DB
+   * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
+  **/
+   public async addCustomChatKey(userToken: string, customChatKey: string): Promise<boolean> {
+    //Creates new chat Key and adds to DB
+    let response = await fetch('./api/chatkeys/add_custom_chat_key', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        customChatKey: customChatKey
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
   
   //#endregion 
 
@@ -269,8 +290,294 @@ export class DevChatController {
 
   //#endregion
 
+  //#region Survey Methods
+
+  /**
+   * This function is used to change the expiration Date of a survey
+   * @param userToken 
+   * @param surveyIDToAlter 
+   * @param expirationDate 
+   * @returns 
+   */
+  public changeSurveyExpirationDate = async (userToken: string, surveyIDToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+    let response = await fetch('./api/surveys/changeExpiration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        surveyIDToAlter: surveyIDToAlter,
+        expirationDate: expirationDate,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+     /**
+      *  A function that is used to delete a certain survey
+      * @param userToken - userToken of the current user
+      * @param surveyIDToDelete  - ID of the survey that should be deleted
+      * @returns 
+      */
+     public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+      let response = await fetch('./api/surveys/delete', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userToken: userToken,
+          surveyIDToDelete: surveyIDToDelete,
+        })
+      });
+      let data = await response.json();
+      return data.wasSuccessfull;
+    }
+
+     /**
+      * This function is used to get all Surveys
+      * @returns Array of ISurveys
+      */
+     public getAllSurveys = async (): Promise<ISurvey[]> => {
+      let allSurveys: ISurvey[] = [];
+      let userToken = this.getUserToken();
+      let response = await fetch('/api/surveys/getAllSurveys',{
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({
+         userToken: userToken,
+       })
+     });
+     let dataUser = await response.json();
+     allSurveys = dataUser.allSurveys;
+     return allSurveys;
+     }
+
+  //#endregion
+
+  //#region ChatKey Methods
+
+
+  /**
+   * This function is used to change the expiration Date of a certain ChatKey
+   * @param userToken current User
+   * @param chatKeyToAlter 
+   * @param expirationDate wanted date
+   * @returns bool was sucessfull
+   */
+  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/changeExpiration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToAlter: chatKeyToAlter,
+        expirationDate: expirationDate,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This function deletes a certain chatKey
+   * @param userToken current User
+   * @param chatKeyToDelete 
+   * @returns bool was successfull
+   */
+  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToDelete: chatKeyToDelete,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This functions is used to get all chatKeys 
+   * @returns all IChatKeys in an array
+   */
+  public getAllChatKeys = async (): Promise<IChatKey[]> => {
+    let allChatKeys: IChatKey[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/chatkeys/get_chat_keys',{
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+       userToken: userToken,
+     })
+   });
+   let dataUser = await response.json();
+   allChatKeys = dataUser.allChatKeys;
+   return allChatKeys;
+   }
+
+  //#endregion
+
+  //#region Ticket Methods
+  /**
+   * This function is used to invert the status of a ticket. (ToDo->Done | Done->ToDo) It calls a API Route (changeSolvedState.ts)
+   * @param currentToken 
+   * @param ticketID 
+   * @param currentState 
+   * @returns 
+   */
+  public changeSolvedState = async (currentToken: string, ticketID: number | undefined, currentState: boolean | undefined): Promise<boolean> => {
+    let response = await fetch('./api/tickets/changeSolvedState', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        currentToken: currentToken,
+        ticketID: ticketID,
+        currentState: currentState,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This function is used to get all Tickets
+   * @returns all IBugTickets in an array
+   */
+  public getAllTickets = async (): Promise<IBugTicket[]> => {
+    let allTickets: IBugTicket[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/tickets/getAllTickets',{
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/json'
+     },
+     body: JSON.stringify({
+       userToken: userToken,
+     })
+   });
+   let dataUser = await response.json();
+   allTickets = dataUser.allTickets;
+   return allTickets;
+   }
+  //#endregion
+
   //#region User Methods
 
+  /**
+   * This method is used to get a username from a userID
+   * @param userID 
+   * @returns 
+   */
+  public getUserFromID = async (userID: number | undefined): Promise<string> => {
+    let username: string;
+    let response = await fetch('./api/users/getUserFromID', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userID : userID,
+      })
+    });
+    let data = await response.json();
+    username = data.wantedUser;
+    console.log(username);
+    return username;
+  }
+
+    /**
+     * This Method is used to get an Array of all Users
+     * @returns array of all IUsers
+     */
+    public getAllUsers = async (): Promise<IUser[]> => {
+      let allUsers: IUser[] = [];
+      let userToken = this.getUserToken();
+      let response = await fetch('/api/users/getAllUsers',{
+       method: 'POST',
+       headers: {
+         'Content-Type': 'application/json'
+       },
+       body: JSON.stringify({
+         userToken: userToken,
+       })
+     });
+     let dataUser = await response.json();
+     allUsers = dataUser.allUsers;
+     return allUsers;
+     }
+   
+
+    /**
+    * This method is used to promote a certain user
+    */
+     public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
+       let response = await fetch('./api/users/promote', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           userToken: userToken,
+           usernameToPromote: usernameToPromote,
+         })
+       });
+       let data = await response.json();
+       return data.wasSuccessfull;
+     }
+
+     /**
+      * This function is used to reset the password of a certain user, it calls the supabase handler (resetPassword.ts)
+      * @param userToken 
+      * @param usernameToReset 
+      * @returns 
+      */
+     public resetPassword = async (userToken: string, usernameToReset: string | undefined): Promise<boolean> => {
+      let response = await fetch('./api/users/resetPassword', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userToken: userToken,
+          usernameToReset: usernameToReset,
+        })
+      });
+      let data = await response.json();
+      return data.wasSuccessfull;  
+     }
+   
+     /**
+      * This method is used to demote a certain User
+      */
+      public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
+       let response = await fetch('./api/users/demote', {
+         method: 'POST',
+         headers: {
+           'Content-Type': 'application/json'
+         },
+         body: JSON.stringify({
+           userToken: userToken,
+           usernameToDemote: usernameToDemote,
+         })
+       });
+       let data = await response.json();
+       return data.wasSuccessfull;
+     }
+   
   /**
  * This mehtod loggs out the current user.
  * @returns {boolean} True if logout was successfull, false if not
@@ -289,7 +596,7 @@ export class DevChatController {
    * @param {string} usernameTodelete username of user that should be deleted
    * @returns {Promise<boolean>} true if target user was deleted, false if not
    */
-  public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
+  public deleteUser = async (userToken: string, usernameToDelete: string | undefined): Promise<boolean> => {
     let response = await fetch('./api/users/delete', {
       method: 'POST',
       headers: {

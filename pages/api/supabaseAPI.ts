@@ -13,8 +13,10 @@ import { CalcCommand } from '../../console_commands/calc';
 import { ReportCommand } from '../../console_commands/report';
 import { ShowCommand } from '../../console_commands/show';
 import { ExpireCommand } from '../../console_commands/expire';
+import { HelpCommmand } from '../../console_commands/help';
 import chat from '../chat';
 import { MsgCommand } from '../../console_commands/msg';
+import { DevChatController } from '../../controller';
 
 //#endregion
 
@@ -37,7 +39,7 @@ export class SupabaseConnection {
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
     SupabaseConnection.CLIENT = createClient(supabaseUrl, supabaseKey);
-    SupabaseConnection.KEY = "Krasser Schlüssel";
+    SupabaseConnection.KEY = process.env.HASH_KEY || '';
     this.commands = [
       // add all command classes here
       new ExampleCommand,
@@ -49,6 +51,7 @@ export class SupabaseConnection {
       new ExpireCommand,
       new MsgCommand,
     ];
+    this.commands.push(new HelpCommmand(this.commands))
   }
 
   //#endregion
@@ -189,6 +192,24 @@ export class SupabaseConnection {
   }
 
   /**
+  * This method checks a User for Admin-Status via his Token
+  * @param {string} token Token to check for Admin-Status
+  * @returns {string} true if Token is Admin-Token, false if not
+  */
+   public getIsAdminFromToken = (token: string): boolean => {
+    try {
+      let data = jwt.decode(token);
+      if (typeof data === "object" && data !== null) {
+        console.log("Access granted. You are an Admin!");
+        return data.isAdmin;
+      }
+    } catch (error) {
+
+    }
+    return false;
+  }
+
+  /**
   * This method returns the userID of the user extracted from the token
   * @param {string} token Token to extract userID from
   * @returns {Promise<number>} UserID if token contains username, NaN if not
@@ -249,12 +270,123 @@ export class SupabaseConnection {
 
   //#region User Methods
 
+  /** 
+   * This function is used to promote a user
+   */
+   public promoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    let promotionID = await this.getUserIDByUsername(name);
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('User')
+      .update({ AccessLevel: '1' })
+      .eq('UserID', promotionID);
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong with the promotion!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+ 
+  /** 
+   * This function is used to demote a user
+   */
+   public demoteUser = async(token:string, name:string|undefined): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    let demotionID = await this.getUserIDByUsername(name);
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('User')
+      .update({ AccessLevel: '0' })
+      .eq('UserID', demotionID);
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong with the demotion!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+
+  /** 
+   * This function is used to reset the password of a user
+   */
+   public resetPassword = async(token:string, name:string|undefined): Promise<boolean> =>{
+    let resetSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return resetSucessfully;
+    }
+    let hashedResetPassword = await this.hashPassword('klaushesse');
+    console.log("Das Passwort wird jetzt zurückgesetzt!!");
+    let resetID = await this.getUserIDByUsername(name);
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('User')
+      .update({ Password: hashedResetPassword })
+      .eq('UserID', resetID);
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong while trying to reset the password!");
+      return resetSucessfully;
+    }
+    resetSucessfully = true;
+    return resetSucessfully;
+  }
+
+  /**
+   * This function is used to fetch all Users from the Database
+   * @param token 
+   * @returns Array of all IUsers
+   */
+  public fetchAllUsers = async(token:string): Promise<IUser[]> => {
+    let allUsers: IUser[] = [];
+    // check if user is valid
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return allUsers;
+    }
+      let UserResponse = await SupabaseConnection.CLIENT
+        .from('User')
+        .select('UserID,Username,AccessLevel')
+
+    if (UserResponse.data === null || UserResponse.error !== null || UserResponse.data.length === 0) {
+      console.log("Unknown Error, please contact support.")
+      return allUsers;
+    }
+    allUsers = UserResponse.data.map(allUser => {
+      return {
+      id: allUser.UserID,
+      name: allUser.Username,
+      accessLevel: allUser.AccessLevel, 
+              }
+      })
+    return allUsers;
+  }
+
   /**
   * This helper function is used to get the userID of a user by username
   * @param {string} username the username of the user
   * @returns {Promise<number>} the userID of the user
   */
-  public getUserIDByUsername = async (username: string): Promise<number> => {
+  public getUserIDByUsername = async (username: string| undefined ): Promise<number> => {
     // fetch the supabase database
     const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
@@ -271,6 +403,27 @@ export class SupabaseConnection {
       return data[0].UserID;
     }
   }
+
+    /**
+  * This helper function is used to get the username of a user by userID
+  * @param {string} userID the id of the user
+  * @returns {Promise<number>} the username of the user
+  */
+     public getUsernameByUserID = async (userID: number| undefined ): Promise<string|undefined> => {
+      // fetch the supabase database
+      const { data, error } = await SupabaseConnection.CLIENT
+        .from('User')
+        .select('Username')
+        .eq( 'UserID', userID );
+  
+      // check if data was received
+      if (data === null || error !== null || data.length === 0) {
+        // user was not found -> return undefined
+        return undefined;
+      } else {
+        return data[0].Username;
+      }
+    }
 
   /**
   * This method returns all user informations for the given username
@@ -491,22 +644,14 @@ export class SupabaseConnection {
   * @returns {Promise<boolean>} true if user was deleted, false if not
   */
   public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
-    // check if the user and the password are correct
-    const isValid = await this.isUserTokenValid(userToken);
-
-    if (!isValid) {
-      // user and password are not correct -> return false
-      return false;
-    }
 
     const currentUserId = await this.getUserIDFromToken(userToken);
     const targetUserId = await this.getUserIDByUsername(usernameToDelete);
 
-    // check if user is allowed to remove the user (either admin user or target is the user himself)
-    let isAllowed = (currentUserId === 1 || currentUserId === 2 || currentUserId === targetUserId);
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
 
-    if (!isAllowed) {
-      // user is not allowed to remove the user -> return false
+    if (!userIsValid) {
+      console.log("You are not an admin!");
       return false;
     }
 
@@ -514,7 +659,7 @@ export class SupabaseConnection {
     const { data, error } = await SupabaseConnection.CLIENT
       .from('User')
       .delete()
-      .match({ UserID: targetUserId });
+      .match({ 'UserID': targetUserId });
 
     // check if data was received
     if (data === null || error !== null || data.length === 0) {
@@ -560,6 +705,88 @@ export class SupabaseConnection {
 
   //#region ChatKey Methods
 
+  public changeChatKeyExpirationDate = async(token:string, chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .update({ 'ExpirationDate': newExpirationDate })
+      .eq('ChatKeyID', chatKeyID)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong while altering the table!");
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+
+  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
+
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return false;
+    }
+
+    // fetch the supabase database
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('ChatKey')
+      .delete()
+      .eq('ChatKeyID', chatKeyToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // chatKey was not removed -> return false
+      return false;
+    } else {
+      // chatKey was removed -> return true
+      return true;
+    }
+  }
+
+   /**
+   * This function is used to fetch all ChatKeys from the Database
+   * @param token 
+   * @returns Array of all IChatKeys
+   */
+    public fetchAllChatKeys = async(token:string): Promise<IChatKey[]> => {
+      let allChatKeys: IChatKey[] = [];
+      // check if user is valid
+      console.log("Es geht los!!!");
+      let userIsValid: boolean = await this.getIsAdminFromToken(token);
+  
+      if (!userIsValid) {
+        console.log("You are not an admin!");
+        return allChatKeys;
+      }
+      
+      let ChatKeyResponse = await SupabaseConnection.CLIENT
+        .from('ChatKey')
+        .select('ChatKeyID,ChatKey,ExpirationDate')
+        .order('ChatKeyID', { ascending: true })
+  
+      if (ChatKeyResponse.data === null || ChatKeyResponse.error !== null || ChatKeyResponse.data.length === 0) {
+        console.log("No Chat Keys found!")
+        return allChatKeys;
+      }
+      allChatKeys = ChatKeyResponse.data.map(allChat => {
+        return {
+          id: allChat.ChatKeyID,
+          threeWord: allChat.ChatKey,
+          expirationDate: allChat.ExpirationDate,
+                }
+        })
+      return allChatKeys;
+    }
   /**
   * API funciton to get the id of a threeword chatKey
   * @param {string} chatKey the threeword
@@ -587,10 +814,10 @@ export class SupabaseConnection {
   */
   public updateExpirationDateFromCurrentChatKey = async (chatKeyID: number, newExpirationDate: Date): Promise<IChatKey | null> => {
     let chatKey: IChatKey | null = null;
-
+    
     const { data, error } = await SupabaseConnection.CLIENT
       .from('ChatKey')
-      .update({ 'ExpirationDate': newExpirationDate })
+      .update({ 'ExpirationDate': newExpirationDate})
       .eq('ChatKeyID', chatKeyID)
 
     // check if data was received
@@ -686,12 +913,25 @@ export class SupabaseConnection {
   };
 
   /** 
-  * API function to delete all old chat keys from the database 
+  * API function to delete all old chat keys from the database // is always called, when going into Admin settings
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if old chat keys were deleted
   */
   public deleteOldChatKeys = async (): Promise<boolean> => {
+
     const { data, error } = await SupabaseConnection.CLIENT
-      .rpc('Delete')
+      .from('ChatKey')
+      .delete()
+      .lt('ExpirationDate',((new Date()).toISOString()).toLocaleLowerCase())
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyOption was not removed -> return false
+      return false;
+    } else {
+      // surveyOption was removed -> return true
+      console.log("Old ChatKeys have been deleted successfully!");
+      return true;
+    }
 
     //Hier muss noch ggbfs. was geschrieben werden.
     if (error) {
@@ -903,29 +1143,84 @@ export class SupabaseConnection {
 
   //#region Ticket Methods
 
+
+  /**
+   * This function is used to fetch all Tickets from the Database
+   * @param token 
+   * @returns Array of all IBugTickets
+   */
+   public fetchAllTickets = async(token:string): Promise<IBugTicket[]> => {
+    let allTickets: IBugTicket[] = [];
+    // check if user is valid
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return allTickets;
+    }
+      let TicketResponse = await SupabaseConnection.CLIENT
+        .from('Ticket')
+        .select()
+
+    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0) {
+      console.log("Unknown Error, please contact support.")
+      return allTickets;
+    }
+    allTickets = TicketResponse.data.map(allTicket => {
+      return {
+    id: allTicket.TicketID,
+    submitter: allTicket.SubmitterID,
+    date: allTicket.TicketCreateDate,
+    message: allTicket.Message,
+    solved: allTicket.Solved,
+              }
+      })
+    return allTickets;
+  }
+
   /**
   * This function is used to change the status of a ticket from to-do to solved
   * NOTE -- This function only gives feedback inside the console, not the browser!
   * @param ticketToChange The ID of the ticket, that should be changed
+  * 
   * @returns boolean - true if ticked was sucessfully changed - false if not
   */
-  public changeSolvedState = async (ticketToChange: number): Promise<boolean> => {
+  public changeSolvedState = async (currentToken: string, ticketToChange: number | undefined , currentState: boolean | undefined): Promise<boolean> => {
     let changedSucessfully: boolean = false;
-
+    let userIsValid: boolean = await this.getIsAdminFromToken(currentToken);
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+    if(!currentState){
     const UpdateStatus = await SupabaseConnection.CLIENT
       .from('Ticket')
-      .update({ Solved: 'true' })
+      .update({ Solved: currentState })
       .eq('TicketID', ticketToChange)
-
+    
+    
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log(UpdateStatus.error);
+      return changedSucessfully;
+    }
+  }
+  else{
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Ticket')
+      .update({ Solved: !currentState })
+      .eq('TicketID', ticketToChange)
+    
+    
     if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
       return changedSucessfully;
     }
+  }
     changedSucessfully = true;
 
     return changedSucessfully;
   }
 
-
+  
   /**
   * This Method adds a new ticket to the supabase database
   * @param bugToReport the bug that should be reported (see report.ts)
@@ -963,6 +1258,120 @@ export class SupabaseConnection {
   //#endregion
 
   //#region Survey Methods
+
+  /**
+   * change the expiration Date of a certain survey inside supabase
+   * @param token 
+   * @param surveyID 
+   * @param newExpirationDate 
+   * @returns bool if sucessfull
+   */
+  public changeSurveyExpirationDate = async(token:string, surveyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> =>{
+    let changedSucessfully: boolean = false;
+    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return changedSucessfully;
+    }
+
+    
+    const UpdateStatus = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .update({ 'ExpirationDate': newExpirationDate })
+      .eq('SurveyID', surveyID)
+
+    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log("Something went wrong while altering the table!");
+      console.log(UpdateStatus.error);
+      return changedSucessfully;
+    }
+    changedSucessfully = true;
+    return changedSucessfully;
+  }
+
+  /**
+   * deletes a survey inside supabase
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
+  public deleteSurveyOption = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('SurveyOption')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyOption was not removed -> return false
+      return false;
+    } else {
+      // surveyOption was removed -> return true
+      console.log("SurveyOption has been deleted successfully!");
+      return true;
+    }
+  }
+
+  /**
+   * function that deletes all votes of a certain survey
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
+  public deleteSurveyVote = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('SurveyVote')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // surveyVote was not removed -> return false
+      return false;
+    } else {
+      // surveyVote was removed -> return true
+      console.log("SurveyVote has been deleted successfully!");
+      return true;
+    }
+  }
+
+  /**
+   * deletes a survey inside supabase
+   * @param userToken 
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
+  public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+
+    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
+    if (!userIsValid) {
+      console.log("You are not an admin!");
+      return false;
+    }
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+    this.deleteSurveyOption(surveyIDToDelete);
+    this.deleteSurveyVote(surveyIDToDelete);
+
+    const { data, error } = await SupabaseConnection.CLIENT
+      .from('Survey')
+      .delete()
+      .eq('SurveyID', surveyIDToDelete);
+
+    // check if data was received
+    if (data === null || error !== null || data.length === 0) {
+      // survey was not removed -> return false
+      console.log(error);
+      return false;
+    } else {
+      // survey was removed -> return true
+      console.log("Survey has been deleted successfully!");
+      return true;
+    }
+  }
 
   /**
   * This method returns the current state of a survey for the given surveyID.
