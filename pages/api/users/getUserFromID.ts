@@ -1,12 +1,12 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IUser } from "../../../public/interfaces";
-import { SupabaseConnection } from "../supabaseAPI";
+import { DatabaseModel } from "../databaseModel";
 
 type Data = {
     wantedUser : string | undefined;
 }
 
-const supabaseConnection = new SupabaseConnection();
+const supabaseConnection = new DatabaseModel();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 

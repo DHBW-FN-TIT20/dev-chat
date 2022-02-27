@@ -2,7 +2,7 @@ import withRouter, { WithRouterProps } from 'next/dist/client/with-router'
 import Head from 'next/head'
 import styles from '../styles/Chat.module.css'
 import React, { Component } from 'react'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 import Header from './header'
 import { IChatMessage } from '../public/interfaces'
 import { setStringOnFixLength } from '../shared/set_string_on_fix_length'
@@ -45,17 +45,17 @@ class Chat extends Component<ChatProps, ChatState> {
     // Check for changes in local state -> reevaluate login
     window.addEventListener('storage', this.storageTokenListener);
     // Logged in -> Check if current chat key cookie is valid
-    if (await DevChatController.doesChatKeyExists(DevChatController.getChatKeyFromCookie())) {
-      this.currentChatKeyCookie = DevChatController.getChatKeyFromCookie();
+    if (await FrontEndController.doesChatKeyExists(FrontEndController.getChatKeyFromCookie())) {
+      this.currentChatKeyCookie = FrontEndController.getChatKeyFromCookie();
       this.setState({isChatKeyValid: true});
     } else {
       const { router } = this.props;
       router.push("/")
     }
     // // Login validated
-    DevChatController.joinRoomMessage();
-    DevChatController.chatMessages = [];
-    const tempChatMessages = await DevChatController.updateChatMessages()
+    FrontEndController.joinRoomMessage();
+    FrontEndController.chatMessages = [];
+    const tempChatMessages = await FrontEndController.updateChatMessages()
     this.setState({messages: tempChatMessages})
     
     // DevChatController.startMessageFetch();
@@ -77,8 +77,8 @@ class Chat extends Component<ChatProps, ChatState> {
       path: "/api/messages/socketio",
       auth: {
         headers: {
-          chatKey: DevChatController.getChatKeyFromCookie(),
-          userToken: DevChatController.getUserToken()
+          chatKey: FrontEndController.getChatKeyFromCookie(),
+          userToken: FrontEndController.getUserToken()
         }
       }
     });
@@ -93,7 +93,7 @@ class Chat extends Component<ChatProps, ChatState> {
       if (!this.blockFetchMessages && chatKey === this.currentChatKeyCookie) {
         this.blockFetchMessages = true;
         console.log("SOCKET MESSAGE!");
-        const tempChatMessages:IChatMessage[] = await DevChatController.updateChatMessages();
+        const tempChatMessages:IChatMessage[] = await FrontEndController.updateChatMessages();
         this.setState({messages: tempChatMessages})
         this.blockFetchMessages = false;
         // Check for scrolling (If user can see one of the newest three lines (is at bottom of page))
@@ -110,8 +110,8 @@ class Chat extends Component<ChatProps, ChatState> {
    */
   componentWillUnmount() {
     window.removeEventListener('storage', this.storageTokenListener);
-    DevChatController.leaveRoomMessage();
-    DevChatController.clearChatKeyCookie();
+    FrontEndController.leaveRoomMessage();
+    FrontEndController.clearChatKeyCookie();
 
     if (this.socket) {
       this.socket.disconnect();
@@ -133,8 +133,8 @@ class Chat extends Component<ChatProps, ChatState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -155,7 +155,7 @@ class Chat extends Component<ChatProps, ChatState> {
       this.historyMessage.push("");
       this.historyIndex = this.historyMessage.length -1;
       console.log("Entered new Message: " + this.chatLineInput);
-      DevChatController.enteredNewMessage(this.chatLineInput);
+      FrontEndController.enteredNewMessage(this.chatLineInput);
       event.target.value = "";
       this.chatLineInput = "";
     }
@@ -209,7 +209,7 @@ class Chat extends Component<ChatProps, ChatState> {
           </Head>
 
           <header>
-            <Header pageInformation={DevChatController.getChatKeyFromCookie()} showName={true} showExit={true} showLogout={false} />
+            <Header pageInformation={FrontEndController.getChatKeyFromCookie()} showName={true} showExit={true} showLogout={false} />
           </header>
 
           <main>

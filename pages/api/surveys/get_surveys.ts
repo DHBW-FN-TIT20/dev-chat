@@ -1,13 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IChatKey } from '../../../public/interfaces';
-import { SupabaseConnection } from '../supabaseAPI';
+import { DatabaseModel } from '../databaseModel';
 
 type Data = {
   placeholder: any
 }
 
-const supabaseConnection = new SupabaseConnection();
+const supabaseConnection = new DatabaseModel();
 
 /**
  * !!! not working yet !!!

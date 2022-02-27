@@ -1,4 +1,4 @@
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { IBugTicket, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
 
@@ -19,7 +19,7 @@ export class ReportCommand extends Command {
       let answerLines: string[] = [];
 
       // Connect to supabase
-      const supabaseConnection = new SupabaseConnection();
+      const supabaseConnection = new DatabaseModel();
       let bugToReport: IBugTicket = {
         submitter: currentUser,
         message: args.join(" "),

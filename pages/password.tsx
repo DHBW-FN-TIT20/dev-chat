@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 import Header from './header'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 import Popup from '../components/popup';
 
 export interface PasswordState {
@@ -63,8 +63,8 @@ class Password extends Component<PasswordProps, PasswordState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -92,7 +92,7 @@ class Password extends Component<PasswordProps, PasswordState> {
   onPasswordChangeButtonClick = async (event: any) => {
     const { router } = this.props;
     this.setState({feedBackMessage : ""});
-    let oldPasswordIsCorrect = await DevChatController.changePassword(DevChatController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
+    let oldPasswordIsCorrect = await FrontEndController.changePassword(FrontEndController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword)
     this.setState({
       oldPasswordIsCorrect: oldPasswordIsCorrect
     })

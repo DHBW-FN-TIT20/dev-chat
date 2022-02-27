@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to remove a user from the database.
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userToken = req.body.userToken;
   let usernameToDelete = req.body.usernameToDelete;
 
-  let removedSuccessfully = await supabaseConnection.deleteUser(userToken, usernameToDelete);
+  let removedSuccessfully = await backEndController.deleteUser(userToken, usernameToDelete);
 
   res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }

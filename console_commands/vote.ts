@@ -1,4 +1,4 @@
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { ISurvey, ISurveyVote, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
 
@@ -25,7 +25,7 @@ export class VoteCommand extends Command {
       }
 
       // ----------------------------------------------------------------
-      const supabaseConnection = new SupabaseConnection();
+      const supabaseConnection = new DatabaseModel();
 
       let voteToAdd: ISurveyVote = {
         surveyID: Number(args[0]),

@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Admin.module.css'
 import React, { Component } from 'react'
 import Header from './header'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 import { IUser, ISurvey, IBugTicket, IChatKey } from '../public/interfaces'
 import chat from './chat'
 
@@ -43,13 +43,13 @@ class Admin extends Component<AdminProps, AdminState> {
   async componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
-    const tempallUsers = await DevChatController.getAllUsers();
+    const tempallUsers = await FrontEndController.getAllUsers();
     this.setState({allUsersState: tempallUsers});
-    const tempallSurveys = await DevChatController.getAllSurveys();
+    const tempallSurveys = await FrontEndController.getAllSurveys();
     this.setState({allSurveysState: tempallSurveys});
-    const tempallTickets = await DevChatController.getAllTickets();
+    const tempallTickets = await FrontEndController.getAllTickets();
     this.setState({allTicketsState: tempallTickets});
-    const tempallChatKeys = await DevChatController.getAllChatKeys();
+    const tempallChatKeys = await FrontEndController.getAllChatKeys();
     this.setState({allChatKeysState: tempallChatKeys});
   }
   
@@ -74,8 +74,8 @@ class Admin extends Component<AdminProps, AdminState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken) && DevChatController.getAdminValueFromToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken) && FrontEndController.getAdminValueFromToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -93,8 +93,8 @@ async chatKeySetTime(chatKeyID: number | undefined){
   let wantedExpirationDate = new Date((document.getElementById(String(chatKeyID)) as HTMLInputElement).value);
   wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
     console.log("wantedExpirationDate: " + wantedExpirationDate);
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.changeChatKeyExpirationDate(currentToken,chatKeyID,wantedExpirationDate);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.changeChatKeyExpirationDate(currentToken,chatKeyID,wantedExpirationDate);
     if(wasSuccessful){
       console.log("Das expirationDate von Raum Nummer " + chatKeyID + " wurde geändert.");
     }
@@ -109,8 +109,8 @@ async surveySetTime(surveyID: number | undefined){
   let wantedExpirationDate = new Date((document.getElementById(String(surveyID)) as HTMLInputElement).value);
   wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
     console.log("wantedExpirationDate: " + wantedExpirationDate);
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.changeSurveyExpirationDate(currentToken,surveyID,wantedExpirationDate);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.changeSurveyExpirationDate(currentToken,surveyID,wantedExpirationDate);
     if(wasSuccessful){
       console.log("Das expirationDate von Survey Nummer " + surveyID + " wurde geändert.");
     }
@@ -123,8 +123,8 @@ async surveySetTime(surveyID: number | undefined){
 async handleAddKeyClick(){
   console.log("ChatKey ist: " + this.inputChatKey);
 
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.addCustomChatKey(currentToken, this.inputChatKey);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.addCustomChatKey(currentToken, this.inputChatKey);
     if(wasSuccessful){
       console.log("Der Raum: " + this.inputChatKey + " wurde erstellt.");
       location.reload();
@@ -168,8 +168,8 @@ giveAdminOrUser(userAccessLevel: number | undefined):string{
  * @returns 
  */
 async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean | undefined ):Promise<boolean>{
-  let currentToken = DevChatController.getUserToken();
-  let wasSuccessful = await DevChatController.changeSolvedState(currentToken,ticketID,currentState);
+  let currentToken = FrontEndController.getUserToken();
+  let wasSuccessful = await FrontEndController.changeSolvedState(currentToken,ticketID,currentState);
     
   if(wasSuccessful){
     console.log("Das Ticket mit der Nummer " + ticketID + " wurde auf geändert.");
@@ -199,8 +199,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param name username to delete
    */
   async userClickDelete(name: string | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.deleteUser(currentToken,name);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.deleteUser(currentToken,name);
     
     if(wasSuccessful){
       console.log("Der User mit dem Namen " + name + " wurde gelöscht.");
@@ -212,8 +212,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param chatID 
    */
   async chatClickDelete(chatID: number | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.deleteChatKey(currentToken,chatID);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.deleteChatKey(currentToken,chatID);
     
     if(wasSuccessful){
       console.log("Der Chat mit dem Namen " + chatID + " wurde gelöscht.");
@@ -225,8 +225,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param surveyID 
    */
   async surveyClickDelete(surveyID: number | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.deleteSurvey(currentToken,surveyID);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.deleteSurvey(currentToken,surveyID);
     
     if(wasSuccessful){
       console.log("Die Survey mit der ID " + surveyID + " wurde gelöscht.");
@@ -238,8 +238,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param name 
    */
   async promoteUser(name: string | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.promoteUser(currentToken,name);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.promoteUser(currentToken,name);
     if(wasSuccessful){
       console.log("Der User mit dem Namen " + name + " wurde promoted.");
     }
@@ -250,8 +250,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param name 
    */
   async demoteUser(name: string | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.demoteUser(currentToken,name);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.demoteUser(currentToken,name);
     if(wasSuccessful){
       console.log("Der User mit dem Namen " + name + " wurde demoted.");
     }
@@ -262,8 +262,8 @@ matchingUsername(userID: number | undefined, username: string | undefined, owner
    * @param name 
    */
   async resetPassword(name: string | undefined){
-    let currentToken = DevChatController.getUserToken();
-    let wasSuccessful = await DevChatController.resetPassword(currentToken,name);
+    let currentToken = FrontEndController.getUserToken();
+    let wasSuccessful = await FrontEndController.resetPassword(currentToken,name);
     if(wasSuccessful){
       console.log("Das Passwort des Users mit dem Namen " + name + " wurde resettet.");
     }

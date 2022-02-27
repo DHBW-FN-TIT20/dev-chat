@@ -2,16 +2,16 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
-import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from './public/interfaces';
-import chat from './pages/chat';
-import { SupabaseConnection } from './pages/api/supabaseAPI';
+import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from '../public/interfaces';
+import chat from '../pages/chat';
+import { DatabaseModel } from '../pages/api/databaseModel';
 
 //#endregion
 
 /**
  * This is the controller of the DEV-CHAT-APP.
  */
-export class DevChatController {
+export class FrontEndController {
   //#region Private Variables
 
   private data: any;
@@ -680,7 +680,7 @@ export class DevChatController {
     let data = await response.json();
     console.log("Controller.data.wasSuccessfull " + data.wasSuccessfull)
     if (data.wasSuccessfull == "True") {
-      let controller = new DevChatController;
+      let controller = new FrontEndController;
       await controller.loginUser(username, password);
     }
     return data.wasSuccessfull;
@@ -766,4 +766,4 @@ export class DevChatController {
 
 }
 // export the controller
-export default new DevChatController();
+export default new FrontEndController();

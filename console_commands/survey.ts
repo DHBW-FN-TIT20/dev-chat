@@ -1,7 +1,8 @@
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { ISurvey, IUser } from "../public/interfaces";
 import getDateByGermanString from "../shared/get_date_by_german_string";
 import { Command } from "./baseclass";
+import { BackEndController } from '../controller/backEndController';
 
 /**
  * This command is used to start the survey.
@@ -43,7 +44,8 @@ export class SurveyCommand extends Command {
       }
 
       // ----------------------------------------------------------------
-      const supabaseConnection = new SupabaseConnection();
+      const databaseModel = new DatabaseModel();
+      const backEndController = new BackEndController();
 
       let surveyToAdd: ISurvey = {
         name: args[0],
@@ -55,7 +57,7 @@ export class SurveyCommand extends Command {
       };
 
       // add the surves to the database
-      let addedSurvey: ISurvey | null = await supabaseConnection.addNewSurvey(surveyToAdd);
+      let addedSurvey: ISurvey | null = await databaseModel.addNewSurvey(surveyToAdd);
 
       // check if the survey was added successfully 
       if (addedSurvey === null) {
@@ -64,8 +66,8 @@ export class SurveyCommand extends Command {
       }
 
       // send message to all that survey was created
-      await supabaseConnection.addChatMessage(
-        await supabaseConnection.getUsernameByUserID(addedSurvey.ownerID) + " created the Survey '" + addedSurvey.name + "' with the ID: " + addedSurvey.id + " which expires at " + addedSurvey.expirationDate.toLocaleString(), 
+      await backEndController.addChatMessage(
+        await databaseModel.getUsernameByUserID(addedSurvey.ownerID) + " created the Survey '" + addedSurvey.name + "' with the ID: " + addedSurvey.id + " which expires at " + addedSurvey.expirationDate.toLocaleString(), 
         addedSurvey.chatKeyID, 
         addedSurvey.ownerID);
 

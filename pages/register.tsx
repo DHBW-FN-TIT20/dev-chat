@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
 import Header from './header'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 
 export interface RegisterState {
   isNotLoggedIn: boolean,
@@ -68,8 +68,8 @@ class Register extends Component<RegisterProps, RegisterState> {
    * This method checks and verifys the current user-token. If valid, it routes to root, if not, the isNotLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       const { router } = this.props
       router.push("/")
     } else {
@@ -95,7 +95,7 @@ class Register extends Component<RegisterProps, RegisterState> {
   onRegisterButtonClick = async (event: any) => {
     const { router } = this.props;
     this.setState({ feedbackMessage: "" });
-    let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
+    let userAlreadyExists = await FrontEndController.userAlreadyExists(this.state.inputUsername)
     let vNewUsernameValid: boolean = true;
     let vNewPasswordValid: boolean = true;
     this.setState({
@@ -103,7 +103,7 @@ class Register extends Component<RegisterProps, RegisterState> {
     })
     if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
       console.log("Pressed Register Button")
-      let registerUserReturnString: string = await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword);
+      let registerUserReturnString: string = await FrontEndController.registerUser(this.state.inputUsername, this.state.inputPassword);
       console.log(registerUserReturnString)
       if (registerUserReturnString == "True") {
         this.setState({ newPasswordValid: true, newUsernameValid: true });
