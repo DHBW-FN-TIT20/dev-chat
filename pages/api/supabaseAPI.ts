@@ -200,7 +200,6 @@ export class SupabaseConnection {
     try {
       let data = jwt.decode(token);
       if (typeof data === "object" && data !== null) {
-        console.log("Access granted. You are an Admin!");
         return data.isAdmin;
       }
     } catch (error) {
@@ -761,7 +760,6 @@ export class SupabaseConnection {
     public fetchAllChatKeys = async(token:string): Promise<IChatKey[]> => {
       let allChatKeys: IChatKey[] = [];
       // check if user is valid
-      console.log("Es geht los!!!");
       let userIsValid: boolean = await this.getIsAdminFromToken(token);
   
       if (!userIsValid) {
@@ -1195,7 +1193,7 @@ export class SupabaseConnection {
     if(!currentState){
     const UpdateStatus = await SupabaseConnection.CLIENT
       .from('Ticket')
-      .update({ Solved: currentState })
+      .update({ Solved: 'true' })
       .eq('TicketID', ticketToChange)
     
     
@@ -1207,16 +1205,16 @@ export class SupabaseConnection {
   else{
     const UpdateStatus = await SupabaseConnection.CLIENT
       .from('Ticket')
-      .update({ Solved: !currentState })
+      .update({ Solved: 'false' })
       .eq('TicketID', ticketToChange)
     
     
     if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
+      console.log(UpdateStatus.error);
       return changedSucessfully;
     }
   }
     changedSucessfully = true;
-
     return changedSucessfully;
   }
 
