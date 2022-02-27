@@ -1,21 +1,21 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { IChatKey } from '../../../public/interfaces';
 import { DatabaseModel } from '../databaseModel';
 
 type Data = {
-    wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const supabaseConnection = new DatabaseModel();
+const SUPABASE_CONNECTION = new DatabaseModel();
 
 /**
- * This is a api route to check if ChatKey Exists
+ * This is a api route to check if ChatKey exists
+ * @param req the request object (body: chatKey)
  * @param res the response object (body: wasSuccessfull)
  */
- export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {  
-    let chatKey = req.body.chatKey;
-    let doesChatKeyExists = await supabaseConnection.doesChatKeyExists(chatKey);
-  
-    res.status(200).json({ wasSuccessfull: doesChatKeyExists });
+export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  let chatKey = req.body.chatKey;
+
+  let doesChatKeyExists = await SUPABASE_CONNECTION.doesChatKeyExists(chatKey);
+
+  res.status(200).json({ wasSuccessfull: doesChatKeyExists });
 }

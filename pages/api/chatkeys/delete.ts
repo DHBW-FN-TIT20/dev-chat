@@ -2,21 +2,21 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to remove a survey from the database
- * @param req the request object (body: userToken, surveyIDToDelete)
+ * This is a api route to delete a chatKey
+ * @param req the request object (body: userToken, chatKeyToDelete)
  * @param res the response object (body: wasSuccessfull)
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken = req.body.userToken;
   let chatKeyToDelete = req.body.chatKeyToDelete;
 
-  let wasSuccessfull = await backEndController.deleteChatKey(userToken, chatKeyToDelete);
+  let deletedSuccessfully = await BACK_END_CONTROLLER.deleteChatKey(userToken, chatKeyToDelete);
 
-  res.status(200).json({ wasSuccessfull: wasSuccessfull });
+  res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }
