@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 import Header from './header'
 import { eventNames } from 'process'
 
@@ -65,8 +65,8 @@ class Login extends Component<LoginProps, LoginState> {
    * This method checks and verifys the current user-token. If valid, it routes to root, if not, the isNotLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       const { router } = this.props
       router.push("/")
     } else {
@@ -92,7 +92,7 @@ class Login extends Component<LoginProps, LoginState> {
   onLoginButtonClick = async (event: any) => {
     const { router } = this.props;
     this.setState({ feedbackMessage: "" });
-    if (await DevChatController.loginUser(this.username, this.password)) {
+    if (await FrontEndController.loginUser(this.username, this.password)) {
       router.push("/")
     } // change to state later
     else{

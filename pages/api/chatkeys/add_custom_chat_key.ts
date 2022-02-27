@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to remove a survey from the database
@@ -17,8 +17,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let customChatKey = req.body.customChatKey
   let wasSuccessfull: boolean = false;
   
-  if(supabaseConnection.getIsAdminFromToken(userToken)){
-    wasSuccessfull = await supabaseConnection.addChatKey(customChatKey);
+  if(backEndController.getIsAdminFromToken(userToken)){
+    wasSuccessfull = await backEndController.addChatKey(customChatKey);
   }
   else{
       console.log("You are allowed to create a custom ChatKey");

@@ -1,13 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { Console } from 'console';
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { DatabaseModel } from '../databaseModel';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const supabaseConnection = new DatabaseModel();
 
 /**
  * This is a api route to check if a user already exists in the database.

@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { DatabaseModel } from '../databaseModel';
 
 type Data = {
     wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const supabaseConnection = new DatabaseModel();
 
 /**
  * This is a api route to delete old chat keys

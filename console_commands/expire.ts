@@ -1,5 +1,5 @@
 import { timeStamp } from "console";
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { IChatKey, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
 
@@ -55,7 +55,7 @@ export class ExpireCommand extends Command {
     }
 
     //Args are Valid and the user has the required Permissions => He can execute the command
-    const supabaseConnection = new SupabaseConnection();
+    const supabaseConnection = new DatabaseModel();
 
     //Update the ExpirationDate from the current Chat Key
     let updatedChatKey: IChatKey | null = await supabaseConnection.updateExpirationDateFromCurrentChatKey(currentChatKeyID, expirationDate)

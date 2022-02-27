@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Header.module.css'
 import React, { Component } from 'react'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 
 export interface HeaderState {
 }
@@ -41,7 +41,7 @@ class Header extends Component<HeaderProps, HeaderState> {
     if (this.props.showName) {
       showName = <td className={styles.usertd}> 
                   <div className={styles.user}>
-                    { DevChatController.getUserFromToken(DevChatController.getUserToken()) }
+                    { FrontEndController.getUserFromToken(FrontEndController.getUserToken()) }
                   </div>           
                 </td>
     }
@@ -73,7 +73,7 @@ class Header extends Component<HeaderProps, HeaderState> {
                         width={50}
                         height={50}
                         onClick={() => {
-                          DevChatController.logoutUser();
+                          FrontEndController.logoutUser();
                           router.reload();
                         }}
                       />

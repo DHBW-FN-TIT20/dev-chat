@@ -1,11 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { DatabaseModel } from '../databaseModel';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to demote a user in the database.
@@ -16,6 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userToken = req.body.userToken;
   let usernameToDemote = req.body.usernameToDemote;
 
-  let demotedSuccessfully = await supabaseConnection.demoteUser(userToken, usernameToDemote);
+  let demotedSuccessfully = await backEndController.updateUserAccessLevel(userToken, usernameToDemote, 0);
   res.status(200).json({ wasSuccessfull: demotedSuccessfully });
 }

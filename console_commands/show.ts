@@ -1,4 +1,4 @@
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { ISurvey, ISurveyState, ISurveyVote, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
 
@@ -29,7 +29,7 @@ export class ShowCommand extends Command {
       return ["Error: Invalid arguments."];
     }
 
-    const supabaseConnection = new SupabaseConnection();
+    const supabaseConnection = new DatabaseModel();
     
     // get the survey with the given id
     let survey: ISurveyState | null = await supabaseConnection.getCurrentSurveyState(Number(args[0]), currentChatKeyID);
@@ -61,7 +61,7 @@ export class ShowCommand extends Command {
   async showAllCurrentSurveys(currentChatKeyID: number): Promise<string[]> {
     let answerLines: string[] = [];
 
-    const supabaseConnection = new SupabaseConnection();
+    const supabaseConnection = new DatabaseModel();
 
     // get all surveys
     let surveys: ISurvey[] = await supabaseConnection.getAllSurveys(currentChatKeyID);

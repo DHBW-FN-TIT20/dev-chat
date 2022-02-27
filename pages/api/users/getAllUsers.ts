@@ -1,17 +1,17 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { IUser } from "../../../public/interfaces";
-import { SupabaseConnection } from "../supabaseAPI";
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
     allUsers : IUser[];
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
   let userToken: string = req.body.userToken;
-  let allUsers = await supabaseConnection.fetchAllUsers(userToken);
+  let allUsers = await backEndController.fetchAllUsers(userToken);
 
   res.status(200).json({ allUsers : allUsers })
 }

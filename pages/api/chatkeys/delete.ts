@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to remove a survey from the database
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userToken = req.body.userToken;
   let chatKeyToDelete = req.body.chatKeyToDelete;
 
-  let wasSuccessfull = await supabaseConnection.deleteChatKey(userToken, chatKeyToDelete);
+  let wasSuccessfull = await backEndController.deleteChatKey(userToken, chatKeyToDelete);
 
   res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }

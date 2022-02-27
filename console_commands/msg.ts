@@ -1,6 +1,7 @@
-import { SupabaseConnection } from "../pages/api/supabaseAPI";
+import { DatabaseModel } from "../pages/api/databaseModel";
 import { IBugTicket, IUser } from "../public/interfaces";
 import { Command } from "./baseclass";
+import { BackEndController } from '../controller/backEndController';
 
 
 /**
@@ -33,34 +34,35 @@ export class MsgCommand extends Command {
         }
 
         // Connect to supabase
-        const supabaseConnection = new SupabaseConnection();
+        const supabaseConnection = new DatabaseModel();
+        const backEndController = new BackEndController();
 
         console.log(args)
         let targetUsername: string = args[0];
-        let targetUserId: number = NaN;
+        let targetUserId: number | undefined = NaN;
 
         if (targetUsername !== "" || targetUsername !== undefined) {
-            targetUserId = await supabaseConnection.getUserIDByUsername(targetUsername)
+            targetUserId = (await (await supabaseConnection.getIUserByUsername(targetUsername)).id);
         }
 
         let message: string = "";
         console.log(args.length);
-        for(let i = 1; i < args.length; i++) {
+        for (let i = 1; i < args.length; i++) {
             message += args[i] + " ";
         }
         let commandExecutable: boolean = false;
-        if(!isNaN(targetUserId) && message !== "") {
-          commandExecutable = true;
+        if (targetUserId !== undefined && message !== "") {
+            commandExecutable = true;
         }
-        
+
         console.log("Message " + message);
         console.log("currentChatKeyID " + currentChatKeyID);
         console.log("targetUserId " + targetUserId);
         console.log("currentUser.id " + currentUser.id);
 
-        if(commandExecutable && currentUser.id !== undefined) {
+        if (commandExecutable && currentUser.id !== undefined) {
             let whisperMessage: string = currentUser.name + " whispers to you: " + message
-            if(await supabaseConnection.addChatMessage(whisperMessage, currentChatKeyID, currentUser.id, targetUserId)) {
+            if (await backEndController.addChatMessage(whisperMessage, currentChatKeyID, currentUser.id, targetUserId)) {
                 answerLines.push("The message was send to " + targetUsername + " succesfully.");
             }
             else {

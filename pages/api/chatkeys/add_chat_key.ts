@@ -2,14 +2,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IChatKey } from '../../../public/interfaces';
 import { getThreeWords } from '../../../shared/threeword_generator';
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
     wasSuccessfull: boolean;
     newChatKey: string;
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to add a message to the database
@@ -19,6 +19,6 @@ const supabaseConnection = new SupabaseConnection();
     
     let chatKey = getThreeWords();
     
-    let addedSucessfully = await supabaseConnection.addChatKey(chatKey);
+    let addedSucessfully = await backEndController.addChatKey(chatKey);
     res.status(200).json({ wasSuccessfull: addedSucessfully, newChatKey: chatKey});
 }

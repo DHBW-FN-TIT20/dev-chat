@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { DatabaseModel } from '../databaseModel';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const databaseModel = new DatabaseModel();
 
 /**
  * This is a api route to reset the password of a user in the database.
@@ -16,6 +16,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let userToken = req.body.userToken;
   let usernameToReset = req.body.usernameToReset;
 
-  let resetSuccessfully = await supabaseConnection.resetPassword(userToken, usernameToReset);
+  let resetSuccessfully = await databaseModel.resetPassword(userToken, usernameToReset);
   res.status(200).json({ wasSuccessfull: resetSuccessfully });
 }

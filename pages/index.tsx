@@ -4,7 +4,7 @@ import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
 import Header from './header'
-import DevChatController from '../controller'
+import FrontEndController from '../controller/frontEndController'
 import { stringify } from 'querystring'
 
 export interface MainState {
@@ -60,8 +60,8 @@ class Main extends Component<MainProps, MainState> {
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+    let currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       // logged in
       this.setState({isLoggedIn: true})
     } else {
@@ -100,14 +100,14 @@ class Main extends Component<MainProps, MainState> {
   onJoinButtonClick = async (event: any) => {
     const { router } = this.props;
     this.setState({feedbackMessage : ""});
-    let doesChatKeyExists = await DevChatController.doesChatKeyExists(this.state.inputChatKey)
+    let doesChatKeyExists = await FrontEndController.doesChatKeyExists(this.state.inputChatKey)
     this.setState({
       doesChatKeyExists: doesChatKeyExists
     })
     if(this.state.doesChatKeyExists)
     {
       console.log("EXISTS")
-      DevChatController.setChatKeyCookie(this.state.inputChatKey);
+      FrontEndController.setChatKeyCookie(this.state.inputChatKey);
       router.push("/chat")
     }
     else {
@@ -160,7 +160,7 @@ class Main extends Component<MainProps, MainState> {
                 Create Room
               </h1>
               <button onClick={async () => {
-                if (await DevChatController.addChatKey()) {
+                if (await FrontEndController.addChatKey()) {
                   router.push("/chat");
                 }
               }}> 
@@ -169,14 +169,14 @@ class Main extends Component<MainProps, MainState> {
               <h1>
                 Settings
               </h1>
-              <button hidden={!DevChatController.getAdminValueFromToken(DevChatController.getUserToken())} onClick={() => router.push("/admin")}> 
+              <button hidden={!FrontEndController.getAdminValueFromToken(FrontEndController.getUserToken())} onClick={() => router.push("/admin")}> 
                 Admin Settings
               </button>
               <button onClick={() => router.push("/password")}> 
                 Change Password
               </button>
               <button onClick={async () => {
-                if (await DevChatController.deleteUser(DevChatController.getUserToken(), DevChatController.getUserFromToken(DevChatController.getUserToken()))) {
+                if (await FrontEndController.deleteUser(FrontEndController.getUserToken(), FrontEndController.getUserFromToken(FrontEndController.getUserToken()))) {
                   router.push("/login")
                 }
               }}> 
@@ -226,10 +226,10 @@ class Main extends Component<MainProps, MainState> {
     // if there is a chatKey, check if it exists and connect to the chat
     if (chatKey !== "") {
       const { router } = this.props
-      let doesChatKeyExists = await DevChatController.doesChatKeyExists(chatKey)      
+      let doesChatKeyExists = await FrontEndController.doesChatKeyExists(chatKey)      
       if(doesChatKeyExists) {
         console.log("EXISTS")
-        DevChatController.setChatKeyCookie(chatKey);
+        FrontEndController.setChatKeyCookie(chatKey);
         router.push("/chat")
       } else {
         console.log("NOT EXISTS")

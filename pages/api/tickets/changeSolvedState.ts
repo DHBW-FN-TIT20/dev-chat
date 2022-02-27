@@ -1,11 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean
 }
 
-const supabaseConnection = new SupabaseConnection();
+const backEndController = new BackEndController();
 
 /**
  * This is a api route to invert the status of a ticket. (ToDo->Done | Done->ToDo)
@@ -17,6 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   let ticketID = req.body.ticketID;
   let currentState = req.body.currentState;
 
-  let wasSuccessfull = await supabaseConnection.changeSolvedState(currentToken,ticketID,currentState)
+  let wasSuccessfull = await backEndController.changeSolvedState(currentToken,ticketID,currentState)
   res.status(200).json({ wasSuccessfull: wasSuccessfull });
 }
