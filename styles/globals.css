@@ -5,21 +5,8 @@
   }
 }
 
-@media screen and (max-width: 550px) {
-  html,
-  body {
-    padding: 0;
-    margin: 0;
-    background-color: #1A1A1A;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #D7BA7D;
-    font-size: 12pt;
-  }
-}
-
 @media screen and (max-width: 900px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
@@ -30,8 +17,7 @@
 }
 
 @media screen and (min-width: 900px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
@@ -42,8 +28,7 @@
 }
 
 @media screen and (min-width: 1280px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
@@ -82,7 +67,7 @@ p {
     color: #D7BA7D;
     font-size: 30pt;
     margin: 2pt;
-  }  
+  }
 }
 
 @media screen and (min-width: 1280px) {
@@ -90,7 +75,7 @@ p {
     color: #D7BA7D;
     font-size: 40pt;
     margin: 2pt;
-  }  
+  }
 }
 
 /** Links */
@@ -114,10 +99,6 @@ a:hover {
 
 /** Input fields */
 
-input::placeholder {
-  color: #CCCCCC;
-}
-
 @media screen and (max-width: 900px) {
   input {
     font-family: 'Red Hat Mono', monospace;
@@ -164,6 +145,10 @@ input::placeholder {
     padding: 10pt;
     margin: 2pt 0;
   }
+}
+
+input::placeholder {
+  color: #CCCCCC;
 }
 
 /** Buttons */
@@ -181,12 +166,14 @@ input::placeholder {
     padding: 10pt;
     margin: 2pt 0;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  }  
+  }
+
   button:hover {
     background-color: #FF9933;
     cursor: pointer;
     transition: 0.3s;
   }
+
   button:active {
     background-color: #FF6F1C;
     border-color: #FF6F1C;
@@ -207,12 +194,14 @@ input::placeholder {
     padding: 10pt;
     margin: 2pt 0;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  }  
+  }
+
   button:hover {
     background-color: #FF9933;
     cursor: pointer;
     transition: 0.3s;
   }
+
   button:active {
     background-color: #FF6F1C;
     border-color: #FF6F1C;
@@ -223,25 +212,6 @@ input::placeholder {
 @media screen and (min-width: 1280px) {
   button {
     font-size: 16pt;
-    color: white;
-    background-color: transparent;
-    border-style: solid;
-    border-radius: 5pt;
-    border-width: 2pt;
-    border-color: #FF9933;
-    padding: 10pt;
-    margin: 2pt 0;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  }  
-  button:hover {
-    background-color: #FF9933;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:active {
-    background-color: #FF6F1C;
-    border-color: #FF6F1C;
-    transition: 0.2s;
   }
 }
 
@@ -275,7 +245,7 @@ input::placeholder {
     border-collapse: collapse;
     white-space: nowrap;
   }
-  
+
   table th {
     border-color: #CCCCCC;
     border-style: solid;
@@ -288,7 +258,7 @@ input::placeholder {
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  
+
   table td {
     border-color: #CCCCCC;
     border-style: solid;
@@ -324,7 +294,7 @@ input::placeholder {
     color: white;
     border-collapse: collapse;
   }
-  
+
   table th {
     border-color: #CCCCCC;
     border-style: solid;
@@ -333,7 +303,7 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
   }
-  
+
   table td {
     border-color: #CCCCCC;
     border-style: solid;
@@ -366,12 +336,11 @@ input::placeholder {
     width: 100%;
     margin: 2pt;
     padding: 10pt;
-    border-color:  #666666;
+    border-color: #666666;
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
     margin: 0 auto;
-    
   }
 }
 
@@ -382,7 +351,7 @@ input::placeholder {
     width: 100%;
     margin: 2pt;
     padding: 10pt;
-    border-color:  #666666;
+    border-color: #666666;
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
@@ -400,7 +369,7 @@ input::placeholder {
 }
 
 .red {
-  columns: #FF0000;
+  color: #FF0000;
 }
 
 .orange {
