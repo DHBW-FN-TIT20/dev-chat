@@ -707,12 +707,7 @@ export class BackEndController {
       console.log("You are not an admin!");
       return changedSucessfully;
     }
-    if (!currentState) {
-      return this.databaseModel.changeSolvedState(ticketToChange, currentState);
-    }
-    else {
-      return this.databaseModel.changeSolvedState(ticketToChange, !currentState);
-    }
+    return this.databaseModel.changeSolvedState(ticketToChange, !currentState);
   }
 
   //#endregion
