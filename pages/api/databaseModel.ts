@@ -48,7 +48,8 @@ export class DatabaseModel {
    * @param token 
    * @returns Array of all IUsers
    */
-  public fetchAllUsers = async (allUsers: IUser[]): Promise<IUser[]> => {
+  public fetchAllUsers = async (): Promise<IUser[]> => {
+    let allUsers: IUser[] = []
     let UserResponse = await DatabaseModel.CLIENT
       .from('User')
       .select('UserID,Username,AccessLevel')
@@ -309,7 +310,8 @@ export class DatabaseModel {
   * @param token 
   * @returns Array of all IChatKeys
   */
-  public fetchAllChatKeys = async (allChatKeys: IChatKey[]): Promise<IChatKey[]> => {
+  public fetchAllChatKeys = async (): Promise<IChatKey[]> => {
+    let allChatKeys: IChatKey[] = []
     let ChatKeyResponse = await DatabaseModel.CLIENT
       .from('ChatKey')
       .select('ChatKeyID,ChatKey,ExpirationDate')
@@ -583,7 +585,8 @@ export class DatabaseModel {
    * @param token 
    * @returns Array of all IBugTickets
    */
-  public fetchAllTickets = async (allTickets: IBugTicket[]): Promise<IBugTicket[]> => {
+  public fetchAllTickets = async (): Promise<IBugTicket[]> => {
+    let allTickets: IBugTicket[] = []
     let TicketResponse = await DatabaseModel.CLIENT
       .from('Ticket')
       .select()

@@ -319,7 +319,9 @@ export class BackEndController {
       return allUsers;
     }
 
-    return this.databaseModel.fetchAllUsers(allUsers);
+    allUsers = await this.databaseModel.fetchAllUsers();
+
+    return allUsers;
   }
 
   /** 
@@ -522,7 +524,9 @@ export class BackEndController {
       return allChatKeys;
     }
 
-    return this.databaseModel.fetchAllChatKeys(allChatKeys);
+    allChatKeys = await this.databaseModel.fetchAllChatKeys();
+
+    return allChatKeys
   }
 
   /** 
@@ -690,7 +694,9 @@ export class BackEndController {
       return allTickets;
     }
 
-    return this.databaseModel.fetchAllTickets(allTickets);
+    allTickets = await this.databaseModel.fetchAllTickets();
+
+    return allTickets;
   }
 
   /**
@@ -746,10 +752,6 @@ export class BackEndController {
       console.log("You are not an admin!");
       return false;
     }
-    this.databaseModel.deleteSurveyOption(surveyIDToDelete);
-    this.databaseModel.deleteSurveyVote(surveyIDToDelete);
-    this.databaseModel.deleteSurveyOption(surveyIDToDelete);
-    this.databaseModel.deleteSurveyVote(surveyIDToDelete);
     this.databaseModel.deleteSurveyOption(surveyIDToDelete);
     this.databaseModel.deleteSurveyVote(surveyIDToDelete);
 

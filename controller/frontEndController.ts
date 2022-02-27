@@ -1,10 +1,8 @@
 //#region Imports
 
 import jwt from 'jsonwebtoken'
-import { setCookies, getCookies, getCookie, removeCookies, checkCookies } from 'cookies-next';
+import { setCookies, getCookie, removeCookies } from 'cookies-next';
 import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from '../public/interfaces';
-import chat from '../pages/chat';
-import { DatabaseModel } from '../pages/api/databaseModel';
 
 //#endregion
 
