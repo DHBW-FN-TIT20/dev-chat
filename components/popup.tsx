@@ -7,7 +7,7 @@ export interface PopupState {
 export interface PopupProps {
   headerText: string,
   textDisplay: string,
-  closePopup: undefined,
+  closePopup: any,
 }
 
 /**
