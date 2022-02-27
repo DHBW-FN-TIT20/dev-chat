@@ -6,7 +6,7 @@ type Data = {
   allChatKeys: IChatKey[],
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
  * This is a api route to get all chat keys.
@@ -16,7 +16,7 @@ const backEndController = new BackEndController();
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken: string = req.body.userToken;
 
-  let allChatKeys = await backEndController.fetchAllChatKeys(userToken);
+  let allChatKeys = await BACK_END_CONTROLLER.fetchAllChatKeys(userToken);
 
   res.status(200).json({ allChatKeys: allChatKeys });
 }
