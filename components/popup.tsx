@@ -7,35 +7,32 @@ export interface PopupState {
 export interface PopupProps {
   headerText: string,
   textDisplay: string,
-  closePopup: any,
+  closePopup: undefined,
 }
 
-export default class Popup extends Component<PopupProps, PopupState> {
-  constructor(props: PopupProps) {
-    super(props)
-    this.state = {
-    }
-  }
+/**
+ * Component-Class for the Popup
+ */
+export class Popup extends Component<PopupProps, PopupState> {
   render() {
-    console.log(this.props.closePopup);
+    // console.log(this.props.closePopup);
     return (
       <div className={styles.popup}>
         <div className={styles.popup_inner}>
           <div className={styles.delacc}>
-		          <p className={styles.delacchead}>{this.props.headerText}</p>
+            <p className={styles.delacchead}>{this.props.headerText}</p>
           </div>
           <div className={styles.attentiondiv}>
-              <span className={styles.attention}>!</span>
+            <span className={styles.attention}>!</span>
           </div>
           <div className={styles.content}>
             {this.props.textDisplay}
-		      </div>
-          <div className={styles.button1}>
-          <button className={styles.buttonPopup} onClick={this.props.closePopup}>Ok</button>
           </div>
-          
+          <div className={styles.button1}>
+            <button className={styles.buttonPopup} onClick={this.props.closePopup}>Ok</button>
+          </div>
         </div>
       </div>
-      );
+    );
   }
 }
