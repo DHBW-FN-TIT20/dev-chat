@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Welcome to DEV-CHAT!
+Hello World! This is [DEV-CHAT](dev-chat.me), a webchat for all the developers out there. In simple throw-away chatrooms you can talk to others, without leaving your comfort zone of the command-line. It is a current project of six second-year students at the  university [DHBW Friedrichshafen](https://www.ravensburg.dhbw.de/startseite) located in the south of germany and was created as a part of an exam. 
 
-## Getting Started
+## Folder structure
 
-First, run the development server:
+| Folder | Usage |
+|--|--|
+| [console_commands](https://github.com/DHBW-FN-TIT20/dev-chat/tree/main/console_commands) | source files for alle commands |
+| [pages](https://github.com/DHBW-FN-TIT20/dev-chat/tree/main/pages) | source files for all pages |
+|[public](https://github.com/DHBW-FN-TIT20/dev-chat/tree/main/public)| source files for all images and icons|
+|[shared](https://github.com/DHBW-FN-TIT20/dev-chat/tree/main/shared)|source files for  functions that can be used in other projects|
+|[styles](https://github.com/DHBW-FN-TIT20/dev-chat/tree/main/styles)|source files for styling of pages|
 
-```bash
-npm run dev
-# or
-yarn dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Instructions
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+To chat with others simply visit the website of [DEV-CHAT](dev-chat.me), create an account and login. On the main page enter the three word room name, given to you by other users or create one on your own. The name will be created automatically and you will instantly enter the room. Now you only have to share the room name and wait for the other developers to join.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Useful commands
+[DEV-CHAT](dev-chat.me) wouldn't be a chat for developers if there weren't any commands for the command-line. Feel free to give us ideas for new useful commands.
+| Command | Usage |
+|--|--|
+|/help|Display all available commands |
+|/whisper|Direct message another user in the chatroom |
+|/survey|Get instructions on how to create a new survey|
+|/show [id]|Show all active surveys or view a specific one|
+|/calc|Solve mathematical equations|
+|/report|Report a bug you found|
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Authors 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+ - Johannes Brandenburger / [github](https://github.com/johannesbrandenburger) / [E-mail](johannes0709@icloud.com)
+ - Lukas Braun / [github](https://github.com/lukbra0108) / [E-mail]()
+ - Henry Schuler / [github](https://github.com/schuler-henry) / [email]()
+ - Jan Brutscher / [github](https://github.com/withernext) / [E-mail](janbrutscher@gmail.com)
+ - Phillipp Patzelt / [github](https://github.com/PhillippPatzelt) / [E-mail]()
+ - Nico Bayer / [github](https://github.com/NicoB-Code) / [E-mail](bayernico@web.de)
+ 
+## Contact
+If you want to contact us, ask questions or have any data privacy concerns, visit [DEV-CHAT](dev-chat.me) and click on the paragraph symbol in the top right corner. There you will find our contact informations and information about the [DSGVO](https://de.wikipedia.org/wiki/Datenschutz-Grundverordnung) (in germany we must give information about that, by law).
