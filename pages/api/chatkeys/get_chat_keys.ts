@@ -14,9 +14,9 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: allChatKeys)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken: string = req.body.userToken;
+  const userToken: string = req.body.userToken;
 
-  let allChatKeys = await BACK_END_CONTROLLER.fetchAllChatKeys(userToken);
+  const allChatKeys: IChatKey[] = await BACK_END_CONTROLLER.fetchAllChatKeys(userToken);
 
   res.status(200).json({ allChatKeys: allChatKeys });
 }

@@ -13,10 +13,10 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let surveyIDToDelete = req.body.surveyIDToDelete;
+  const userToken: string = req.body.userToken;
+  const surveyIDToDelete: number = req.body.surveyIDToDelete;
 
-  let deletedSuccessfully = await BACK_END_CONTROLLER.deleteSurvey(userToken, surveyIDToDelete);
+  const deletedSuccessfully = await BACK_END_CONTROLLER.deleteSurvey(userToken, surveyIDToDelete);
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }

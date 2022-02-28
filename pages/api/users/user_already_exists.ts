@@ -1,22 +1,21 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { Console } from 'console';
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { DatabaseModel } from '../databaseModel';
 
 type Data = {
-  wasSuccessfull: boolean
+  userExists: boolean,
 }
 
-const supabaseConnection = new DatabaseModel();
+const DATABASE_MODEL = new DatabaseModel();
 
 /**
- * This is a api route to check if a user already exists in the database.
- * @param req the request object (body: username, password)
- * @param res the response object (body: wasSuccessfull)
+ * This is an api route to check if a user already exists in the database.
+ * @param req the request object (body: username)
+ * @param res the response object (body: userExists)
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let userAlreadyExists = await supabaseConnection.userAlreadyExists(username);
+export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const username: string = req.body.username;
 
-  res.status(200).json({ wasSuccessfull: userAlreadyExists });
+  const userAlreadyExists: boolean = await DATABASE_MODEL.userAlreadyExists(username);
+
+  res.status(200).json({ userExists: userAlreadyExists });
 }

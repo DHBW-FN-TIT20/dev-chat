@@ -14,9 +14,9 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: allTickets)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken: string = req.body.userToken;
+  const userToken: string = req.body.userToken;
 
-  let allTickets = await BACK_END_CONTROLLER.fetchAllTickets(userToken);
+  const allTickets = await BACK_END_CONTROLLER.fetchAllTickets(userToken);
 
   res.status(200).json({ allTickets: allTickets })
 }

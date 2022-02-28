@@ -13,11 +13,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken: string = req.body.userToken;
-  let chatKey: string = req.body.chatKey;
-  let joinOrLeave: string = req.body.joinOrLeave;
+  const userToken: string = req.body.userToken;
+  const chatKey: string = req.body.chatKey;
+  const joinOrLeave: string = req.body.joinOrLeave;
 
-  let messageAddedSuccessfully = await BACK_END_CONTROLLER.joinLeaveRoomMessage(userToken, chatKey, joinOrLeave);
+  const messageAddedSuccessfully = await BACK_END_CONTROLLER.joinLeaveRoomMessage(userToken, chatKey, joinOrLeave);
 
   res.status(200).json({ wasSuccessfull: messageAddedSuccessfully });
 }

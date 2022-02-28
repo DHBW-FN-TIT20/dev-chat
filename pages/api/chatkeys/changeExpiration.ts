@@ -13,11 +13,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let chatKeyToAlter = req.body.chatKeyToAlter;
-  let expirationDate = req.body.expirationDate;
+  const userToken: string = req.body.userToken;
+  const chatKeyToAlter: number = req.body.chatKeyToAlter;
+  const expirationDate: Date = req.body.expirationDate;
 
-  let addedSucessfully = await BACK_END_CONTROLLER.changeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
+  const addedSucessfully = await BACK_END_CONTROLLER.changeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
 
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

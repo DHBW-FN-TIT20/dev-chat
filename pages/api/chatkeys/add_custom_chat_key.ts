@@ -13,8 +13,8 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let customChatKey = req.body.customChatKey;
+  const userToken: string = req.body.userToken;
+  const customChatKey: string = req.body.customChatKey;
 
   let addedSucessfully = false;
 

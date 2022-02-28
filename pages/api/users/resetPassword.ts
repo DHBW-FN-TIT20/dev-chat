@@ -1,21 +1,22 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { DatabaseModel } from '../databaseModel';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const databaseModel = new DatabaseModel();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to reset the password of a user in the database.
+ * This is an api route to reset the password of a user in the database.
  * @param req the request object (body: userToken, usernameToReset)
  * @param res the response object (body: wasSuccessfull)
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let usernameToReset = req.body.usernameToReset;
+export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const usernameToReset: string = req.body.usernameToReset;
 
-  let resetSuccessfully = await databaseModel.resetPassword(userToken, usernameToReset);
+  const resetSuccessfully = await BACK_END_CONTROLLER.resetPassword(userToken, usernameToReset);
+
   res.status(200).json({ wasSuccessfull: resetSuccessfully });
 }

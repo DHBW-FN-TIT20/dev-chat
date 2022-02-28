@@ -13,11 +13,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let currentToken = req.body.currentToken;
-  let ticketID = req.body.ticketID;
-  let currentState = req.body.currentState;
+  const currentToken: string = req.body.currentToken;
+  const ticketID: number = req.body.ticketID;
+  const currentState: boolean = req.body.currentState;
 
-  let changedSuccessfully = await BACK_END_CONTROLLER.changeSolvedState(currentToken, ticketID, currentState)
+  const changedSuccessfully = await BACK_END_CONTROLLER.changeSolvedState(currentToken, ticketID, currentState)
 
   res.status(200).json({ wasSuccessfull: changedSuccessfully });
 }

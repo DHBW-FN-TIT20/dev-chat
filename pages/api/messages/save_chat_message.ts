@@ -15,11 +15,11 @@ const DATABASE_MODEL = new DatabaseModel();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let message = req.body.message;
-  let userToken = req.body.userToken;
-  let chatKey = req.body.chatKey;
+  const message: string = req.body.message;
+  const userToken: string = req.body.userToken;
+  const chatKey: string = req.body.chatKey;
 
-  let addedSucessfully = await BACK_END_CONTROLLER.handleChatMessage(message, await DATABASE_MODEL.getChatKeyID(chatKey), userToken = userToken);
+  const addedSucessfully = await BACK_END_CONTROLLER.handleChatMessage(message, await DATABASE_MODEL.getChatKeyID(chatKey), userToken);
 
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

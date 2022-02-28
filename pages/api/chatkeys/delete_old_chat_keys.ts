@@ -13,7 +13,7 @@ const DATABASE_MODEL = new DatabaseModel();
  */
 export async function handler(res: NextApiResponse<Data>) {
 
-  let deletedSuccessfully = await DATABASE_MODEL.deleteOldChatKeys();
+  const deletedSuccessfully: boolean = await DATABASE_MODEL.deleteOldChatKeys();
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }

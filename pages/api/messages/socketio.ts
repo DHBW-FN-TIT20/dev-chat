@@ -26,8 +26,8 @@ export async function handler(res: NextApiResponseServerIO) {
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
     const supabase = createClient(supabaseUrl, supabaseKey);
-    let databaseModel = new DatabaseModel();
-    let backEndController = new BackEndController();
+    const databaseModel = new DatabaseModel();
+    const backEndController = new BackEndController();
 
     // print every minute a list of clients connected to the server
     const logAllClients = async () => {

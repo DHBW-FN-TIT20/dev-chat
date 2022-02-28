@@ -13,11 +13,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let surveyIDToAlter = req.body.surveyIDToAlter;
-  let expirationDate = req.body.expirationDate;
+  const userToken: string = req.body.userToken;
+  const surveyIDToAlter: number = req.body.surveyIDToAlter;
+  const expirationDate: Date = req.body.expirationDate;
 
-  let changedSuccessfully = await BACK_END_CONTROLLER.changeSurveyExpirationDate(userToken, surveyIDToAlter, expirationDate);
+  const changedSuccessfully = await BACK_END_CONTROLLER.changeSurveyExpirationDate(userToken, surveyIDToAlter, expirationDate);
 
   res.status(200).json({ wasSuccessfull: changedSuccessfully });
 }
