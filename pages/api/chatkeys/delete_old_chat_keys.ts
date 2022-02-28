@@ -5,7 +5,7 @@ type Data = {
   wasSuccessfull: boolean,
 }
 
-const SUPABASE_CONNECTION = new DatabaseModel();
+const DATABASE_MODEL = new DatabaseModel();
 
 /**
  * This is a api route to delete old/expired chat keys
@@ -13,7 +13,7 @@ const SUPABASE_CONNECTION = new DatabaseModel();
  */
 export async function handler(res: NextApiResponse<Data>) {
 
-  let deletedSuccessfully = await SUPABASE_CONNECTION.deleteOldChatKeys();
+  let deletedSuccessfully = await DATABASE_MODEL.deleteOldChatKeys();
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }

@@ -5,7 +5,7 @@ type Data = {
   wasSuccessfull: boolean,
 }
 
-const SUPABASE_CONNECTION = new DatabaseModel();
+const DATABASE_MODEL = new DatabaseModel();
 
 /**
  * This is a api route to check if ChatKey exists
@@ -15,7 +15,7 @@ const SUPABASE_CONNECTION = new DatabaseModel();
 export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let chatKey = req.body.chatKey;
 
-  let doesChatKeyExists = await SUPABASE_CONNECTION.doesChatKeyExists(chatKey);
+  let doesChatKeyExists = await DATABASE_MODEL.doesChatKeyExists(chatKey);
 
   res.status(200).json({ wasSuccessfull: doesChatKeyExists });
 }
