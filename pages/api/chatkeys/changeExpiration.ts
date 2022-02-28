@@ -8,7 +8,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to change the expirationdate of a chat
+ * This is an api route to change the expirationdate of a chat
  * @param req the request object (body: userToken, chatKeyToAlter, expirationDate)
  * @param res the response object (body: wasSuccessfull)
  */

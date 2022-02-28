@@ -9,7 +9,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route get all chat messages with a specific chatKey and a specific target user from the database.
+ * This is an api route get all chat messages with a specific chatKey and a specific target user from the database.
  * @param req the request object (body: userToken, chatKey, lastMessageID)
  * @param res the response object (body: chatMessages: IChatMessage[])
  */

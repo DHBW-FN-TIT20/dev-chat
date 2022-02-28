@@ -9,7 +9,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to get all chat keys.
+ * This is an api route to get all chat keys.
  * @param req the request object (body: userToken)
  * @param res the response object (body: allChatKeys)
  */

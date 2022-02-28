@@ -10,7 +10,7 @@ const BACK_END_CONTROLLER = new BackEndController();
 const DATABASE_MODEL = new DatabaseModel();
 
 /**
- * This is a api route to add a message to the database
+ * This is an api route to add a message to the database
  * @param req the request object (body: message, userToken, chatKey)
  * @param res the response object (body: wasSuccessfull)
  */

@@ -8,7 +8,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to delete a chatKey
+ * This is an api route to delete a chatKey
  * @param req the request object (body: userToken, chatKeyToDelete)
  * @param res the response object (body: wasSuccessfull)
  */

@@ -10,7 +10,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to create a new chatKey (threeword)
+ * This is an api route to create a new chatKey (threeword)
  * @param res the response object (body: wasSuccessfull, newChatKey)
  */
 export async function handler(res: NextApiResponse<Data>) {

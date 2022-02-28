@@ -8,7 +8,7 @@ type Data = {
 const DATABASE_MODEL = new DatabaseModel();
 
 /**
- * This is a api route to delete old/expired chat keys
+ * This is an api route to delete old/expired chat keys
  * @param res the response object (body: wasSuccessfull)
  */
 export async function handler(res: NextApiResponse<Data>) {

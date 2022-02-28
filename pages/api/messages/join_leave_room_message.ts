@@ -8,7 +8,7 @@ type Data = {
 const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to send the join room message to the database.
+ * This is an api route to send the join room message to the database.
  * @param req the request object (body: userToken, chatKey, joinOrLeave)
  * @param res the response object (body: wasSuccessfull)
  */

@@ -8,7 +8,7 @@ type Data = {
 const DATABASE_MODEL = new DatabaseModel();
 
 /**
- * This is a api route to check if ChatKey exists
+ * This is an api route to check if ChatKey exists
  * @param req the request object (body: chatKey)
  * @param res the response object (body: wasSuccessfull)
  */

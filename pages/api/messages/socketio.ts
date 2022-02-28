@@ -9,7 +9,7 @@ import { BackEndController } from '../../../controller/backEndController';
 export const CONFIG = { api: { bodyParser: false, }, };
 
 /**
- * This is a api route handler to subscribe to the chat messages table
+ * This is an api route handler to subscribe to the chat messages table
  */
 export async function handler(res: NextApiResponseServerIO) {
 
