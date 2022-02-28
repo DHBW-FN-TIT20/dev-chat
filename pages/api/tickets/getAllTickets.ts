@@ -3,15 +3,20 @@ import { IBugTicket } from "../../../public/interfaces";
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-    allTickets : IBugTicket[];
+  allTickets: IBugTicket[],
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-
+/**
+ * This is an api route to get all tickets from the database
+ * @param req the request object (body: userToken)
+ * @param res the response object (body: allTickets)
+ */
+export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   let userToken: string = req.body.userToken;
-  let allTickets = await backEndController.fetchAllTickets(userToken);
+
+  let allTickets = await BACK_END_CONTROLLER.fetchAllTickets(userToken);
 
   res.status(200).json({ allTickets: allTickets })
 }
