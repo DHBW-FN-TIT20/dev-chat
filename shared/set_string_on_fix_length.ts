@@ -8,7 +8,7 @@ export function setStringOnFixLength(input: string, fixLength: number): string {
   if (input.length > fixLength) {
     return input.substring(0, fixLength)
   } else {
-    let spacesToAdd = fixLength - input.length;
+    const spacesToAdd = fixLength - input.length;
     for (let i = 0; i < spacesToAdd; i++) {
       input += " "
     }
