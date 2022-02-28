@@ -12,7 +12,7 @@ const DATABASE_MODEL = new DatabaseModel();
  * @param req the request object (body: username)
  * @param res the response object (body: userExists)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
 
   const userAlreadyExists: boolean = await DATABASE_MODEL.userAlreadyExists(username);

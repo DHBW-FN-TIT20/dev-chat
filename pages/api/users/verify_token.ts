@@ -12,7 +12,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param req the request object (body: token)
  * @param res the response object (body: isVerified)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const token: string = req.body.token;
 
   const isValid = await BACK_END_CONTROLLER.isUserTokenValid(token);

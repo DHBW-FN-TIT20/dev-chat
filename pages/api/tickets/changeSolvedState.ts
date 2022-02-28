@@ -12,7 +12,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param req the request object (body: currentToken, ticketID, currentState)
  * @param res the response object (body: wasSuccessfull)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const currentToken: string = req.body.currentToken;
   const ticketID: number = req.body.ticketID;
   const currentState: boolean = req.body.currentState;

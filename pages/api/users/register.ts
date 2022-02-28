@@ -12,7 +12,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param req the request object (body: username, password)
  * @param res the response object (body: returnString)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
   const password: string = req.body.password;
 

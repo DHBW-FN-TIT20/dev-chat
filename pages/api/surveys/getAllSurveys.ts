@@ -15,7 +15,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param req the request object (body: userToken)
  * @param res the response object (body: allSurveys)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
 
   let surveyData: ISurvey[] = [];

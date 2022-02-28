@@ -12,7 +12,7 @@ const DATABASE_MODEL = new DatabaseModel();
  * @param req the request object (body: chatKey)
  * @param res the response object (body: wasSuccessfull)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const chatKey: string = req.body.chatKey;
 
   const doesChatKeyExists = await DATABASE_MODEL.doesChatKeyExists(chatKey);

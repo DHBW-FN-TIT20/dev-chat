@@ -14,7 +14,7 @@ const DATABASE_MODEL = new DatabaseModel();
  * @param req the request object (body: message, userToken, chatKey)
  * @param res the response object (body: wasSuccessfull)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const message: string = req.body.message;
   const userToken: string = req.body.userToken;
   const chatKey: string = req.body.chatKey;

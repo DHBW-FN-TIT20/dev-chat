@@ -13,7 +13,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * This is an api route to create a new chatKey (threeword)
  * @param res the response object (body: wasSuccessfull, newChatKey)
  */
-export async function handler(res: NextApiResponse<Data>) {
+export default async function handler(res: NextApiResponse<Data>) {
 
   const chatKey = getThreeWords();
   const addedSucessfully = await BACK_END_CONTROLLER.addChatKey(chatKey);

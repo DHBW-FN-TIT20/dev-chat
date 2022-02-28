@@ -12,7 +12,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @param req the request object (body: userToken, chatKeyToAlter, expirationDate)
  * @param res the response object (body: wasSuccessfull)
  */
-export async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const chatKeyToAlter: number = req.body.chatKeyToAlter;
   const expirationDate: Date = req.body.expirationDate;

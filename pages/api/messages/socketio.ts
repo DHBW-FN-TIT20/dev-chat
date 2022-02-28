@@ -11,7 +11,7 @@ export const CONFIG = { api: { bodyParser: false, }, };
 /**
  * This is an api route handler to subscribe to the chat messages table
  */
-export async function handler(res: NextApiResponseServerIO) {
+export default async function handler(res: NextApiResponseServerIO) {
 
   // if there is no SocketIO server -> create one
   if (!res.socket.server.io) {
