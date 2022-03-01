@@ -6,6 +6,7 @@ import { Command } from "./baseclass";
  * This command is used to show the current results of a survey.
  * It is triggerd by the command "/show"
  * Pattern: "/show <SurveyID>"
+ * @category Command
  */
 export class ShowCommand extends Command {
   public constructor() {

@@ -7,6 +7,7 @@ import { Command } from "./baseclass";
  * This command is used to set a new ExpirationDate for the Current Chat
  * It is triggerd by the command "/expire"
  * Pattern: "/expire <ExpirationDate (dd.MM.yyyy HH:mm)>"
+ * @category Command
  */
 export class ExpireCommand extends Command {
   public constructor() {

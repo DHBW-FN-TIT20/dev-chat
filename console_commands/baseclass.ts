@@ -7,7 +7,7 @@ import { IUser } from "../public/interfaces";
  * The constructor of this class should be called in the child class (super()).
  * The properties callString and helpText should be overwritten in the child class.
  * The execute() function should be overwritten in the child class.
- * @class Command
+ * @category Command
  */
 export class Command {
     public callString: string;

@@ -15,6 +15,11 @@ export interface HeaderProps extends WithRouterProps {
   showLogout: boolean,
 }
 
+
+/**
+ * Component Class for the Header
+ * @component
+ */
 class Header extends Component<HeaderProps, HeaderState> {
   constructor(props: HeaderProps) {
     super(props)

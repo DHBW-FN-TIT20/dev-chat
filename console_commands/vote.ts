@@ -6,6 +6,7 @@ import { Command } from "./baseclass";
  * This command is used to vote for an option in a survey.
  * It is triggerd by the command "/vote"
  * Pattern: "/vote <SurveyID> <OptionID>"
+ * @category Command
  */
 export class VoteCommand extends Command {
     public constructor() {

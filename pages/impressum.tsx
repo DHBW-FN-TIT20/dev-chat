@@ -8,7 +8,11 @@ export interface ImpressumState {
 
 export interface ImpressumProps {}
 
-export default class Impressum extends Component<ImpressumProps, ImpressumState> {
+/**
+ * Component Class for Impressum Page
+ * @component
+ */
+class Impressum extends Component<ImpressumProps, ImpressumState> {
   constructor(props: ImpressumProps) {
     super(props)
     this.state = {
@@ -313,3 +317,5 @@ Wir stellen kein Kontaktformular auf dieser Webseite bereit. Falls sie dennoch w
     )
   }
 }
+
+export default Impressum;

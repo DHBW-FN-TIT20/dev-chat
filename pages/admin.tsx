@@ -21,6 +21,10 @@ export interface AdminState {
 
 export interface AdminProps extends WithRouterProps {}
 
+/**
+ * Component Class for Admin Page
+ * @component
+ */
 class Admin extends Component<AdminProps, AdminState> {
   inputChatKey = "";
   inputDateCustomChatKey: Date = new Date(0);
@@ -135,7 +139,7 @@ async handleAddKeyClick(){
 /**
  * This function takes in a bool and prints out the wanted string
  * @param boolToPrint the bool that should be printed
- * @returns string, either "Done" or "To-Do"
+ * @returns {string} either "Done" or "To-Do"
  */
 giveBoolStringTicket(boolToPrint: boolean | undefined):string{
   if(boolToPrint){
@@ -149,7 +153,7 @@ giveBoolStringTicket(boolToPrint: boolean | undefined):string{
 /**
  * Same principle as 'giveBoolStringTicket' - gives out String for a bool
  * @param userAccessLevel 
- * @returns string, either "Admin" or "User"
+ * @returns {string} either "Admin" or "User"
  */
 giveAdminOrUser(userAccessLevel: number | undefined):string{
   if(userAccessLevel === 1){
@@ -165,7 +169,7 @@ giveAdminOrUser(userAccessLevel: number | undefined):string{
  * Function to handle a click to change the solved State of a ticket
  * @param ticketID ticket that should be changed
  * @param currentState currentState of the ticket (0 or 1)
- * @returns 
+ * @returns {boolena} true if ticket was changed sucessfully, false if not
  */
 async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean | undefined ):Promise<boolean>{
   let currentToken = FrontEndController.getUserToken();
@@ -185,7 +189,7 @@ async ticketChangeSolvedClick(ticketID: number |undefined, currentState: boolean
  * @param userID 
  * @param username 
  * @param ownerID 
- * @returns 
+ * @returns {string} username or empty string
  */
 matchingUsername(userID: number | undefined, username: string | undefined, ownerID: number | undefined): string | undefined{
   if(userID === ownerID){

@@ -18,6 +18,7 @@ export interface MainProps extends WithRouterProps {}
 
 /**
  * Component-Class for the main Page
+ * @component
  */
 class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {

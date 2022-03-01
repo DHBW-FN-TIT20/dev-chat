@@ -5,6 +5,7 @@ import { Command } from "./baseclass";
  * This command is used to calculate a mathematical expression
  * It is triggerd by the command "/calc"
  * Pattern: /calc <Mathematical Expression>
+ * @category Command
  */
 export class CalcCommand extends Command {
     public constructor() {

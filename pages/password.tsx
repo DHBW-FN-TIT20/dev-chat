@@ -19,6 +19,10 @@ export interface PasswordState {
 
 export interface PasswordProps extends WithRouterProps {}
 
+/**
+ * Component Class for Password Change Page
+ * @component
+ */
 class Password extends Component<PasswordProps, PasswordState> {
   constructor(props: PasswordProps) {
     super(props)

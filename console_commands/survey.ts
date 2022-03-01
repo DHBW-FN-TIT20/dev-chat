@@ -8,6 +8,7 @@ import { BackEndController } from '../controller/backEndController';
  * This command is used to start the survey.
  * It is triggerd by the command "/survey"
  * Pattern: /survey <SurveyName> <"Description"> <ExpirationDate (DD.MM.YYY-HH:MM)> <Option1> <Option2> [... <OptionN>]
+ * @category Command
  */
 export class SurveyCommand extends Command {
     public constructor() {

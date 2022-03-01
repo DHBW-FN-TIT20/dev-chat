@@ -8,6 +8,7 @@ import { BackEndController } from '../controller/backEndController';
  * This command is to send a direct message
  * It is triggerd by the command "/msg"
  * Pattern: /msg <targetUsername> <message>
+ * @category Command
  */
 export class MsgCommand extends Command {
     public constructor() {

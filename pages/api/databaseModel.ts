@@ -188,7 +188,7 @@ export class DatabaseModel {
   * @param {string} user username to register
   * @param {string} password password for the user
   * @param {number} accessLevel access level for the user
-  * @returns {Promise<string>} true if registration was successfull, error Message if not
+  * @returns {string} true if registration was successfull, error Message if not
   */
   public registerUser = async (username: string, hashedPassword: string, accessLevel: number = 0): Promise<string> => {
     const { data, error } = await DatabaseModel.CLIENT
@@ -229,7 +229,7 @@ export class DatabaseModel {
   * This method removes a target user from the database
   * @param {string} userToken user token to verificate delete process
   * @param {string} usernameToDelete username of user to delete
-  * @returns {Promise<boolean>} true if user was deleted, false if not
+  * @returns {boolean} true if user was deleted, false if not
   */
   public deleteUser = async (targetUserId: number): Promise<boolean> => {
     // fetch the supabase database
@@ -253,7 +253,7 @@ export class DatabaseModel {
   * @param {string} token Token to extract username from
   * @param {string} oldPassword contains the old User Password
   * @param {string} newPassword contains the new User Password
-  * @returns {Promise<boolean>} if password was changed -> return true
+  * @returns {boolean} if password was changed -> return true
   */
   public changeUserPassword = async (currentUserID: number, newPassword: string): Promise<boolean> => {
     const { data, error } = await DatabaseModel.CLIENT
@@ -308,7 +308,7 @@ export class DatabaseModel {
   /**
   * This function is used to fetch all ChatKeys from the Database
   * @param token 
-  * @returns Array of all IChatKeys
+  * @returns {IChatKey} Array of all IChatKeys
   */
   public fetchAllChatKeys = async (): Promise<IChatKey[]> => {
     let allChatKeys: IChatKey[] = []
@@ -334,7 +334,7 @@ export class DatabaseModel {
   /**
   * API funciton to get the id of a threeword chatKey
   * @param {string} chatKey the threeword
-  * @returns {Promise<number>} id of threeword
+  * @returns {number>} id of threeword
   */
   public getChatKeyID = async (chatKey: string): Promise<number> => {
 
@@ -983,7 +983,7 @@ export class DatabaseModel {
   /**
   * This function is used to check if a survey is expired or not.
   * @param surveyID the surveyID of the survey to check if it is expired
-  * @returns {Promise<boolean>} true if the survey is expired, false if not
+  * @returns {boolean} true if the survey is expired, false if not
   */
   public isSurveyExpired = async (surveyID: number): Promise<boolean | null> => {
     // fetch the supabase database

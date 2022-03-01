@@ -19,6 +19,10 @@ export interface ChatState {
 
 export interface ChatProps extends WithRouterProps { }
 
+/**
+ * Component Class for Chat Page
+ * @component
+ */
 class Chat extends Component<ChatProps, ChatState> {
   private blockFetchMessages = false;
   private socket: any = null;

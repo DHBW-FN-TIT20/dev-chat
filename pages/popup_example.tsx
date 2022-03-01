@@ -10,8 +10,11 @@ export interface PopupExampleProps {
 }
 
 
-
-export default class PopupExample extends Component<PopupExampleProps, PopupExampleState> {
+/**
+ * Component Class for the PopUp Example
+ * @component
+ */
+  class PopupExample extends Component<PopupExampleProps, PopupExampleState> {
   constructor(props: PopupExampleProps) {
     super(props)
     this.state = {
@@ -42,3 +45,5 @@ export default class PopupExample extends Component<PopupExampleProps, PopupExam
       );
   }
 }
+
+export default PopupExample;

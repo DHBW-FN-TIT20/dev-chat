@@ -3,6 +3,7 @@ import { Command } from "./baseclass";
 
 /**
  * Class for /help Command
+ * @category Command
  */
 export class HelpCommmand extends Command {
   private allCommands;

@@ -7,6 +7,7 @@ import { Command } from "./baseclass";
  * This command is used to report a bug
  * It is triggerd by the command "/report"
  * Pattern: /report <message>
+ * @category Command
  */
 export class ReportCommand extends Command {
     public constructor() {

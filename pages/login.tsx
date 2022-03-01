@@ -19,7 +19,7 @@ export interface LoginProps extends WithRouterProps {
 }
 
 /**
- * @class Login Componet Class
+ * Login Component Class
  * @component
  */
 class Login extends Component<LoginProps, LoginState> {

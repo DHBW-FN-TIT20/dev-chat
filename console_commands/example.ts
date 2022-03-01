@@ -3,6 +3,7 @@ import { Command } from "./baseclass";
 
 /**
   * Example how to 
+ * @category Command
   */
 export class ExampleCommand extends Command {
     public constructor() {

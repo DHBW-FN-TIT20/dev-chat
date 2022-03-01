@@ -1,0 +1,53 @@
+  {
+    "tags": {
+      "allowUnknownTags": [
+        "component",
+        "optional",
+        "category",
+        "subcategory"
+      ],
+      "dictionaries": [
+        "jsdoc",
+        "closure"
+      ]
+    },
+    "source": {
+      "include": [
+        "pages",
+        "shared",
+        "controller",
+        "console_commands",
+        "components"
+      ],
+      "includePattern": "\\.(jsx|js|ts|tsx)$",
+      "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": [
+      "plugins/markdown",
+      "node_modules/better-docs/component",
+      "node_modules/better-docs/typescript",
+      "node_modules/better-docs/category"
+    ],
+    "templates": {
+      "better-docs": {
+        "name": "DevChat JSDoc Documentation",
+        "title": "DevChat",
+        "navLinks": [
+          {
+              "label": "Github",
+              "href": "https://github.com/DHBW-FN-TIT20/dev-chat"
+          },
+          {
+              "label": "Link to Application",
+              "href": "dev-chat.me"
+          }
+        ]
+      }
+    },
+    "opts": {
+      "destination": "docs",
+      "recurse": true,
+      "readme": "README.md",
+      "template": "node_modules/better-docs"
+    }
+  }
