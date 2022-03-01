@@ -15,6 +15,7 @@ export interface ChatState {
   isLoggedIn: boolean,
   isChatKeyValid: boolean,
   messages: IChatMessage[],
+  isSendingMessage: boolean,
 }
 
 export interface ChatProps extends WithRouterProps { }
@@ -27,12 +28,14 @@ class Chat extends Component<ChatProps, ChatState> {
   private chatLineInput: string = "";
   private historyMessage: string[] = ["",];
   private historyIndex: number = 0;
+  private chatLine: any;
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       isLoggedIn: false,
       isChatKeyValid: false,
       messages: [],
+      isSendingMessage: false,
     }
 
   }
@@ -155,7 +158,13 @@ class Chat extends Component<ChatProps, ChatState> {
       this.historyMessage.push("");
       this.historyIndex = this.historyMessage.length -1;
       console.log("Entered new Message: " + this.chatLineInput);
-      FrontEndController.enteredNewMessage(this.chatLineInput);
+      this.setState({isSendingMessage: true});
+      this.chatLine.style.color = "gray";
+      await FrontEndController.enteredNewMessage(this.chatLineInput);
+      this.setState({isSendingMessage: false});
+      this.chatLine.style.color = "white";
+      this.chatLine.focus();
+      document.getElementById("chatLineInput")?.focus();
       event.target.value = "";
       this.chatLineInput = "";
     }
@@ -249,12 +258,16 @@ class Chat extends Component<ChatProps, ChatState> {
                 </table>
               </div>
               <input 
+                key={"chatLineInput"}
                 className={styles.chatBox} 
                 type="text" placeholder="Write a message..." 
                 onKeyPress={this.handleEnterKeyPress} 
                 onChange={this.handleChatLineInput}
                 onKeyDown={this.handleKeyDown}
+                disabled={this.state.isSendingMessage}
+                ref={(input) => { this.chatLine = input; }} 
               />
+
             </div>
             
           </main>
