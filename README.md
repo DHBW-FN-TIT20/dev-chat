@@ -32,7 +32,7 @@ To chat with others simply visit the website of [DEV-CHAT](dev-chat.me), create 
 
 ## Authors 
 
- - Johannes Brandenburger / [github](https://github.com/johannesbrandenburger) / [E-mail](johannes0709@icloud.com)
+ - Johannes Brandenburger / [github](https://github.com/johannesbrandenburger) / [E-mail](johannes@brandenburger.dev)
  - Lukas Braun / [github](https://github.com/lukbra0108) / [E-mail]()
  - Henry Schuler / [github](https://github.com/schuler-henry) / [email]()
  - Jan Brutscher / [github](https://github.com/withernext) / [E-mail](janbrutscher@gmail.com)
