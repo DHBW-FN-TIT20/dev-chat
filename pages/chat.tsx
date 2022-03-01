@@ -159,10 +159,8 @@ class Chat extends Component<ChatProps, ChatState> {
       this.historyIndex = this.historyMessage.length -1;
       console.log("Entered new Message: " + this.chatLineInput);
       this.setState({isSendingMessage: true});
-      this.chatLine.style.color = "gray";
       await FrontEndController.enteredNewMessage(this.chatLineInput);
       this.setState({isSendingMessage: false});
-      this.chatLine.style.color = "white";
       this.chatLine.focus();
       document.getElementById("chatLineInput")?.focus();
       event.target.value = "";
@@ -265,7 +263,10 @@ class Chat extends Component<ChatProps, ChatState> {
                 onChange={this.handleChatLineInput}
                 onKeyDown={this.handleKeyDown}
                 disabled={this.state.isSendingMessage}
-                ref={(input) => { this.chatLine = input; }} 
+                style={{
+                  color: this.state.isSendingMessage ? "#9b9b9b" : "white",
+                }}
+                ref={(inputElement) => { this.chatLine = inputElement; }} 
               />
 
             </div>
