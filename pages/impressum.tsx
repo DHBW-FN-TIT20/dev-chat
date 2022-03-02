@@ -65,7 +65,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
               88316 Isny <br />
               <br />
               Tel: +49 163 7292914 <br />
-              E-Mail: devchat.contact@gmail.com <br />
+              E-Mail: contact@dev-chat.me <br />
             </p>
             <br></br>
             <h1>Datenschutzerklärung</h1> 
@@ -79,7 +79,7 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
   88316 Isny <br />
   <br />
   Tel: +49 163 7292914 <br />
-  E-Mail: devchat.contact@gmail.com <br />
+  E-Mail: contact@dev-chat.me <br />
   </p>
 
 <h2>Ihre Betroffenenrechte</h2> 
@@ -272,7 +272,7 @@ Wir stellen kein Kontaktformular auf dieser Webseite bereit. Falls sie dennoch w
   88316 Isny <br />
   <br />
   Tel: +49 163 7292914 <br />
-  E-Mail: devchat.contact@gmail.com <br />
+  E-Mail: contact@dev-chat.me <br />
   </p>
 
 <h2>Änderung unserer Datenschutzbestimmungen</h2> 
@@ -290,7 +290,7 @@ Wir stellen kein Kontaktformular auf dieser Webseite bereit. Falls sie dennoch w
   88316 Isny <br />
   <br />
   Tel: +49 163 7292914 <br />
-  E-Mail: devchat.contact@gmail.com <br /><br />
+  E-Mail: contact@dev-chat.me <br /><br />
 </p> 
 
 <p><em>Die Datenschutzerklärung wurde mithilfe der activeMind AG erstellt, den Experten für <a href="https://www.activemind.de/datenschutz/datenschutzbeauftragter/">externe Datenschutzbeauftragte</a> (Version #2020-09-30).</em></p> 
