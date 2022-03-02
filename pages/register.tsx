@@ -288,9 +288,9 @@ class Register extends Component<RegisterProps, RegisterState> {
     const atLeastOneNumber: boolean = password.match(/[0-9]/) ? true : false;
     const atLeastOneUppercaseLetter: boolean = password.match(/[A-Z]/) ? true : false;
     const atLeastOneLowercaseLetter: boolean = password.match(/[a-z]/) ? true : false;
-    const specialCharacters = "!*#,;?+-_.=~^%(){}|:\"/";
-    const atLeastOneSpecialCharacter: boolean = password.match(new RegExp(`[${specialCharacters}]`)) ? true : false;
-    const onlyValidCharacters: boolean = password.match('^[a-z,A-Z,0-9,!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-]*$') ? true : false;
+    const specialCharacters = `!*#,;?+-_.=~^%(){}|:"/`;
+    const atLeastOneSpecialCharacter: boolean = password.match(/[!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/]/) ? true : false;
+    const onlyValidCharacters: boolean = password.match('^[a-z,A-Z,0-9,!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/]*$') ? true : false;
 
     if (atLeast8Characters && atLeastOneNumber && atLeastOneUppercaseLetter && atLeastOneLowercaseLetter && atLeastOneSpecialCharacter && onlyValidCharacters) {
       return feedbackMessage;
