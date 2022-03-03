@@ -6,6 +6,7 @@ import React, { Component } from 'react'
 import Header from '../components/header'
 import FrontEndController from '../controller/frontEndController'
 import Popup  from '../components/popup';
+import { checkPasswordOnRegex } from '../shared/check_password_regex'
 
 export interface PasswordState {
   isLoggedIn: boolean,
@@ -112,6 +113,13 @@ class Password extends Component<PasswordProps, PasswordState> {
     console.log("updateFeedbackMessage()");
     console.table({ oldPasswordIsCorrect, inputOldPassword, inputNewPassword, inputConfirmPassword });
     let feedBackMessage: string = "";
+
+    const regexFeedbackMessage: string = checkPasswordOnRegex(inputNewPassword);
+    if (regexFeedbackMessage !== "" && inputNewPassword !== "") {
+      feedBackMessage = regexFeedbackMessage;
+      this.setState({ feedBackMessage: feedBackMessage });
+      return;
+    }
 
     if (!oldPasswordIsCorrect) {
       feedBackMessage = "Old password is incorrect or the new password doesn't match the requirements";
