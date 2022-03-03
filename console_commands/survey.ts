@@ -30,7 +30,7 @@ export class SurveyCommand extends Command {
 
     // check if there are at least 4 arguments
     // if arguments are not valid, return an empty array to indicate that the command was not executed successfully
-    if (args.length < 5 || expirationDate === null) {
+    if (args.length < 5 || expirationDate === null || args[0].replace(/\s/g, "") === "") {
       return [];
     }
 

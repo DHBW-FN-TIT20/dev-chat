@@ -599,7 +599,11 @@ export class BackEndController {
   * @param {number} userId the Id of the User
   * @returns {Promise<boolean>} a promise that resolves to an boolean that the command or message was executed succesfully.
   */
-   public async handleSaveChatMessage(message: string, keyword: string, userToken: string): Promise<boolean> {
+  public async handleSaveChatMessage(message: string, keyword: string, userToken: string): Promise<boolean> {
+    if (message.replace(/\s/g, "") === "") {
+      return false;
+    }
+
     const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
 
     if (chatKey === undefined) {
