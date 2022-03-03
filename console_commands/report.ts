@@ -23,6 +23,10 @@ export class ReportCommand extends Command {
 
     const message = args.join(" ");
 
+    if (message.replace(/\s/g, "") === "") {
+      return answerLines;
+    }
+
     // add the ticket to the database
     const addedTicket: IBugTicket = databaseModel.getIBugTicketFromResponse(await databaseModel.addTicket(currentUser.id, message))[0];
 
