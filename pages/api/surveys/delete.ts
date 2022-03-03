@@ -2,21 +2,23 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to remove a survey from the database
+ * This is an api route to remove a survey from the database
  * @param req the request object (body: userToken, surveyIDToDelete)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory Survey
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let surveyIDToDelete = req.body.surveyIDToDelete;
+export default async function deleteSurveyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const surveyIDToDelete: number = req.body.surveyIDToDelete;
 
-  let wasSuccessfull = await backEndController.deleteSurvey(userToken, surveyIDToDelete);
+  const deletedSuccessfully = await BACK_END_CONTROLLER.handleDeleteSurvey(userToken, surveyIDToDelete);
 
-  res.status(200).json({ wasSuccessfull: wasSuccessfull });
+  res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }

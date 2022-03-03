@@ -7,11 +7,10 @@
   right: 0;
   bottom: 0;
   margin: auto;
-  background-color: rgba(0,0,0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-  
-.buttonPopup{
+.buttonPopup {
   cursor: pointer;
   transition: all 0.3s ease-out;
 }
@@ -19,7 +18,7 @@
 .delacc {
   border-bottom: solid black 2px;
   padding: 4pt;
-  height: 30pt; 
+  height: 30pt;
   width: 100%;
 }
 
@@ -64,12 +63,13 @@
 
 @media screen and (max-height: 830px) {
   .popup_inner {
-    height: 50% !important; 
+    height: 50% !important;
   }
 }
+
 @media screen and (max-height: 400px) {
   .popup_inner {
-    height: 70% !important; 
+    height: 70% !important;
   }
 }
 
@@ -106,6 +106,5 @@
     height: 30%;
     position: relative;
     transition: all 3s;
-    
   }
 }

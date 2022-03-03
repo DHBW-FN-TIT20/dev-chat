@@ -1,57 +1,44 @@
 @media screen and (max-width: 900px) {
-    
-    .container {
-        overflow-x: hidden;
-    }
-    .left {
-        margin-top: 20pt;
-        width: 100%;
-        padding-left: 30pt;
-        padding-right: 30pt;
-    }
-    
+  .container {
+    overflow-x: hidden;
+  }
+
+  .left {
+    margin-top: 20pt;
+    width: 100%;
+    padding-left: 30pt;
+    padding-right: 30pt;
+  }
 }
+
 @media screen and (min-width: 900px) {
-    .left {
-        position: absolute;
-        left: 0;
-        top: 50pt;
-        width: 40%;
-        margin: 50pt;
-    }
-    
-    .right {
-        position: absolute;
-        left: 50%;
-        top: 50pt;
-        height: 100%;
-        width: 50%;
-    }
-    .container {
-        overflow-x: hidden;
-    }
-}
-@media screen and (min-width: 1280px) {
-.left {
+  .left {
     position: absolute;
     left: 0;
     top: 50pt;
     width: 40%;
     margin: 50pt;
-}
+  }
 
-.right {
+  .right {
     position: absolute;
     left: 50%;
     top: 50pt;
     height: 100%;
     width: 50%;
-    overflow: hidden;
-}
-.container {
-    height: 100%;
+  }
+
+  .container {
     overflow-x: hidden;
+  }
 }
 
-}
+@media screen and (min-width: 1280px) {
+  .right {
+    overflow: hidden;
+  }
 
+  .container {
+    height: 100%;
+  }
+}

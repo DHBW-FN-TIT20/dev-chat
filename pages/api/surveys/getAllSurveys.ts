@@ -1,31 +1,24 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ISurvey } from "../../../public/interfaces";
-import { DatabaseModel } from "../databaseModel";
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-    allSurveys : ISurvey[];
+  allSurveys: ISurvey[],
 }
 
+const BACK_END_CONTROLLER = new BackEndController();
+
 /**
- * This is a api route to get all Surveys from the Database
+ * This is an api route to get all Surveys from the Database (admin only)
  * @param req the request object (body: userToken)
  * @param res the response object (body: allSurveys)
+ * @category API
+ * @subcategory Survey
  */
-const supabaseConnection = new DatabaseModel();
-const backEndController = new BackEndController();
+export default async function getAllSurveysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
 
+  const surveyData = await BACK_END_CONTROLLER.handleGetAllSurveys(userToken);
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-
-  let userToken: string = req.body.userToken;
-  let userIsValid: boolean = await backEndController.isUserTokenValid(userToken);
-  
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-    }
-    
-  let allSurveys = await supabaseConnection.getAllSurveys();
-
-  res.status(200).json({ allSurveys : allSurveys })
+  res.status(200).json({ allSurveys: surveyData })
 }

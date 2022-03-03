@@ -1,27 +1,24 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IChatKey } from '../../../public/interfaces';
 import { BackEndController } from '../../../controller/backEndController';
-import { DatabaseModel } from '../databaseModel';
 
 type Data = {
-  allChatKeys : IChatKey[];
+  allChatKeys: IChatKey[],
 }
 
-const databaseModel = new DatabaseModel();
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to get all chat keys.
- * @param req the request object 
- * @param res the response object 
+ * This is an api route to get all chat keys.
+ * @param req the request object (body: userToken)
+ * @param res the response object (body: allChatKeys)
+ * @category API
+ * @subcategory ChatKey
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function getChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
 
-  let userToken: string = req.body.userToken;
-  databaseModel.deleteOldChatKeys();
+  const allChatKeys: IChatKey[] = await BACK_END_CONTROLLER.handleGetAllChatKeys(userToken);
 
-  let allChatKeys = await backEndController.fetchAllChatKeys(userToken);
-
-  res.status(200).json({ allChatKeys: allChatKeys});
+  res.status(200).json({ allChatKeys: allChatKeys });
 }
