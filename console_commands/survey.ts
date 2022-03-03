@@ -61,14 +61,14 @@ export class SurveyCommand extends Command {
       survey.ownerID);
 
     answerLines.push("Survey started successfully!");
-    answerLines.push("ID: " + survey.id);
-    answerLines.push("Name: " + survey.name);
-    answerLines.push("Description: " + survey.description);
-    answerLines.push("Expiration Date: " + survey.expirationDate.toLocaleString());
+    answerLines.push("  ID: " + survey.id);
+    answerLines.push("  Name: " + survey.name);
+    answerLines.push("  Description: " + survey.description);
+    answerLines.push("  Expiration Date: " + survey.expirationDate.toLocaleString());
 
     // display the options
     surveyOptions.forEach((option) => {
-      answerLines.push("Option " + option.id + ": " + option.name);
+      answerLines.push("  Option " + option.id + ": " + option.name);
     });
 
     return answerLines;

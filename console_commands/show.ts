@@ -72,7 +72,7 @@ export class ShowCommand extends Command {
       answerLines.push(`${survey.name} ID: ${survey.id} Status: ${(survey.expirationDate < new Date()) ? "expired" : "active"}`);
     }
 
-    answerLines.push(this.callString);
+    answerLines.push(this.helpText);
 
     return answerLines
   }

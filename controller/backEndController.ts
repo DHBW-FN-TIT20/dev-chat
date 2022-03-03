@@ -1,9 +1,8 @@
 //#region Imports
 
 import * as bcrypt from 'bcrypt';
-import jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { IChatKey, IChatMessage, IUser, IBugTicket, ISurveyVote, ISurvey, ISurveyState, ISurveyOption, IFChatMessage } from '../public/interfaces';
-import { ExampleCommand } from '../console_commands/example';
 import { Command } from '../console_commands/baseclass';
 import { splitString } from '../shared/splitstring';
 import { SurveyCommand } from '../console_commands/survey';
@@ -42,7 +41,6 @@ export class BackEndController {
     BackEndController.KEY = process.env.HASH_KEY || '';
     this.commands = [
       // add all command classes here
-      new ExampleCommand,
       new SurveyCommand,
       new VoteCommand,
       new CalcCommand,
