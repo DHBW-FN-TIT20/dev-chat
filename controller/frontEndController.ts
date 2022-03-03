@@ -2,18 +2,19 @@
 
 import jwt from 'jsonwebtoken'
 import { setCookies, getCookie, removeCookies } from 'cookies-next';
-import { IBugTicket, IChatKey, IChatMessage, ISurvey, IUser } from '../public/interfaces';
+import { IBugTicket, IChatKey, ISurvey, IUser, IFChatMessage } from '../public/interfaces';
 
 //#endregion
 
 /**
  * This is the controller of the DEV-CHAT-APP.
+ * @category Controller
  */
 export class FrontEndController {
   //#region Private Variables
 
   private data: any;
-  public chatMessages: IChatMessage[] = [];
+  public chatMessages: IFChatMessage[] = [];
   private chatMessageInterval: any;
   private chatKeyCookieName: string = "DevChat.ChatKey";
 
@@ -63,9 +64,9 @@ export class FrontEndController {
    * @param {number} lastMessageID the id of the last message that was received
    * @returns {Promise<IChatMessage[]>} Fetched messages from database
    */
-  public fetchChatMessages = async (token: string, chatKey: string, lastMessageID: number = 0): Promise<IChatMessage[]> => {
+  public fetchChatMessages = async (token: string, chatKey: string, lastMessageID: number = 0): Promise<IFChatMessage[]> => {
     console.log("DevChatController.fetchChatMessages()");
-    let chatMessages: IChatMessage[] = [];
+    let chatMessages: IFChatMessage[] = [];
 
     let response = await fetch('./api/messages/get_chat_messages', {
       method: 'POST',
@@ -89,7 +90,7 @@ export class FrontEndController {
    * This method updates the data of the chat.
    * @returns {Promise<IChatMessage[]>} The updated chat messages.
    */
-  public async updateChatMessages(): Promise<IChatMessage[]> {
+  public async updateChatMessages(): Promise<IFChatMessage[]> {
     console.log("DevChatController.updateChatMessages()");
     
     // get the highest id of the chat messages to only get the new messages
@@ -101,7 +102,7 @@ export class FrontEndController {
     let userToken = this.getUserToken();
 
     // get the new messages
-    let newMessages: IChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
+    let newMessages: IFChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
 
     // console.log("newMessages: ");
     // console.table(newMessages);
@@ -130,7 +131,7 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("joinRoomMessage(): " + data.messageAddedSuccessfully);
+    console.log("joinRoomMessage(): " + data.wasSuccessfull);
   }
 
   /**
@@ -151,7 +152,7 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("leaveRoomMessage(): " + data.messageAddedSuccessfully);
+    console.log("leaveRoomMessage(): " + data.wasSuccessfull);
   }
 
   /**
@@ -220,18 +221,19 @@ export class FrontEndController {
   public async addChatKey(): Promise<boolean> {
     //Creates new chat Key and adds to DB
     //TODO set Coockie
-    let response = await fetch('./api/chatkeys/add_chat_key', {
+    let response = await fetch('./api/chatkeys/generate', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
     });
     let data = await response.json();
-    console.log("addChatKey(): " + data.wasSuccessfull);
-    if (data.wasSuccessfull == true) {
+    console.log("addChatKey(): " + data.newChatKey);
+    if (data.newChatKey !== "") {
       this.setChatKeyCookie(data.newChatKey);
+      return true;
     }
-    return data.wasSuccessfull;
+    return false;
   }
 
   /**
@@ -297,7 +299,7 @@ export class FrontEndController {
    * @param expirationDate 
    * @returns 
    */
-  public changeSurveyExpirationDate = async (userToken: string, surveyIDToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+  public changeSurveyExpirationDate = async (userToken: string, surveyIDToAlter: number, expirationDate: Date): Promise<boolean> => {
     let response = await fetch('./api/surveys/changeExpiration', {
       method: 'POST',
       headers: {
@@ -367,7 +369,7 @@ export class FrontEndController {
    * @param expirationDate wanted date
    * @returns bool was sucessfull
    */
-  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number | undefined, expirationDate: Date | null): Promise<boolean> => {
+  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number, expirationDate: Date): Promise<boolean> => {
     let response = await fetch('./api/chatkeys/changeExpiration', {
       method: 'POST',
       headers: {
@@ -475,28 +477,6 @@ export class FrontEndController {
 
   //#region User Methods
 
-  /**
-   * This method is used to get a username from a userID
-   * @param userID 
-   * @returns 
-   */
-  public getUserFromID = async (userID: number | undefined): Promise<string> => {
-    let username: string;
-    let response = await fetch('./api/users/getUserFromID', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userID : userID,
-      })
-    });
-    let data = await response.json();
-    username = data.wantedUser;
-    console.log(username);
-    return username;
-  }
-
     /**
      * This Method is used to get an Array of all Users
      * @returns array of all IUsers
@@ -543,7 +523,7 @@ export class FrontEndController {
       * @param usernameToReset 
       * @returns 
       */
-     public resetPassword = async (userToken: string, usernameToReset: string | undefined): Promise<boolean> => {
+     public resetPassword = async (userToken: string, usernameToReset: string): Promise<boolean> => {
       let response = await fetch('./api/users/resetPassword', {
         method: 'POST',
         headers: {
@@ -676,12 +656,12 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("Controller.data.wasSuccessfull " + data.wasSuccessfull)
-    if (data.wasSuccessfull == "True") {
+    console.log("Controller.data.returnString " + data.returnString)
+    if (data.returnString == "True") {
       let controller = new FrontEndController;
       await controller.loginUser(username, password);
     }
-    return data.wasSuccessfull;
+    return data.returnString;
   }
 
   /**
@@ -700,7 +680,7 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    return data.wasSuccessfull;
+    return data.userExists;
   }
 
   //#endregion

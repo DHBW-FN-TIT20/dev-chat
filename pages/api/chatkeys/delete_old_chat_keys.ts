@@ -1,19 +1,22 @@
-import type { NextApiResponse } from 'next'
-import { DatabaseModel } from '../databaseModel';
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   wasSuccessfull: boolean,
 }
 
-const DATABASE_MODEL = new DatabaseModel();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
  * This is an api route to delete old/expired chat keys
+ * @param req the request object (body: empty)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory ChatKey
  */
-export default async function handler(res: NextApiResponse<Data>) {
+export default async function deleteOldChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
-  const deletedSuccessfully: boolean = await DATABASE_MODEL.deleteOldChatKeys();
+  const deletedSuccessfully: boolean = await BACK_END_CONTROLLER.handleDeleteOldChatKeys();
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }

@@ -9,11 +9,16 @@
   .top {
     position: absolute;
     left: 50pt;
-    top: 100pt;
-    height: 85%;
+    /* top: 100pt; */
+    height: inherit;
     width: 50%;
     padding-right: 10pt;
     overflow-y: scroll;
+  }
+
+  .content {
+    margin-top: 5vh;
+    margin-bottom: 5vh;
   }
 
   .right {
@@ -25,7 +30,7 @@
   }
 
   .wrapper {
-    height: 100%;
+    height: calc(100vh - 62pt);
     width: 100%;
     overflow-x: hidden;
     overflow-y: hidden;

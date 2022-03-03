@@ -4,14 +4,17 @@ import { Server as NetServer } from "http";
 import { createClient } from "@supabase/supabase-js";
 import { DatabaseModel } from "../databaseModel";
 import { BackEndController } from '../../../controller/backEndController';
+import { NextApiRequest } from "next";
 
 
 export const CONFIG = { api: { bodyParser: false, }, };
 
 /**
  * This is an api route handler to subscribe to the chat messages table
+ * @category API
+ * @subcategory Message
  */
-export default async function handler(res: NextApiResponseServerIO) {
+export default async function socketHandler(req: NextApiRequest, res: NextApiResponseServerIO) {
 
   // if there is no SocketIO server -> create one
   if (!res.socket.server.io) {
@@ -36,7 +39,7 @@ export default async function handler(res: NextApiResponseServerIO) {
       clients.forEach(async socket => {
         const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address || "";
         const chatKey = socket.handshake.auth.headers["chatKey"] || "";
-        const user = await databaseModel.getIUserByUsername(backEndController.getUsernameFromToken(socket.handshake.auth.headers["userToken"] || "")) || "";
+        const user = databaseModel.getIUserFromResponse(await databaseModel.selectUserTable(undefined, backEndController.getUsernameFromToken(socket.handshake.auth.headers["userToken"] || "")))[0] || "";
         console.log(`↳ ID: ${socket.id}, IP: ${ip}, user: ${user.name} chatKey: ${chatKey}`);
       });
     }
@@ -48,9 +51,9 @@ export default async function handler(res: NextApiResponseServerIO) {
     const ChatMessageSubscription = supabase
       .from('ChatMessage')
       .on('INSERT', async payload => {
-        const chatKey = await databaseModel.getChatKey(payload.new.ChatKeyID);
-        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${chatKey?.threeWord} | User: ${payload.new.UserID}`);
-        io.emit("message", chatKey?.threeWord);
+        const chatKey = databaseModel.getIChatKeyFromResponse(await databaseModel.selectChatKeyTable(payload.new.chatKeyID))[0];
+        console.log(`Change received: Msg: ${payload.new.message} | ChatKey: ${chatKey.keyword} | User: ${payload.new.userID}`);
+        io.emit("message", chatKey.keyword);
       })
       .subscribe()
   }

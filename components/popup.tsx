@@ -5,17 +5,17 @@ export interface PopupState {
 }
 
 export interface PopupProps {
-  headerText: string,
-  textDisplay: string,
-  closePopup: any,
+  headerText: string;
+  textDisplay: string;
+  closePopup: any;
 }
 
 /**
  * Component-Class for the Popup
+ * @category Component
  */
 export class Popup extends Component<PopupProps, PopupState> {
   render() {
-    // console.log(this.props.closePopup);
     return (
       <div className={styles.popup}>
         <div className={styles.popup_inner}>

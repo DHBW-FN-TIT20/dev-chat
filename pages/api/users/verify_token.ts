@@ -11,8 +11,10 @@ const BACK_END_CONTROLLER = new BackEndController();
  * This is an api route to check if a user token is valid
  * @param req the request object (body: token)
  * @param res the response object (body: isVerified)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function verifyTokenHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const token: string = req.body.token;
 
   const isValid = await BACK_END_CONTROLLER.isUserTokenValid(token);

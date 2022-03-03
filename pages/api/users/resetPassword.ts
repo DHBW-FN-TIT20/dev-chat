@@ -11,12 +11,14 @@ const BACK_END_CONTROLLER = new BackEndController();
  * This is an api route to reset the password of a user in the database.
  * @param req the request object (body: userToken, usernameToReset)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function resetPasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const usernameToReset: string = req.body.usernameToReset;
 
-  const resetSuccessfully = await BACK_END_CONTROLLER.resetPassword(userToken, usernameToReset);
+  const resetSuccessfully = await BACK_END_CONTROLLER.handleResetUserPassword(userToken, usernameToReset);
 
   res.status(200).json({ wasSuccessfull: resetSuccessfully });
 }

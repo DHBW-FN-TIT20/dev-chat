@@ -50,6 +50,11 @@ p {
   display: inline;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+  color: white;
+}
+
+ul {
+  color: white;
 }
 
 /** Headlines */

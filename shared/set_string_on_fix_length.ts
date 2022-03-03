@@ -6,12 +6,12 @@
  */
 export function setStringOnFixLength(input: string, fixLength: number): string {
   if (input.length > fixLength) {
-    return input.substring(0, fixLength)
+    return input.substring(0, fixLength);
   } else {
     const spacesToAdd = fixLength - input.length;
     for (let i = 0; i < spacesToAdd; i++) {
-      input += " "
+      input += " ";
     }
-    return input
+    return input;
   }
 }

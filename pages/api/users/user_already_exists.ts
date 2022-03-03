@@ -1,21 +1,23 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { DatabaseModel } from '../databaseModel';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
   userExists: boolean,
 }
 
-const DATABASE_MODEL = new DatabaseModel();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
  * This is an api route to check if a user already exists in the database.
  * @param req the request object (body: username)
  * @param res the response object (body: userExists)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function userAlreadyExistsHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
 
-  const userAlreadyExists: boolean = await DATABASE_MODEL.userAlreadyExists(username);
+  const userAlreadyExists: boolean = await BACK_END_CONTROLLER.handleUserAlreadyExists(username);
 
   res.status(200).json({ userExists: userAlreadyExists });
 }

@@ -11,12 +11,14 @@ const BACK_END_CONTROLLER = new BackEndController();
  * This is an api route to register a new user
  * @param req the request object (body: username, password)
  * @param res the response object (body: returnString)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+export default async function registerHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
   const password: string = req.body.password;
 
-  const userRegisterReturn: string = await BACK_END_CONTROLLER.registerUser(username, password);
+  const userRegisterReturn: string = await BACK_END_CONTROLLER.handleRegisterUser(username, password);
 
   res.status(200).json({ returnString: userRegisterReturn })
 }
