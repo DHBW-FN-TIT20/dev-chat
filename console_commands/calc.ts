@@ -21,18 +21,23 @@ export class CalcCommand extends Command {
     let argsValid: boolean = true;
 
     // check if there is more than one argument
-    if (args.length != 1) {
-      console.log("only one argument please!");
+    if (args.length < 1) {
+      console.log("not enough arguments");
       argsValid = false;
     }
     // if argument is invalid, return nothing
     if (!argsValid) {
       console.log("Argument invalid");
-      return [];
+      return answerLines;
     }
 
     console.log("Executing command: ", this.callString, " with arguments: ", args);
-    const expression: string = args[0];
+    const expression: string = args.join("");
+
+    if (expression.replace(/\s/g, "") === "") {
+      return answerLines;
+    }
+
     try {
       console.log(eval(expression));
       answerLines.push(String("Your Answer is: " + eval(expression)));
