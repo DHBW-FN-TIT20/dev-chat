@@ -18,7 +18,9 @@ export interface ChatState {
 export interface ChatProps extends WithRouterProps { }
 
 /**
- * @category Page
+ * Class/Component for the Chat Page
+ * @component
+ * @category Pages
  */
 class Chat extends Component<ChatProps, ChatState> {
   private blockFetchMessages = false;

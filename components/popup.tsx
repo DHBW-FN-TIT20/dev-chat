@@ -12,9 +12,10 @@ export interface PopupProps {
 
 /**
  * Component-Class for the Popup
+ * @component
  * @category Component
  */
-export class Popup extends Component<PopupProps, PopupState> {
+class Popup extends Component<PopupProps, PopupState> {
   render() {
     return (
       <div className={styles.popup}>
@@ -36,3 +37,5 @@ export class Popup extends Component<PopupProps, PopupState> {
     );
   }
 }
+
+export default Popup;

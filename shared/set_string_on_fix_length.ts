@@ -3,6 +3,7 @@
  * If the string is bigger than the fixLength it is cut.
  * If not, the missing chars are filled with spaces. 
  * @returns input with fix length
+ * @category Helper
  */
 export function setStringOnFixLength(input: string, fixLength: number): string {
   if (input.length > fixLength) {

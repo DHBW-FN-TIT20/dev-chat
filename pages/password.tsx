@@ -5,7 +5,7 @@ import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 import Header from '../components/header'
 import FrontEndController from '../controller/frontEndController'
-import { Popup } from '../components/popup';
+import Popup  from '../components/popup';
 
 export interface PasswordState {
   isLoggedIn: boolean,
@@ -20,7 +20,9 @@ export interface PasswordState {
 export interface PasswordProps extends WithRouterProps { }
 
 /**
- * @category Page
+ * Component for the Password Change Page
+ * @component
+ * @category Pages
  */
 class Password extends Component<PasswordProps, PasswordState> {
   constructor(props: PasswordProps) {

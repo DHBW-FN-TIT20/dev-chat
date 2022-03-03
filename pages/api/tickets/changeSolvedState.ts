@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Ticket
  */
-export default async function changeSolvedStateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function changeSolvedStateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const currentToken: string = req.body.currentToken;
   const ticketID: number = req.body.ticketID;
   const currentState: boolean = req.body.currentState;
@@ -23,3 +23,4 @@ export default async function changeSolvedStateHandler(req: NextApiRequest, res:
 
   res.status(200).json({ wasSuccessfull: changedSuccessfully });
 }
+export default changeSolvedStateHandler;

@@ -20,8 +20,9 @@ export interface RegisterState {
 export interface RegisterProps extends WithRouterProps { }
 
 /**
- * @class Class of the register Component
- * @category Page
+ * Class/Component for the Register Page
+ * @component
+ * @category Pages
  */
 class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {

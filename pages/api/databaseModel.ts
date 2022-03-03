@@ -27,6 +27,11 @@ export class DatabaseModel {
 
   //#region Universal Methods
 
+  /**
+   * Checks if DB-Response is sucessfull
+   * @param dbResponse Response of DB
+   * @returns {boolean} if Response Sucessful
+   */
   evaluateSuccess(dbResponse: PostgrestResponse<any>): boolean {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       console.log(dbResponse.error)
@@ -39,6 +44,11 @@ export class DatabaseModel {
 
   //#region User Methods
 
+  /**
+   * Gets der IUserFromResponse
+   * @param dbResponse Response of Database
+   * @returns {IUser} UserInterface
+   */
   getIUserFromResponse(dbResponse: PostgrestResponse<IUser>): IUser[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       return [];
@@ -54,11 +64,11 @@ export class DatabaseModel {
 
   /**
    * This is a universal select function for the user database
-   * @param userID Filter userID
+   * @param userID  Filter userID
    * @param username Filter username
    * @param password Filter password (hash)
    * @param accessLevel Filter accessLevel
-   * @returns DB result as list of IUser objects
+   * @returns {Promise<PostgrestResponse<IUser>>} DB result as list of IUser objects
    */
   async selectUserTable(userID?: number, username?: string, hashedPassword?: string, accessLevel?: number): Promise<PostgrestResponse<IUser>> {
     let idColumnName = "";
@@ -84,8 +94,7 @@ export class DatabaseModel {
 
   /**
    * This function is used to fetch all Users from the Database
-   * @param token 
-   * @returns Array of all IUsers
+   * @returns {Promise<PostgrestResponse<IUser>>} Array of all IUsers
    */
   async fetchAllUsersAlphabeticalAndAccess(): Promise<PostgrestResponse<IUser>> {
     const userResponse = await DatabaseModel.CLIENT
@@ -102,7 +111,7 @@ export class DatabaseModel {
   * @param {string} user username to register
   * @param {string} password password for the user
   * @param {number} accessLevel access level for the user
-  * @returns {Promise<string>} true if registration was successfull, error Message if not
+  * @returns {string} true if registration was successfull, error Message if not
   */
   public async addUser(username: string, hashedPassword: string, accessLevel: number = 0): Promise<PostgrestResponse<IUser>> {
     const addedUser = await DatabaseModel.CLIENT
@@ -570,6 +579,11 @@ export class DatabaseModel {
     return addedSurveyOptions;
   }
 
+  /**
+   * 
+   * @param vote 
+   * @returns 
+   */
   public async addSurveyVote(vote: ISurveyVote): Promise<PostgrestResponse<ISurveyVote>> {
     const addedSurveyVote = await DatabaseModel.CLIENT
       .from('SurveyVote')
@@ -582,10 +596,10 @@ export class DatabaseModel {
 
   /**
    * change the expiration Date of a certain survey inside supabase
-   * @param token 
+   * @param id {int}  
    * @param surveyID 
    * @param newExpirationDate 
-   * @returns bool if sucessfull
+   * @returns {bool} if sucessfull
    */
   public async changeSurveyExpirationDate(id: number, newExpirationDate: Date): Promise<PostgrestResponse<ISurvey>> {
     const updatedSurvey = await DatabaseModel.CLIENT
@@ -600,7 +614,7 @@ export class DatabaseModel {
    * deletes a survey inside supabase
    * @param userToken 
    * @param surveyIDToDelete 
-   * @returns bool if sucessfull
+   * @returns {bool} if sucessfull
    */
    public async deleteSurvey(id: number): Promise<PostgrestResponse<ISurvey>> {
     const deletedSurvey = await DatabaseModel.CLIENT
@@ -614,7 +628,7 @@ export class DatabaseModel {
   /**
    * deletes a survey inside supabase
    * @param surveyIDToDelete 
-   * @returns bool if sucessfull
+   * @returns {bool} if sucessfull
    */
   public async deleteSurveyOption(surveyID: number): Promise<PostgrestResponse<ISurveyOption>> {
     const deletedSurveyOption = await DatabaseModel.CLIENT
@@ -628,7 +642,7 @@ export class DatabaseModel {
   /**
    * function that deletes all votes of a certain survey
    * @param surveyIDToDelete 
-   * @returns bool if sucessfull
+   * @returns {bool} if sucessfull
    */
   public async deleteSurveyVote(surveyID: number): Promise<PostgrestResponse<ISurveyVote>> {
     const deletedSurveyVote = await DatabaseModel.CLIENT

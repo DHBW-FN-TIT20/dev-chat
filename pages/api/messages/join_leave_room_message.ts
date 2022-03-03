@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Message
  */
-export default async function joinLeaveRoomMessageHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function joinLeaveRoomMessageHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const chatKey: string = req.body.chatKey;
   const joinOrLeave: string = req.body.joinOrLeave;
@@ -23,3 +23,4 @@ export default async function joinLeaveRoomMessageHandler(req: NextApiRequest, r
 
   res.status(200).json({ wasSuccessfull: messageAddedSuccessfully });
 }
+export default joinLeaveRoomMessageHandler;

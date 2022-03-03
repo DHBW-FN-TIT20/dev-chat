@@ -29,6 +29,7 @@
       "node_modules/better-docs/category"
     ],
     "templates": {
+      "search": true,
       "better-docs": {
         "name": "DevChat JSDoc Documentation",
         "title": "DevChat",

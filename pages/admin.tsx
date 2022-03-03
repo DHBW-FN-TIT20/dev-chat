@@ -20,7 +20,9 @@ export interface AdminState {
 export interface AdminProps extends WithRouterProps { }
 
 /**
- * @category Page
+ * Class/Component for the Admin Page
+ * @component
+ * @category Pages
  */
 class Admin extends Component<AdminProps, AdminState> {
   private inputChatKey = "";

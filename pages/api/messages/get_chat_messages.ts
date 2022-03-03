@@ -15,15 +15,13 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Message
  */
-export default async function getChatMessagesHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function getChatMessagesHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const chatKey: string = req.body.chatKey;
   const lastMessageID: number = req.body.lastMessageID;
   // console.log("Get_CHAT_MESSAGE")
   const chatMessages: IFChatMessage[] = await BACK_END_CONTROLLER.handleGetChatMessages(userToken, chatKey, lastMessageID);
-
   // console.log(JSON.stringify(chatMessages))
-  
-
   res.status(200).json({ chatMessages: chatMessages });
 }
+export default getChatMessagesHandler;

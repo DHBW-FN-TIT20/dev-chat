@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
  */
-export default async function addCustomChatKeyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+ async function addCustomChatKeyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const customChatKey: string = req.body.customChatKey;
 
@@ -22,3 +22,4 @@ export default async function addCustomChatKeyHandler(req: NextApiRequest, res: 
 
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
+export default addCustomChatKeyHandler;

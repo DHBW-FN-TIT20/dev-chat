@@ -1,5 +1,6 @@
 /**
  * This function generates a string of three random english words.
+ * @category Helper
  */
 export function getThreeWords(): string {
 

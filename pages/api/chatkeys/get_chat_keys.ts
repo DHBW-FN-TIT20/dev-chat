@@ -15,10 +15,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
  */
-export default async function getChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function getChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
 
   const allChatKeys: IChatKey[] = await BACK_END_CONTROLLER.handleGetAllChatKeys(userToken);
 
   res.status(200).json({ allChatKeys: allChatKeys });
 }
+export default getChatKeysHandler;

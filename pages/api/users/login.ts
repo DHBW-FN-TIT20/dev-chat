@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function loginHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function loginHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
   const password: string = req.body.password;
 
@@ -22,3 +22,4 @@ export default async function loginHandler(req: NextApiRequest, res: NextApiResp
 
   res.status(200).json({ userToken: token })
 }
+export default loginHandler;

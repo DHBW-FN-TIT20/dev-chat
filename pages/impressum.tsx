@@ -10,9 +10,11 @@ export interface ImpressumState {
 export interface ImpressumProps { }
 
 /**
- * @category Page
+ * Class/Component for the Impressum Page
+ * @component
+ * @category Pages
  */
-export default class Impressum extends Component<ImpressumProps, ImpressumState> {
+class Impressum extends Component<ImpressumProps, ImpressumState> {
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
@@ -310,3 +312,4 @@ export default class Impressum extends Component<ImpressumProps, ImpressumState>
     )
   }
 }
+export default Impressum;

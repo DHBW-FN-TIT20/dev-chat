@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function deleteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function deleteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const usernameToDelete: string = req.body.usernameToDelete;
 
@@ -22,3 +22,4 @@ export default async function deleteUserHandler(req: NextApiRequest, res: NextAp
 
   res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }
+export default deleteUserHandler;

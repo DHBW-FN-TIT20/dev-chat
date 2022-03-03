@@ -14,9 +14,10 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
  */
-export default async function deleteOldChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function deleteOldChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
   const deletedSuccessfully: boolean = await BACK_END_CONTROLLER.handleDeleteOldChatKeys();
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }
+export default deleteOldChatKeysHandler;

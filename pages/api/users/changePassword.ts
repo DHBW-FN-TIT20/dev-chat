@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function changePasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function changePasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const newPassword: string = req.body.newPassword;
   const oldPassword: string = req.body.oldPassword;
@@ -23,3 +23,4 @@ export default async function changePasswordHandler(req: NextApiRequest, res: Ne
 
   res.status(200).json({ wasSuccessfull: changedSuccesfully });
 }
+export default changePasswordHandler;

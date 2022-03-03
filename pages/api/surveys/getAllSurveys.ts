@@ -15,10 +15,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Survey
  */
-export default async function getAllSurveysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function getAllSurveysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
 
   const surveyData = await BACK_END_CONTROLLER.handleGetAllSurveys(userToken);
 
   res.status(200).json({ allSurveys: surveyData })
 }
+export default getAllSurveysHandler;

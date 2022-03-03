@@ -16,8 +16,9 @@ export interface MainState {
 export interface MainProps extends WithRouterProps { }
 
 /**
- * Component-Class for the main Page
- * @category Page
+ * Class/Component for the Main Page
+ * @component
+ * @category Pages
  */
 class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {

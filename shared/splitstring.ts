@@ -6,6 +6,7 @@
  * If there is a quotation mark standing alone, the input string is not valid.
  * Therefore, the function returns an empty array.
  * @returns The array of strings.
+ * @category Helper
  */
 export function splitString(str: string): string[] {
   let result: string[] = [];
