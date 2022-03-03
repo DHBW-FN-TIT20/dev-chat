@@ -494,7 +494,7 @@ export class BackEndController {
   public async addChatKey(chatKey: string): Promise<boolean> {
     const chatKeyExists:boolean = this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey))
   
-    if (chatKeyExists) {
+    if (chatKeyExists || chatKey.replace(/\s/g, "") === "") {
       return false;
     }
 
@@ -699,12 +699,6 @@ export class BackEndController {
    */
    public async handleDeleteSurvey(userToken: string, surveyIDToDelete: number): Promise<boolean> {
     if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
-      if (!this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurveyOption(surveyIDToDelete))) {
-        return false;
-      }
-      if (!this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurveyVote(surveyIDToDelete))) {
-        return false;
-      }
       return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurvey(surveyIDToDelete));
     }
     return false;

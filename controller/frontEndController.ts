@@ -322,7 +322,7 @@ export class FrontEndController {
       * @param surveyIDToDelete  - ID of the survey that should be deleted
       * @returns 
       */
-     public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+     public deleteSurvey = async (userToken: string, surveyIDToDelete: number): Promise<boolean> => {
       let response = await fetch('./api/surveys/delete', {
         method: 'POST',
         headers: {
