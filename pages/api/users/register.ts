@@ -2,15 +2,23 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: string;
+  returnString: string,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let password = req.body.password;
-  let userRegisterReturn: string = ""
-    userRegisterReturn = await backEndController.registerUser(username, password);
-  res.status(200).json({ wasSuccessfull: userRegisterReturn})
+/**
+ * This is an api route to register a new user
+ * @param req the request object (body: username, password)
+ * @param res the response object (body: returnString)
+ * @category API
+ * @subcategory User
+ */
+export default async function registerHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const username: string = req.body.username;
+  const password: string = req.body.password;
+
+  const userRegisterReturn: string = await BACK_END_CONTROLLER.handleRegisterUser(username, password);
+
+  res.status(200).json({ returnString: userRegisterReturn })
 }

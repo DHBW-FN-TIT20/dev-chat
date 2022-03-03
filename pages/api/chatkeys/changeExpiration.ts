@@ -2,22 +2,24 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to remove a survey from the database
- * @param req the request object (body: userToken, surveyIDToDelete)
+ * This is an api route to change the expirationdate of a chat
+ * @param req the request object (body: userToken, chatKeyToAlter, expirationDate)
  * @param res the response object (body: wasSuccessfull)
- */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let chatKeyToAlter = req.body.chatKeyToAlter;
-  let expirationDate = req.body.expirationDate;
+ * @category API
+ * @subcategory ChatKey
+*/
+export default async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const chatKeyToAlter: number = req.body.chatKeyToAlter;
+  const expirationDate: Date = req.body.expirationDate;
+console.log(expirationDate)
+  const addedSucessfully = await BACK_END_CONTROLLER.handleChangeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
 
-  let wasSuccessfull = await backEndController.changeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
-
-  res.status(200).json({ wasSuccessfull: wasSuccessfull });
+  res.status(200).json({ wasSuccessfull: addedSucessfully });
 }

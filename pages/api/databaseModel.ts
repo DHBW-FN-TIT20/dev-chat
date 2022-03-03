@@ -1,14 +1,14 @@
 //#region Imports
 
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { IChatKey, IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser, IBugTicket } from '../../public/interfaces';
+import { createClient, PostgrestResponse, SupabaseClient } from '@supabase/supabase-js';
+import { IChatKey, IChatMessage, ISurvey, ISurveyVote, IUser, IBugTicket, ISurveyOption } from '../../public/interfaces';
 
 //#endregion
 
 /**
  * This is the connection to the supabase database.
- * All the api routes should lead to this class.
  * The methods of the class are used to get/post data from/to the database.
+ * @category API
  */
 export class DatabaseModel {
 
@@ -25,22 +25,61 @@ export class DatabaseModel {
 
   //#endregion
 
-  //#region User Methods
+  //#region Universal Methods
 
-  /** 
-  * This function is used to reset the password of a user
-  */
-  public resetPassword = async (hashedResetPassword: string, resetID: number): Promise<boolean> => {
-    const UpdateStatus = await DatabaseModel.CLIENT
-      .from('User')
-      .update({ Password: hashedResetPassword })
-      .eq('UserID', resetID);
-
-    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log("Something went wrong while trying to reset the password!");
+  evaluateSuccess(dbResponse: PostgrestResponse<any>): boolean {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      console.log(dbResponse.error)
       return false;
     }
     return true;
+  }
+
+  //#endregion
+
+  //#region User Methods
+
+  getIUserFromResponse(dbResponse: PostgrestResponse<IUser>): IUser[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      return [];
+    }
+
+    const allUsers: IUser[] = [];
+
+    for (const user of dbResponse.data) {
+      allUsers.push({ id: user.id, name: user.name, hashedPassword: user.hashedPassword, accessLevel: user.accessLevel })
+    }
+    return allUsers;
+  }
+
+  /**
+   * This is a universal select function for the user database
+   * @param userID Filter userID
+   * @param username Filter username
+   * @param password Filter password (hash)
+   * @param accessLevel Filter accessLevel
+   * @returns DB result as list of IUser objects
+   */
+  async selectUserTable(userID?: number, username?: string, hashedPassword?: string, accessLevel?: number): Promise<PostgrestResponse<IUser>> {
+    let idColumnName = "";
+    let usernameColumnName = "";
+    let passwordColumnName = "";
+    let accessLevelColumnName = "";
+
+    if (!(userID === undefined) && !isNaN(userID)) idColumnName = "id";
+    if (!(username === undefined)) usernameColumnName = "name";
+    if (!(hashedPassword === undefined)) passwordColumnName = "hashedPassword";
+    if (!(accessLevel === undefined) && !isNaN(accessLevel)) accessLevelColumnName = "accessLevel";
+
+    const userResponse = await DatabaseModel.CLIENT
+      .from('User')
+      .select()
+      .eq(idColumnName, userID)
+      .eq(usernameColumnName, username)
+      .eq(passwordColumnName, hashedPassword)
+      .eq(accessLevelColumnName, accessLevel);
+
+    return userResponse;
   }
 
   /**
@@ -48,162 +87,43 @@ export class DatabaseModel {
    * @param token 
    * @returns Array of all IUsers
    */
-  public fetchAllUsers = async (): Promise<IUser[]> => {
-    let allUsers: IUser[] = []
-    let UserResponse = await DatabaseModel.CLIENT
-      .from('User')
-      .select('UserID,Username,AccessLevel')
-
-    if (UserResponse.data === null || UserResponse.error !== null || UserResponse.data.length === 0) {
-      console.log("Unknown Error, please contact support.")
-      return allUsers;
-    }
-    allUsers = UserResponse.data.map(allUser => {
-      return {
-        id: allUser.UserID,
-        name: allUser.Username,
-        accessLevel: allUser.AccessLevel,
-      }
-    })
-    return allUsers;
-  }
-
-  /**
-  * This helper function is used to get the userID of a user by username
-  * @param {string} username the username of the user
-  * @returns {Promise<number>} the userID of the user
-  */
-  public getUserIDByUsername = async (username: string | undefined): Promise<number> => {
-    // fetch the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
+  async fetchAllUsersAlphabeticalAndAccess(): Promise<PostgrestResponse<IUser>> {
+    const userResponse = await DatabaseModel.CLIENT
       .from('User')
       .select()
-      .match({ Username: username });
+      .order("accessLevel", { ascending: false })
+      .order("name", { ascending: true })
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-
-      // user was not found -> return NaN
-      return NaN;
-    } else {
-      // user was removed -> return true
-      return data[0].UserID;
-    }
+    return userResponse;
   }
-
-  /**
-* This helper function is used to get the username of a user by userID
-* @param {string} userID the id of the user
-* @returns {Promise<number>} the username of the user
-*/
-  public getUsernameByUserID = async (userID: number | undefined): Promise<string | undefined> => {
-    // fetch the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('User')
-      .select('Username')
-      .eq('UserID', userID);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // user was not found -> return undefined
-      return undefined;
-    } else {
-      return data[0].Username;
-    }
-  }
-
-  /**
-  * This method returns all user informations for the given username
-  * @param username the username of the user
-  * @returns {Promise<IUser>} the user object containing all information
-  */
-  public getIUserByUsername = async (username: string): Promise<IUser> => {
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('User')
-      .select()
-      .match({ Username: username });
-
-    let user: IUser = {};
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // user was not found -> return empty IUser
-      return user;
-    } else {
-      // user was found -> return IUser
-      user = { id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel };
-      return user;
-    }
-  }
-
-
-  /**
-  * This method returns all user informations for the given userID 
-  * @param {number} userID the userID of the user
-  * @returns {Promise<IUser>} the user object containing all information
-  */
-  public getIUserByUserID = async (userID: number): Promise<IUser> => {
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('User')
-      .select()
-      .match({ UserID: userID });
-
-    let user: IUser = {};
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // user was not found -> return empty IUser
-      return user;
-    } else {
-      // user was found -> return IUser
-      user = { id: data[0].UserID, name: data[0].Username, hashedPassword: data[0].Password, accessLevel: data[0].AccessLevel };
-      return user;
-    }
-  }
-
-  /** 
-  * API function to check if the username and the password are correct 
-  * @param {string} username the username to check
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username already exists
-  */
-  public userAlreadyExists = async (username: string): Promise<boolean> => {
-
-    // fetch the data from the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('User')
-      .select()
-      .eq('Username', username);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-
-      // no users found -> user does not exist -> return false
-      return false;
-    } else {
-      // user exists -> return true
-      return true;
-    }
-  };
 
   /**
   * API function to register a user
   * @param {string} user username to register
   * @param {string} password password for the user
   * @param {number} accessLevel access level for the user
-  * @returns {string} true if registration was successfull, error Message if not
+  * @returns {Promise<string>} true if registration was successfull, error Message if not
   */
-  public registerUser = async (username: string, hashedPassword: string, accessLevel: number = 0): Promise<string> => {
-    const { data, error } = await DatabaseModel.CLIENT
+  public async addUser(username: string, hashedPassword: string, accessLevel: number = 0): Promise<PostgrestResponse<IUser>> {
+    const addedUser = await DatabaseModel.CLIENT
       .from('User')
       .insert([
-        { Username: username, Password: hashedPassword, "AccessLevel": accessLevel },
+        { name: username, hashedPassword: hashedPassword, accessLevel: accessLevel },
       ]);
 
-    if (data === null || error !== null || data.length === 0) {
-      return "False";
-    }
-    else {
-      console.log("User registered:", username);
-      return "True";
-    }
+    return addedUser;
+  }
+
+  /** 
+  * This function is used to reset the password of a user
+  */
+  public async changeUserPassword(newHashedPassword: string, userID: number): Promise<PostgrestResponse<IUser>> {
+    const updatedUser = await DatabaseModel.CLIENT
+      .from('User')
+      .update({ hashedPassword: newHashedPassword })
+      .eq('id', userID);
+
+    return updatedUser;
   }
 
   /**
@@ -212,191 +132,71 @@ export class DatabaseModel {
    * @param userToUpdate 
    * @returns 
    */
-  public updateUserAccessLevel = async (accessLevel: number, userToUpdate: number): Promise<boolean> => {
-    const UpdateStatus = await DatabaseModel.CLIENT
+  public async updateUserAccessLevel(accessLevel: number, userID: number): Promise<PostgrestResponse<IUser>> {
+    const updatedUser = await DatabaseModel.CLIENT
       .from('User')
-      .update({ AccessLevel: accessLevel })
-      .eq('UserID', userToUpdate);
+      .update({ accessLevel: accessLevel })
+      .eq('id', userID);
 
-    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log("Something went wrong with the promotion!");
-      return false;
-    }
-    return true;
+    return updatedUser;
   }
 
   /**
-  * This method removes a target user from the database
-  * @param {string} userToken user token to verificate delete process
-  * @param {string} usernameToDelete username of user to delete
-  * @returns {boolean} true if user was deleted, false if not
-  */
-  public deleteUser = async (targetUserId: number): Promise<boolean> => {
-    // fetch the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
+   * This method removes a target user from the database
+   * @param {string} userToken user token to verificate delete process
+   * @param {string} usernameToDelete username of user to delete
+   * @returns {Promise<boolean>} true if user was deleted, false if not
+   */
+  public async deleteUser(targetUserID: number): Promise<PostgrestResponse<IUser>> {
+    const deletedUser = await DatabaseModel.CLIENT
       .from('User')
       .delete()
-      .match({ 'UserID': targetUserId });
+      .match({ 'id': targetUserID });
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // user was not removed -> return false
-      return false;
-    } else {
-      // user was removed -> return true
-      return true;
-    }
-  }
-
-  /**
-  * This method changes the password from the current user
-  * @param {string} token Token to extract username from
-  * @param {string} oldPassword contains the old User Password
-  * @param {string} newPassword contains the new User Password
-  * @returns {boolean} if password was changed -> return true
-  */
-  public changeUserPassword = async (currentUserID: number, newPassword: string): Promise<boolean> => {
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('User')
-      .update({ Password: newPassword })
-      .eq('UserID', currentUserID);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // password was not change -> return false
-      return false;
-    } else {
-      // password was changed -> return true
-      return true;
-    }
+    return deletedUser;
   }
 
   //#endregion
 
   //#region ChatKey Methods
 
-  public changeChatKeyExpirationDate = async (chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> => {
-    const UpdateStatus = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .update({ 'ExpirationDate': newExpirationDate })
-      .eq('ChatKeyID', chatKeyID)
-
-    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log("Something went wrong while altering the table!");
-      return false;
+  getIChatKeyFromResponse(dbResponse: PostgrestResponse<IChatKey>): IChatKey[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      return [];
     }
-    return true;
-  }
 
-  public deleteChatKey = async (chatKeyToDelete: number | undefined): Promise<boolean> => {
-    // fetch the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .delete()
-      .eq('ChatKeyID', chatKeyToDelete);
+    const allChatKeys: IChatKey[] = [];
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // chatKey was not removed -> return false
-      return false;
-    } else {
-      // chatKey was removed -> return true
-      return true;
+    for (const chatKey of dbResponse.data) {
+      allChatKeys.push({ id: chatKey.id, keyword: chatKey.keyword, expirationDate: new Date(chatKey.expirationDate) })
     }
+
+    return allChatKeys;
   }
 
   /**
   * This function is used to fetch all ChatKeys from the Database
   * @param token 
-  * @returns {IChatKey} Array of all IChatKeys
+  * @returns Array of all IChatKeys
   */
-  public fetchAllChatKeys = async (): Promise<IChatKey[]> => {
-    let allChatKeys: IChatKey[] = []
-    let ChatKeyResponse = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .select('ChatKeyID,ChatKey,ExpirationDate')
-      .order('ChatKeyID', { ascending: true })
+   public async selectChatKeyTable(id?: number, keyword?: string, expirationDate?: Date): Promise<PostgrestResponse<IChatKey>> {
+    let idColumnName = "";
+    let keywordColumnName = "";
+    let expirationDateColumnName = "";
 
-    if (ChatKeyResponse.data === null || ChatKeyResponse.error !== null || ChatKeyResponse.data.length === 0) {
-      console.log("No Chat Keys found!")
-      return allChatKeys;
-    }
-    allChatKeys = ChatKeyResponse.data.map(allChat => {
-      return {
-        id: allChat.ChatKeyID,
-        threeWord: allChat.ChatKey,
-        expirationDate: allChat.ExpirationDate,
-      }
-    })
-    return allChatKeys;
-  }
+    if (!(id === undefined) && !isNaN(id)) idColumnName = "id";
+    if (!(keyword === undefined)) keywordColumnName = "keyword";
+    if (!(expirationDate === undefined)) expirationDateColumnName = "expirationDate";
 
-  /**
-  * API funciton to get the id of a threeword chatKey
-  * @param {string} chatKey the threeword
-  * @returns {number>} id of threeword
-  */
-  public getChatKeyID = async (chatKey: string): Promise<number> => {
-
-    // fetch the data from the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
+    const chatKeyResponse = await DatabaseModel.CLIENT
       .from('ChatKey')
       .select()
-      .eq('ChatKey', chatKey);
+      .eq(idColumnName, id)
+      .eq(keywordColumnName, keyword)
+      .eq(expirationDateColumnName, expirationDate)
+      .order('id', { ascending: true });
 
-    if (data === null || error !== null || data.length === 0) {
-      return NaN;
-    }
-    return data[0].ChatKeyID;
-  };
-
-  /** 
-  * API function to update the current Chat Key ExpiratioNDate 
-  * @param {number} chatKeyID the Id of the current Chatroom
-  * @param {Date} newExpirationDate the new ExpirationDate
-  * @returns {Promise<IChatKey>} a promise that resolves an IChatKey with the new ExpirationDate
-  */
-  public updateExpirationDateFromCurrentChatKey = async (chatKeyID: number, newExpirationDate: Date): Promise<IChatKey | null> => {
-    let chatKey: IChatKey | null = null;
-
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .update({ 'ExpirationDate': newExpirationDate })
-      .eq('ChatKeyID', chatKeyID)
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // ChatKey was not updated -> return null
-      return chatKey;
-    } else {
-      // ChatKey was updated -> return chatkey object with new expirationDate
-      return await this.getChatKey(chatKeyID);
-    }
-  };
-
-  /**
-  * This function is used to get the current chat for the command /expire
-  * @param {number} chatKeyID the Id of the current Chatroom
-  * @returns {Promise<IChatKey>} to get the current chatKeyObject from the Database
-  */
-  public getChatKey = async (chatKeyID: number): Promise<IChatKey | null> => {
-    let chatKey: IChatKey | null = null;
-
-    let chatKeyToResponse = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .select()
-      .eq('ChatKeyID', chatKeyID)
-
-    if (chatKeyToResponse.data === null || chatKeyToResponse.error !== null || chatKeyToResponse.data.length === 0) {
-      return chatKey;
-    }
-
-    chatKey = {
-      id: chatKeyToResponse.data[0].ChatKeyID,
-      threeWord: chatKeyToResponse.data[0].ChatKey,
-      expirationDate: new Date(chatKeyToResponse.data[0].ExpirationDate),
-    }
-    return chatKey;
+    return chatKeyResponse;
   }
 
   /** 
@@ -404,105 +204,71 @@ export class DatabaseModel {
   * @param {string} chatKey the Id of the new Chatroom
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
   */
-  public addChatKey = async (chatKey: string, expirationDate: Date): Promise<boolean> => {
-    const { data, error } = await DatabaseModel.CLIENT
+   public async addChatKey(keyword: string, expirationDate: Date): Promise<PostgrestResponse<IChatKey>> {
+    const addedUser = await DatabaseModel.CLIENT
       .from('ChatKey')
       .insert([
-        { ChatKey: chatKey, ExpirationDate: expirationDate },
-      ])
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // ChatKey was not added -> return false
-      return false;
-    } else {
-      // ChatKey was added -> return true
-      return true;
-    }
+        { keyword: keyword, expirationDate: expirationDate },
+      ]);
+    
+    return addedUser;
   };
 
-  /** 
-  * API function to check if the chatKey already exists
-  * @param {string} chatKey the chatKey to check
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey already exists
-  */
-  public chatKeyAlreadyExists = async (chatKey: string): Promise<boolean> => {
-
-    // fetch the data from the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
+  public async changeChatKeyExpirationDate(chatKeyID: number, expirationDate: Date): Promise<PostgrestResponse<IChatKey>> {
+    const updatedChatKey = await DatabaseModel.CLIENT
       .from('ChatKey')
-      .select()
-      .eq('ChatKey', chatKey);
+      .update({ 'expirationDate': expirationDate })
+      .eq('id', chatKeyID)
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
+    return updatedChatKey;
+  }
 
-      // no chatKey found -> chatKey does not exist -> return false
-      return false;
-    } else {
-      // chatKey exists -> return true
-      return true;
-    }
-  };
+  public async deleteChatKey(id?: number, keyword?: string, expirationDate?: Date, lowerThan: boolean = false): Promise<PostgrestResponse<IChatKey>> {
+    let idColumnName = "";
+    let keywordColumnName = "";
+    let expirationDateColumnName = "";
+    let lowerExpirationDateColumnName = "";
 
-  /** 
-  * API function to delete all old chat keys from the database // is always called, when going into Admin settings
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if old chat keys were deleted
-  */
-  public deleteOldChatKeys = async (): Promise<boolean> => {
+    if (!(id === undefined) && !isNaN(id)) idColumnName = "id";
+    if (!(keyword === undefined)) keywordColumnName = "keyword";
+    if (!(expirationDate === undefined) && !lowerThan) expirationDateColumnName = "expirationDate";
+    if (!(expirationDate === undefined) && lowerThan) lowerExpirationDateColumnName = "expirationDate";
 
-    const { data, error } = await DatabaseModel.CLIENT
+    const deletedUser = await DatabaseModel.CLIENT
       .from('ChatKey')
       .delete()
-      .lt('ExpirationDate', ((new Date()).toISOString()).toLocaleLowerCase())
+      .eq(idColumnName, id)
+      .eq(keywordColumnName, keyword)
+      .eq(expirationDateColumnName, expirationDate)
+      .lt(lowerExpirationDateColumnName, expirationDate?.toISOString().toLocaleLowerCase());
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // surveyOption was not removed -> return false
-      return false;
-    } else {
-      // surveyOption was removed -> return true
-      console.log("Old ChatKeys have been deleted successfully!");
-      return true;
-    }
-
-    //Hier muss noch ggbfs. was geschrieben werden.
-    if (error) {
-      // console.error(error)
-    }
-    else {
-      // console.log(data)
-    }
-
-    return false;
-  };
-
-  /** 
-  * API function to check if the input ChatKey exists
-  * @param {string} chatKey the chatKey to check
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatkey exists
-  */
-  public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
-
-    // fetch the data from the supabase database
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('ChatKey')
-      .select()
-      .eq('ChatKey', chatKey);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-
-      // no chatkeys found -> chatkey does not exist -> return false
-      return false;
-    } else {
-      // chatkey exists -> return true
-      return true;
-    }
-  };
+    return deletedUser;
+  }
 
   //#endregion
 
   //#region Chat Methods
+
+  getIChatMessageFromResponse(dbResponse: PostgrestResponse<IChatMessage>): IChatMessage[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      // console.log(dbResponse.error)
+      return [];
+    }
+
+    const allChatMessages: IChatMessage[] = [];
+
+    for (const chatMessage of dbResponse.data) {
+      allChatMessages.push({ 
+        id: chatMessage.id, 
+        chatKeyID: chatMessage.chatKeyID, 
+        userID: chatMessage.userID,
+        targetUserID: chatMessage.targetUserID,
+        dateSend: new Date(chatMessage.dateSend),
+        message: chatMessage.message })
+    }
+
+    return allChatMessages;
+  }
 
   /** 
   * API function to get all chat messages from the database 
@@ -511,41 +277,36 @@ export class DatabaseModel {
   * @param {number} lastMessageID the last message id point to start fetching new messages
   * @returns {Promise<IChatKeyMessage[]>}
   */
-  public getChatMessages = async (chatKeyID: number, filterString: string, lastMessageID: number): Promise<IChatMessage[]> => {
-    let chatMessages: IChatMessage[] = [];
+  public async selectChatMessageTable(id?: number, chatKeyID?: number, userID?: number, targetUserID?: number, dateSend?: Date, message?: string, greaterMessageID: boolean = false): Promise<PostgrestResponse<IChatMessage>> {
+    let idColumnName = "";
+    let chatKeyIDColumnName = "";
+    let userIDColumnName = "";
+    let targetIDColumnName = "";
+    let dateSendColumnName = "";
+    let messageColumnName = "";
+    let greaterMessageIDColumnName = "";
 
-    const { data, error } = await DatabaseModel.CLIENT
+    if (!(id === undefined) && !isNaN(id) && !greaterMessageID) idColumnName = "id";
+    if (!(id === undefined) && !isNaN(id) && greaterMessageID) greaterMessageIDColumnName = "id";
+    if (!(chatKeyID === undefined) && !isNaN(chatKeyID)) chatKeyIDColumnName = "chatKeyID";
+    if (!(userID === undefined) && !isNaN(userID)) userIDColumnName = "userID";
+    if (!(targetUserID === undefined) && !isNaN(targetUserID)) targetIDColumnName = "targetUserID";
+    if (!(dateSend === undefined)) dateSendColumnName = "dateSend";
+    if (!(message === undefined)) messageColumnName = "message";
+    // Handle mapping userid username outside of call!!!
+    const chatMessageResponse = await DatabaseModel.CLIENT
       .from('ChatMessage')
-      .select(`
-        DateSend,
-        MessageID,
-        Message,
-        UserID ( Username )
-      `)
-      .eq('ChatKeyID', chatKeyID)
-      .or(filterString)
-      .gt('MessageID', lastMessageID)
-      .order('DateSend', { ascending: true })
+      .select()
+      .eq(idColumnName, id)
+      .eq(chatKeyIDColumnName, chatKeyID)
+      .eq(userIDColumnName, userID)
+      .eq(targetIDColumnName, targetUserID)
+      .eq(dateSendColumnName, dateSend)
+      .eq(messageColumnName, message)
+      .gt(greaterMessageIDColumnName, id)
+      .order('dateSend', { ascending: true });
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-
-      // no messages found -> return empty array
-      return [];
-    } else {
-
-      // map raw data on IChatMessage type
-      data.forEach(element => {
-        chatMessages.push({
-          user: element.UserID.Username,
-          date: new Date(element.DateSend),
-          message: element.Message,
-          id: element.MessageID
-        });
-      });
-
-      return chatMessages;
-    }
+    return chatMessageResponse;
   };
 
   /** 
@@ -557,54 +318,84 @@ export class DatabaseModel {
   * @param {number} userId the Id of the User
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
   */
-  public addChatMessage = async (message: string, chatKeyId: number, userId: number, targetUserId: number = 0): Promise<boolean> => {
-    const { data, error } = await DatabaseModel.CLIENT
+  public async addChatMessage(message: string, chatKeyID: number, userID: number, targetUserID: number = 0): Promise<PostgrestResponse<IChatMessage>> {
+    const addedMessages = await DatabaseModel.CLIENT
       .from('ChatMessage')
       .insert([
-        { ChatKeyID: chatKeyId, UserID: userId, TargetUserID: targetUserId, Message: message },
-      ])
+        { chatKeyID: chatKeyID, userID: userID, targetUserID: targetUserID, message: message },
+      ]);
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // Message was not added -> return false
-      return false;
-    } else {
-      // Message was added -> return true
-      return true;
-    }
-
+    return addedMessages;
   };
 
   //#endregion
 
   //#region Ticket Methods
 
+  getIBugTicketFromResponse(dbResponse: PostgrestResponse<IBugTicket>): IBugTicket[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      return [];
+    }
+
+    const allBugTickets: IBugTicket[] = [];
+
+    for (const bugTicket of dbResponse.data) {
+      allBugTickets.push({ 
+        id: bugTicket.id,
+        submitterID: bugTicket.submitterID,
+        createDate: new Date(bugTicket.createDate),
+        message: bugTicket.message,
+        solved: bugTicket.solved })
+    }
+
+    return allBugTickets;
+  }
 
   /**
    * This function is used to fetch all Tickets from the Database
    * @param token 
    * @returns Array of all IBugTickets
    */
-  public fetchAllTickets = async (): Promise<IBugTicket[]> => {
-    let allTickets: IBugTicket[] = []
-    let TicketResponse = await DatabaseModel.CLIENT
+  public async selectTicketTable(id?: number, submitterID?: number, createDate?: Date, message?: string, solved?: boolean): Promise<PostgrestResponse<IBugTicket>> {
+    let idColumnName = "";
+    let submitterIDColumnName = "";
+    let createDateColumnName = "";
+    let messageColumnName = "";
+    let solvedColumnName = "";
+
+    if (!(id === undefined) && !isNaN(id)) idColumnName = "id";
+    if (!(submitterID === undefined) && !isNaN(submitterID)) submitterIDColumnName = "submitterID";
+    if (!(createDate === undefined)) createDateColumnName = "createDate";
+    if (!(message === undefined)) messageColumnName = "message";
+    if (!(solved === undefined)) solvedColumnName = "solved";
+    
+    let ticketResponse = await DatabaseModel.CLIENT
       .from('Ticket')
       .select()
+      .eq(idColumnName, id)
+      .eq(submitterIDColumnName, submitterID)
+      .eq(createDateColumnName, createDate)
+      .eq(messageColumnName, message)
+      .eq(solvedColumnName, solved)
+      .order('id', { ascending: true })
+      .order('solved', { ascending: true });
 
-    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0) {
-      console.log("Unknown Error, please contact support.")
-      return allTickets;
-    }
-    allTickets = TicketResponse.data.map(allTicket => {
-      return {
-        id: allTicket.TicketID,
-        submitter: allTicket.SubmitterID,
-        date: allTicket.TicketCreateDate,
-        message: allTicket.Message,
-        solved: allTicket.Solved,
-      }
-    })
-    return allTickets;
+    return ticketResponse;
+  }
+
+  /**
+  * This Method adds a new ticket to the supabase database
+  * @param bugToReport the bug that should be reported (see report.ts)
+  * @returns returns the ticket which was added to the supabase database
+  */
+   public async addTicket(submitterID: number, message: string): Promise<PostgrestResponse<IBugTicket>> {
+    const addedTicket = await DatabaseModel.CLIENT
+      .from('Ticket')
+      .insert([
+        { submitterID: submitterID, message: message },
+      ])
+
+    return addedTicket;
   }
 
   /**
@@ -614,56 +405,180 @@ export class DatabaseModel {
   * 
   * @returns boolean - true if ticked was sucessfully changed - false if not
   */
-  public changeSolvedState = async (ticketToChange: number | undefined, currentState: boolean | undefined): Promise<boolean> => {
-    const UpdateStatus = await DatabaseModel.CLIENT
+  public async changeTicketSolvedState(ticketID: number, newState: boolean): Promise<PostgrestResponse<IBugTicket>> {
+    const updatedTicket = await DatabaseModel.CLIENT
       .from('Ticket')
-      .update({ Solved: currentState })
-      .eq('TicketID', ticketToChange)
+      .update({ solved: newState })
+      .eq('id', ticketID);
 
-    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log(UpdateStatus.error);
-      return false;
-    }
-    return true;
-  }
-
-  /**
-  * This Method adds a new ticket to the supabase database
-  * @param bugToReport the bug that should be reported (see report.ts)
-  * @returns returns the ticket which was added to the supabase database
-  */
-  public addNewTicket = async (bugToReport: IBugTicket): Promise<IBugTicket | null> => {
-    let addedTicket: IBugTicket | null = null;
-    // fetch the supabase database
-    const TicketResponse = await DatabaseModel.CLIENT
-      .from('Ticket')
-      .insert([
-        {
-          SubmitterID: bugToReport.submitter.id,
-          Message: bugToReport.message,
-        },
-      ])
-
-    if (TicketResponse.data === null || TicketResponse.error !== null || TicketResponse.data.length === 0 || TicketResponse.data[0].TicketID === null || TicketResponse.data[0].TicketID === undefined) {
-      return null;
-    }
-
-    addedTicket = {
-      id: TicketResponse.data[0].TicketID,
-      submitter: TicketResponse.data[0].SubmitterID,
-      date: TicketResponse.data[0].TicketCreateDate,
-      message: TicketResponse.data[0].Message,
-      solved: TicketResponse.data[0].Solved,
-    }
-
-    const TicketID = TicketResponse.data[0].TicketID;
-
-    return addedTicket;
+    return updatedTicket;
   }
 
   //#endregion
 
   //#region Survey Methods
+
+  getISurveyFromResponse(dbResponse: PostgrestResponse<ISurvey>): ISurvey[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      console.log(dbResponse.error)
+      return [];
+    }
+
+    const allSurveys: ISurvey[] = [];
+
+    for (const survey of dbResponse.data) {
+      allSurveys.push({ 
+        id: survey.id,
+        name: survey.name,
+        description: survey.description,
+        expirationDate: new Date(survey.expirationDate),
+        ownerID: survey.ownerID,
+        chatKeyID: survey.chatKeyID })
+    }
+
+    return allSurveys;
+  }
+
+  getISurveyOptionFromResponse(dbResponse: PostgrestResponse<ISurveyOption>): ISurveyOption[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      console.log(dbResponse.error)
+      return [];
+    }
+
+    const allSurveyOptions: ISurveyOption[] = [];
+
+    for (const option of dbResponse.data) {
+      allSurveyOptions.push({ 
+        id: option.id,
+        surveyID: option.surveyID,
+        name: option.name })
+    }
+
+    return allSurveyOptions;
+  }
+
+  getISurveyVoteFromResponse(dbResponse: PostgrestResponse<ISurveyVote>): ISurveyVote[] {
+    if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
+      console.log(dbResponse.error)
+      return [];
+    }
+
+    const allSurveyVotes: ISurveyVote[] = [];
+
+    for (const vote of dbResponse.data) {
+      allSurveyVotes.push({ 
+        surveyID: vote.surveyID,
+        userID: vote.userID,
+        optionID: vote.optionID })
+    }
+
+    return allSurveyVotes;
+  }
+
+  /**
+  * This function is used to get all surveys (optionally only for one room).
+  * @param {number | undefined} chatKeyID Optional chatKey filter argument
+  * @returns {Promise<ISurvey[]>} all surveys in the database (for the chatKey)
+  */
+   public async selectSurveyTable(id?: number, name?: string, description?: string, expirationDate?: Date, ownerID?: number, chatKeyID?: number): Promise<PostgrestResponse<ISurvey>> {
+    let idColumnName = "";
+    let nameColumnName = "";
+    let descriptionColumnName = "";
+    let expirationDateColumnName = "";
+    let ownerIDColumnName = "";
+    let chatKeyIDColumnName = "";
+
+    if (!(id === undefined) && !isNaN(id)) idColumnName = "id";
+    if (!(name === undefined)) nameColumnName = "name";
+    if (!(description === undefined)) descriptionColumnName = "description";
+    if (!(expirationDate === undefined)) expirationDateColumnName = "expirationDate";
+    if (!(ownerID === undefined) && !isNaN(ownerID)) ownerIDColumnName = "ownerID";
+    if (!(chatKeyID === undefined) && !isNaN(chatKeyID)) chatKeyIDColumnName = "chatKeyID";
+
+    const surveyResponse = await DatabaseModel.CLIENT
+      .from('Survey')
+      .select()
+      .eq(idColumnName, id)
+      .eq(nameColumnName, name)
+      .eq(descriptionColumnName, description)
+      .eq(expirationDateColumnName, expirationDate)
+      .eq(ownerIDColumnName, ownerID)
+      .eq(chatKeyIDColumnName, chatKeyID);
+    
+    return surveyResponse;
+  }
+
+  public async selectSurveyOptionTable(id?: number, surveyID?: number, name?: string): Promise<PostgrestResponse<ISurveyOption>> {
+    let idColumnName = "";
+    let surveyIDColumnName = "";
+    let nameColumnName = "";
+
+    if (!(id === undefined) && !isNaN(id)) idColumnName = "id";
+    if (!(surveyID === undefined) && !isNaN(surveyID)) surveyIDColumnName = "surveyID";
+    if (!(name === undefined)) nameColumnName = "name";
+
+    const surveyOptionResponse = await DatabaseModel.CLIENT
+      .from('SurveyOption')
+      .select()
+      .eq(idColumnName, id)
+      .eq(surveyIDColumnName, surveyID)
+      .eq(nameColumnName, name);
+    
+    return surveyOptionResponse;
+  }
+
+  public async selectSurveyVoteTable(surveyID?: number, userID?: number, optionID?: number): Promise<PostgrestResponse<ISurveyVote>> {
+    let surveyIDColumnName = "";
+    let userIDColumnName = "";
+    let optionIDColumnName = "";
+    
+    if (!(surveyID === undefined) && !isNaN(surveyID)) surveyIDColumnName = "surveyID";
+    if (!(userID === undefined) && !isNaN(userID)) userIDColumnName = "userID";
+    if (!(optionID === undefined) && !isNaN(optionID)) optionIDColumnName = "optionID";
+
+    const surveyVoteResponse = await DatabaseModel.CLIENT
+      .from('SurveyVote')
+      .select()
+      .eq(surveyIDColumnName, surveyID)
+      .eq(userIDColumnName, userID)
+      .eq(optionIDColumnName, optionID);
+
+    return surveyVoteResponse;
+  }
+
+  public async addSurvey(name: string, description: string, expirationDate: Date, ownerID: number, chatKeyID: number): Promise<PostgrestResponse<ISurvey>> {
+    const addedSurvey = await DatabaseModel.CLIENT
+      .from('Survey')
+      .insert([
+        {
+          name: name,
+          description: description,
+          expirationDate: expirationDate,
+          ownerID: ownerID,
+          chatKeyID: chatKeyID,
+        },
+      ]);
+    
+    return addedSurvey;
+  }
+
+  public async addSurveyOption(surveyOpitons: ISurveyOption[]): Promise<PostgrestResponse<ISurveyOption>> {
+    const addedSurveyOptions = await DatabaseModel.CLIENT
+      .from('SurveyOption')
+      .insert(surveyOpitons);
+
+    return addedSurveyOptions;
+  }
+
+  public async addSurveyVote(vote: ISurveyVote): Promise<PostgrestResponse<ISurveyVote>> {
+    const addedSurveyVote = await DatabaseModel.CLIENT
+      .from('SurveyVote')
+      .insert([
+        { surveyID: vote.surveyID, userID: vote.userID, optionID: vote.optionID },
+      ]);
+    
+    return addedSurveyVote;
+  }
 
   /**
    * change the expiration Date of a certain survey inside supabase
@@ -672,64 +587,13 @@ export class DatabaseModel {
    * @param newExpirationDate 
    * @returns bool if sucessfull
    */
-  public changeSurveyExpirationDate = async (surveyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> => {
-    const UpdateStatus = await DatabaseModel.CLIENT
+  public async changeSurveyExpirationDate(id: number, newExpirationDate: Date): Promise<PostgrestResponse<ISurvey>> {
+    const updatedSurvey = await DatabaseModel.CLIENT
       .from('Survey')
-      .update({ 'ExpirationDate': newExpirationDate })
-      .eq('SurveyID', surveyID)
+      .update({ 'expirationDate': newExpirationDate })
+      .eq('id', id);
 
-    if (UpdateStatus.data === null || UpdateStatus.error !== null || UpdateStatus.data.length === 0) {
-      console.log("Something went wrong while altering the table!");
-      console.log(UpdateStatus.error);
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * deletes a survey inside supabase
-   * @param surveyIDToDelete 
-   * @returns bool if sucessfull
-   */
-  public deleteSurveyOption = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
-
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('SurveyOption')
-      .delete()
-      .eq('SurveyID', surveyIDToDelete);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // surveyOption was not removed -> return false
-      return false;
-    } else {
-      // surveyOption was removed -> return true
-      console.log("SurveyOption has been deleted successfully!");
-      return true;
-    }
-  }
-
-  /**
-   * function that deletes all votes of a certain survey
-   * @param surveyIDToDelete 
-   * @returns bool if sucessfull
-   */
-  public deleteSurveyVote = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
-
-    const { data, error } = await DatabaseModel.CLIENT
-      .from('SurveyVote')
-      .delete()
-      .eq('SurveyID', surveyIDToDelete);
-
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // surveyVote was not removed -> return false
-      return false;
-    } else {
-      // surveyVote was removed -> return true
-      console.log("SurveyVote has been deleted successfully!");
-      return true;
-    }
+    return updatedSurvey;
   }
 
   /**
@@ -738,284 +602,41 @@ export class DatabaseModel {
    * @param surveyIDToDelete 
    * @returns bool if sucessfull
    */
-  public deleteSurvey = async (surveyIDToDelete: number | undefined): Promise<boolean> => {
-    const { data, error } = await DatabaseModel.CLIENT
+   public async deleteSurvey(id: number): Promise<PostgrestResponse<ISurvey>> {
+    const deletedSurvey = await DatabaseModel.CLIENT
       .from('Survey')
       .delete()
-      .eq('SurveyID', surveyIDToDelete);
+      .eq('id', id);
 
-    // check if data was received
-    if (data === null || error !== null || data.length === 0) {
-      // survey was not removed -> return false
-      console.log(error);
-      return false;
-    } else {
-      // survey was removed -> return true
-      console.log("Survey has been deleted successfully!");
-      return true;
-    }
+    return deletedSurvey;
   }
 
   /**
-  * This method returns the current state of a survey for the given surveyID.
-  * @param {number} surveyID the surveyID of the survey 
-  * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
-  */
-  public getCurrentSurveyState = async (surveyID: number, chatKeyID: number): Promise<ISurveyState | null> => {
-    let survey: ISurveyState;
-
-    let surveyResponse = await DatabaseModel.CLIENT
-      .from('Survey')
-      .select()
-      .match({ SurveyID: surveyID, ChatKeyID: chatKeyID });
-
-    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
-      return null;
-    }
-
-    let optionResponse = await DatabaseModel.CLIENT
-      .from('SurveyOption')
-      .select()
-      .match({ SurveyID: surveyID });
-
-    if (optionResponse.data === null || optionResponse.error !== null) {
-      return null;
-    }
-
-    let voteResponse = await DatabaseModel.CLIENT
-      .from('SurveyVote')
-      .select()
-      .match({ SurveyID: surveyID });
-
-    if (voteResponse.data === null || voteResponse.error !== null) {
-      return null;
-    }
-
-    // assemble the survey object
-    survey = {
-      id: surveyResponse.data[0].SurveyID,
-      name: surveyResponse.data[0].Name,
-      description: surveyResponse.data[0].Description,
-      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
-      ownerID: surveyResponse.data[0].OwnerID,
-      chatKeyID: surveyResponse.data[0].ChatKeyID,
-      options: optionResponse.data.map(option => {
-        let countVotes = 0;
-        if (voteResponse.data !== null && voteResponse.data.length > 0) {
-          countVotes = voteResponse.data.filter(vote => vote.OptionID === option.OptionID).length
-        }
-        return {
-          option: {
-            id: option.OptionID,
-            name: option.OptionName,
-          },
-          votes: countVotes
-        };
-      })
-    }
-
-    return survey;
-  }
-
-
-  /**
-  * This function is used to get all surveys (optionally only for one room).
-  * @param {number | undefined} chatKeyID Optional chatKey filter argument
-  * @returns {Promise<ISurvey[]>} all surveys in the database (for the chatKey)
-  */
-  public getAllSurveys = async (chatKeyID?: number): Promise<ISurvey[]> => {
-    let surveys: ISurvey[] = [];
-
-    let surveyResponse;
-
-    if (chatKeyID === undefined) {
-      surveyResponse = await DatabaseModel.CLIENT
-        .from('Survey')
-        .select();
-    } else {
-      surveyResponse = await DatabaseModel.CLIENT
-        .from('Survey')
-        .select()
-        .match({ ChatKeyID: chatKeyID });
-    }
-
-
-    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
-      return surveys;
-    }
-
-    surveys = surveyResponse.data.map(survey => {
-      return {
-        id: survey.SurveyID,
-        name: survey.Name,
-        description: survey.Description,
-        expirationDate: new Date(survey.ExpirationDate),
-        ownerID: survey.OwnerID,
-        chatKeyID: survey.ChatKeyID,
-        options: []
-      }
-    })
-
-    return surveys;
-  }
-
-  /**
-  * This function is used to add a new survey to the database.
-  * @param {ISurvey} surveyToAdd the survey object to add to the database
-  * @returns {Promise<ISurvey>} the survey object containing all information (with the added surveyID)
-  */
-  public addNewSurvey = async (surveyToAdd: ISurvey): Promise<ISurvey | null> => {
-    let addedSurvey: ISurvey | null = null;
-
-    // fetch the supabase database
-    const surveyResponse = await DatabaseModel.CLIENT
-      .from('Survey')
-      .insert([
-        {
-          Name: surveyToAdd.name,
-          Description: surveyToAdd.description,
-          ExpirationDate: new Date(surveyToAdd.expirationDate),
-          OwnerID: surveyToAdd.ownerID,
-          ChatKeyID: surveyToAdd.chatKeyID,
-        },
-      ])
-
-    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0 || surveyResponse.data[0].SurveyID === null || surveyResponse.data[0].SurveyID === undefined) {
-      return null;
-    }
-
-    addedSurvey = {
-      id: surveyResponse.data[0].SurveyID,
-      name: surveyResponse.data[0].Name,
-      description: surveyResponse.data[0].Description,
-      expirationDate: new Date(surveyResponse.data[0].ExpirationDate),
-      ownerID: surveyResponse.data[0].OwnerID,
-      chatKeyID: surveyResponse.data[0].ChatKeyID,
-      options: [],
-    }
-
-    const surveyID = surveyResponse.data[0].SurveyID;
-
-    // the option must be in a array with the following structure:
-    // [{
-    //   OptionID: number, (0, 1, 2, 3, ...)
-    //   OptionName: string,
-    //   SurveyID: number
-    // }]
-
-    const surveyOptions = surveyToAdd.options.map((option, index) => {
-      return {
-        OptionID: index,
-        OptionName: option.name,
-        SurveyID: surveyID
-      }
-    });
-
-    // fetch the supabase database
-    const optionsResponse = await DatabaseModel.CLIENT
-      .from('SurveyOption')
-      .insert(surveyOptions);
-
-    if (optionsResponse.data === null || optionsResponse.error !== null || optionsResponse.data.length === 0) {
-      return null;
-    }
-
-    addedSurvey.options = optionsResponse.data.map((option) => {
-      return {
-        id: option.OptionID,
-        name: option.OptionName,
-      };
-    });
-
-    return addedSurvey;
-  }
-
-
-  /**
-  * This function is used to add a new vote for a survey option to the database.
-  * @param voteToAdd the vote object to add to the database
-  * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
-  */
-  public addNewVote = async (voteToAdd: ISurveyVote): Promise<ISurveyVote | null> => {
-    let addedVote: ISurveyVote | null = null;
-
-    // check if survey is still open
-    let isExpired = await this.isSurveyExpired(voteToAdd.surveyID);
-
-    if (isExpired === true || isExpired === null) {
-      return null;
-    }
-
-    // check if the survey and the option exist
-    const optionResponse = await DatabaseModel.CLIENT
-      .from('SurveyOption')
-      .select()
-      .match({ SurveyID: voteToAdd.surveyID, OptionID: voteToAdd.optionID });
-
-    if (optionResponse.data === null || optionResponse.error !== null || optionResponse.data.length === 0) {
-      return null;
-    }
-
-    // fetch the supabase database
-    const voteResponse = await DatabaseModel.CLIENT
-      .from('SurveyVote')
-      .insert([
-        {
-          UserID: voteToAdd.userID,
-          SurveyID: voteToAdd.surveyID,
-          OptionID: voteToAdd.optionID,
-        },
-      ])
-
-    if (voteResponse.data === null || voteResponse.error !== null || voteResponse.data.length === 0) {
-      return null;
-    }
-
-    addedVote = {
-      userID: voteResponse.data[0].UserID,
-      surveyID: voteResponse.data[0].SurveyID,
-      optionID: voteResponse.data[0].OptionID,
-    }
-
-    return addedVote;
-  }
-
-  /**
-  * This function is used to check if a survey is expired or not.
-  * @param surveyID the surveyID of the survey to check if it is expired
-  * @returns {boolean} true if the survey is expired, false if not
-  */
-  public isSurveyExpired = async (surveyID: number): Promise<boolean | null> => {
-    // fetch the supabase database
-    const surveyResponse = await DatabaseModel.CLIENT
-      .from('Survey')
-      .select()
-      .match({ SurveyID: surveyID });
-
-    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
-      return null;
-    }
-
-    return new Date(surveyResponse.data[0].ExpirationDate) < new Date();
-  }
-
-  /**
-   * This function is used to check if a survey is in a room or not.
-   * @param {number} surveyID the surveyID of the survey to check
-   * @param {number} chatKeyID the chatKeyID of the room to check
-   * @returns {boolean} true if the survey is in the room or not
+   * deletes a survey inside supabase
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
    */
-  public isSurveyInRoom = async (surveyID: number, chatKeyID: number): Promise<boolean> => {
-    // fetch the supabase database
-    const surveyResponse = await DatabaseModel.CLIENT
-      .from('Survey')
-      .select()
-      .match({ SurveyID: surveyID, ChatKeyID: chatKeyID });
+  public async deleteSurveyOption(surveyID: number): Promise<PostgrestResponse<ISurveyOption>> {
+    const deletedSurveyOption = await DatabaseModel.CLIENT
+      .from('SurveyOption')
+      .delete()
+      .eq('surveyID', surveyID);
 
-    if (surveyResponse.data === null || surveyResponse.error !== null || surveyResponse.data.length === 0) {
-      return false;
-    }
-    return true;
+    return deletedSurveyOption;
+  }
+
+  /**
+   * function that deletes all votes of a certain survey
+   * @param surveyIDToDelete 
+   * @returns bool if sucessfull
+   */
+  public async deleteSurveyVote(surveyID: number): Promise<PostgrestResponse<ISurveyVote>> {
+    const deletedSurveyVote = await DatabaseModel.CLIENT
+      .from('SurveyVote')
+      .delete()
+      .eq('surveyID', surveyID);
+
+    return deletedSurveyVote;
   }
 
   //#endregion

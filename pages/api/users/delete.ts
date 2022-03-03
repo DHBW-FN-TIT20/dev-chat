@@ -2,21 +2,23 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to remove a user from the database.
+ * This is an api route to remove a user from the database.
  * @param req the request object (body: userToken, usernameToDelete)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let usernameToDelete = req.body.usernameToDelete;
+export default async function deleteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const usernameToDelete: string = req.body.usernameToDelete;
 
-  let removedSuccessfully = await backEndController.deleteUser(userToken, usernameToDelete);
+  const removedSuccessfully = await BACK_END_CONTROLLER.handleDeleteUser(userToken, usernameToDelete);
 
   res.status(200).json({ wasSuccessfull: removedSuccessfully });
 }

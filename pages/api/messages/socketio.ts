@@ -1,20 +1,20 @@
-import { NextApiRequest } from "next";
 import { NextApiResponseServerIO } from "../../../shared/next";
 import { Server as ServerIO } from "socket.io";
 import { Server as NetServer } from "http";
 import { createClient } from "@supabase/supabase-js";
 import { DatabaseModel } from "../databaseModel";
 import { BackEndController } from '../../../controller/backEndController';
+import { NextApiRequest } from "next";
 
 
-export const config = { api: { bodyParser: false, }, };
+export const CONFIG = { api: { bodyParser: false, }, };
 
 /**
- * This is a api route handler to subscribe to the chat messages table
- * @param req the request object
- * @param res the response object
+ * This is an api route handler to subscribe to the chat messages table
+ * @category API
+ * @subcategory Message
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponseServerIO) {
+export default async function socketHandler(req: NextApiRequest, res: NextApiResponseServerIO) {
 
   // if there is no SocketIO server -> create one
   if (!res.socket.server.io) {
@@ -24,13 +24,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
     const httpServer: NetServer = res.socket.server as any;
     const io = new ServerIO(httpServer, { path: "/api/messages/socketio" });
     res.socket.server.io = io;
-    
+
     // create the supabase client
     const supabaseUrl = process.env.SUPABASE_URL || '';
     const supabaseKey = process.env.SUPABASE_KEY || '';
     const supabase = createClient(supabaseUrl, supabaseKey);
-    let supabaseConnection = new DatabaseModel();
-    let backEndController = new BackEndController();
+    const databaseModel = new DatabaseModel();
+    const backEndController = new BackEndController();
 
     // print every minute a list of clients connected to the server
     const logAllClients = async () => {
@@ -39,22 +39,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponseS
       clients.forEach(async socket => {
         const ip = socket.handshake.headers["x-real-ip"] || socket.handshake.headers["x-forwarded-for"] || socket.handshake.address || "";
         const chatKey = socket.handshake.auth.headers["chatKey"] || "";
-        const user = await supabaseConnection.getIUserByUsername(backEndController.getUsernameFromToken(socket.handshake.auth.headers["userToken"] || "")) || "";
+        const user = databaseModel.getIUserFromResponse(await databaseModel.selectUserTable(undefined, backEndController.getUsernameFromToken(socket.handshake.auth.headers["userToken"] || "")))[0] || "";
         console.log(`↳ ID: ${socket.id}, IP: ${ip}, user: ${user.name} chatKey: ${chatKey}`);
       });
     }
     logAllClients();
+
     setInterval(logAllClients, 60000);
 
     // subscribe to the ChatMessages table 
     const ChatMessageSubscription = supabase
       .from('ChatMessage')
       .on('INSERT', async payload => {
-        const chatKey = await supabaseConnection.getChatKey(payload.new.ChatKeyID);
-        console.log(`Change received: Msg: ${payload.new.Message} | ChatKey: ${chatKey?.threeWord} | User: ${payload.new.UserID}`);
-        io.emit("message", chatKey?.threeWord);
+        const chatKey = databaseModel.getIChatKeyFromResponse(await databaseModel.selectChatKeyTable(payload.new.chatKeyID))[0];
+        console.log(`Change received: Msg: ${payload.new.message} | ChatKey: ${chatKey.keyword} | User: ${payload.new.userID}`);
+        io.emit("message", chatKey.keyword);
       })
       .subscribe()
   }
+
   res.end();
 };

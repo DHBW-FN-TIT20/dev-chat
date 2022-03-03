@@ -2,10 +2,9 @@
 
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { IChatKey, IChatMessage, ISurvey, ISurveyState, ISurveyVote, IUser, IBugTicket } from '../public/interfaces';
-import { ExampleCommand } from '../console_commands/example';
+import { IChatKey, IChatMessage, IUser, IBugTicket, ISurveyVote, ISurvey, ISurveyState, ISurveyOption, IFChatMessage } from '../public/interfaces';
 import { Command } from '../console_commands/baseclass';
-import splitString from '../shared/splitstring';
+import { splitString } from '../shared/splitstring';
 import { SurveyCommand } from '../console_commands/survey';
 import { VoteCommand } from '../console_commands/vote';
 import { CalcCommand } from '../console_commands/calc';
@@ -15,6 +14,9 @@ import { ExpireCommand } from '../console_commands/expire';
 import { HelpCommmand } from '../console_commands/help';
 import { MsgCommand } from '../console_commands/msg';
 import { DatabaseModel } from '../pages/api/databaseModel';
+import { SystemUser } from '../enums/systemUser';
+import { getThreeWords } from '../shared/threeword_generator';
+import { AccessLevel, ProDemote } from '../enums/accessLevel';
 
 
 //#endregion
@@ -23,6 +25,7 @@ import { DatabaseModel } from '../pages/api/databaseModel';
  * This is the connection to the supabase database.
  * All the api routes should lead to this class.
  * The methods of the class are used to get/post data from/to the database.
+ * @category Controller
  */
 export class BackEndController {
 
@@ -38,14 +41,13 @@ export class BackEndController {
     BackEndController.KEY = process.env.HASH_KEY || '';
     this.commands = [
       // add all command classes here
-      new ExampleCommand,
+      new MsgCommand,
       new SurveyCommand,
+      new ShowCommand,
       new VoteCommand,
       new CalcCommand,
       new ReportCommand,
-      new ShowCommand,
       new ExpireCommand,
-      new MsgCommand,
     ];
     this.commands.push(new HelpCommmand(this.commands))
   }
@@ -64,51 +66,34 @@ export class BackEndController {
   * @param {number} currentChatKeyID the id of the chat the user is in
   * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
   */
-  private async executeCommand(userInput: string, userId: number, currentChatKeyID: number): Promise<boolean> {
-    let currentUser: IUser = await this.databaseModel.getIUserByUserID(userId);
-
+  private async executeCommand(userInput: string, currentUser: IUser, currentChatKey: IChatKey): Promise<boolean> {
     // split the user input into the command and the arguments
-    let callString: string = splitString(userInput)[0].slice(1);
-    let callArguments: string[] = splitString(userInput).slice(1);
+    const callString: string = splitString(userInput)[0].slice(1);
+    const callArguments: string[] = splitString(userInput).slice(1);
 
-    // console.log("SupabaseConnection.executeCommand()", callString, callArguments);
-    this.databaseModel.addChatMessage(userInput, currentChatKeyID, userId, userId)
+    await this.databaseModel.addChatMessage(userInput, currentChatKey.id, currentUser.id, currentUser.id);
 
-    //const { data, error } = await BackEndController.CLIENT
-    //.from('ChatMessage')
-    //.insert([
-    //{ ChatKeyID: currentChatKeyID, UserID: userId, TargetUserID: userId, Message: userInput },
-    //])
-
-    let commandFound: boolean = false;
     for (let i = 0; i < this.commands.length; i++) {
-      let command = this.commands[i];
+      const command = this.commands[i];
       console.log(command.callString, callString);
 
-      if (command.callString == callString) {
+      if (command.callString === callString) {
         // a command was found -> execute it
         // console.log("command found");
-        commandFound = true;
         let answerLines: string[];
 
         // check if user is allowed to execute the command
-        let currentAccessLevel = currentUser.accessLevel ? currentUser.accessLevel : 0
-        if (currentAccessLevel >= command.minimumAccessLevel) {
-          answerLines = await command.execute(callArguments, currentUser, currentChatKeyID);
+        if (currentUser.accessLevel >= command.minimumAccessLevel) {
+          answerLines = await command.execute(callArguments, currentUser, currentChatKey.id);
         } else {
-          answerLines = ["Error: Not allowed to execute this command!"]
+          answerLines = ["Error: Not allowed to execute this command!"];
         }
 
         // check if the command was executed successfully (If this is not the case, command.execute returns an empty array.)
         if (answerLines.length === 0 || answerLines === undefined) {
           // no answer -> command was not executed successfully
           // adding the Help Text in the DB to display in the Chat
-          this.databaseModel.addChatMessage(command.helpText, currentChatKeyID, 1, userId)
-          //const { data, error } = await BackEndController.CLIENT
-          //.from('ChatMessage')
-          //.insert([
-          //{ ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: command.helpText },
-          //])
+          this.databaseModel.addChatMessage(command.helpText, currentChatKey.id, SystemUser.SYSTEM, currentUser.id);
           return false;
         } else {
 
@@ -116,12 +101,7 @@ export class BackEndController {
 
           // create a message for each line of the answer
           for (let i = 0; i < answerLines.length; i++) {
-            this.databaseModel.addChatMessage(answerLines[i], currentChatKeyID, 1, userId)
-            //const { data, error } = await BackEndController.CLIENT
-            //.from('ChatMessage')
-            //.insert([
-            //{ ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: answerLines[i] },
-            //])
+            await this.databaseModel.addChatMessage(answerLines[i], currentChatKey.id, SystemUser.SYSTEM, currentUser.id);
           }
 
           // console.log("Command executed successfully.");
@@ -129,16 +109,11 @@ export class BackEndController {
           return true; // answer -> command was executed successfully
         }
       }
-    };
-    if (commandFound == false) {
-      // console.log("No command /" + callString + " found");
-      this.databaseModel.addChatMessage('No Command /' + callString + ' found', currentChatKeyID, 1, userId)
-      //const { data, error } = await BackEndController.CLIENT
-      //.from('ChatMessage')
-      //.insert([
-      //{ ChatKeyID: currentChatKeyID, UserID: '1', TargetUserID: userId, Message: 'No Command /' + callString + ' found' },
-      //])
     }
+
+    // No match was fund
+    // console.log("No command /" + callString + " found");
+    this.databaseModel.addChatMessage('No Command /' + callString + ' found', currentChatKey.id, SystemUser.SYSTEM, currentUser.id);
 
     return false; // command was not found
   }
@@ -152,7 +127,7 @@ export class BackEndController {
   * @param {string} token Token to validate
   * @returns {boolean} True if the token is valid, false if not
   */
-  public isTokenValid = (token: string): boolean => {
+  public isTokenValid(token: string): boolean {
     try {
       jwt.verify(token, BackEndController.KEY);
       return true;
@@ -167,8 +142,8 @@ export class BackEndController {
   * @param {string} token Token with user credentials
   * @returns {boolean} True if token contains a valid user, false if not
   */
-  public isUserTokenValid = async (token: string): Promise<boolean> => {
-    if (this.isTokenValid(token) && await this.databaseModel.userAlreadyExists(this.getUsernameFromToken(token))) {
+  public async isUserTokenValid(token: string): Promise<boolean> {
+    if (this.isTokenValid(token) && await this.handleUserAlreadyExists(this.getUsernameFromToken(token))) {
       // console.log("user exists")
       return true;
     }
@@ -180,14 +155,13 @@ export class BackEndController {
   * @param {string} token Token to extract username from
   * @returns {string} Username if token contains username, empty string if not
   */
-  public getUsernameFromToken = (token: string): string => {
+  public getUsernameFromToken(token: string): string {
     try {
       let data = jwt.decode(token);
       if (typeof data === "object" && data !== null) {
-        return data.username
+        return data.username;
       }
     } catch (error) {
-
     }
     return "";
   }
@@ -197,27 +171,16 @@ export class BackEndController {
   * @param {string} token Token to check for Admin-Status
   * @returns {string} true if Token is Admin-Token, false if not
   */
-  public getIsAdminFromToken = (token: string): boolean => {
+  public getIsAdminFromToken(token: string): boolean {
     try {
       let data = jwt.decode(token);
       if (typeof data === "object" && data !== null) {
-        console.log("Access granted. You are an Admin!");
         return data.isAdmin;
       }
     } catch (error) {
 
     }
     return false;
-  }
-
-  /**
-  * This method returns the userID of the user extracted from the token
-  * @param {string} token Token to extract userID from
-  * @returns {Promise<number>} UserID if token contains username, NaN if not
-  */
-  public getUserIDFromToken = async (token: string): Promise<number> => {
-    let username = this.getUsernameFromToken(token);
-    return await this.databaseModel.getUserIDByUsername(username);
   }
 
   //#endregion
@@ -229,7 +192,7 @@ export class BackEndController {
   * @param {string} password password to check
   * @returns {boolean} true if the password meets the requirements, false if not
   */
-  public isPasswordValid = (password: string): boolean => {
+  public isPasswordValid(password: string): boolean {
     /**
     * Requirements:
     * Length: min. 8 characters
@@ -251,7 +214,7 @@ export class BackEndController {
   * @param {string} password password to hash
   * @returns {Promise<string>} hashed password
   */
-  private hashPassword = async (password: string): Promise<string> => {
+  private async hashPassword(password: string): Promise<string> {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
     return hashedPassword
@@ -263,7 +226,7 @@ export class BackEndController {
   * @param {string} hashedpassword password as hash from db
   * @returns {Promise<boolean>} true if password and hash match, flase if not
   */
-  private checkPassword = async (clearPassword: string, hashedpassword: string): Promise<boolean> => {
+  private async checkPassword(clearPassword: string, hashedpassword: string): Promise<boolean> {
     return await bcrypt.compare(clearPassword, hashedpassword);
   }
 
@@ -271,37 +234,75 @@ export class BackEndController {
 
   //#region User Methods
 
-  /** 
-   * This function is used to demote a user
-   */
-  public updateUserAccessLevel = async (token: string, name: string | undefined, newAccessLevel: number): Promise<boolean> => {
-    let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return changedSucessfully;
+  /**
+  * This method changes the password from the current user
+  * @param {string} token Token to extract username from
+  * @param {string} oldPassword contains the old User Password
+  * @param {string} newPassword contains the new User Password
+  * @returns {Promise<boolean>} if password was changed -> return true
+  */
+  public async handleChangeUserPassword(token: string, oldPassword: string, newPassword: string): Promise<boolean> {
+    if (!this.isTokenValid(token)) {
+      return false;
     }
 
-    let userID = await this.databaseModel.getUserIDByUsername(name);
-    return this.databaseModel.updateUserAccessLevel(newAccessLevel, userID);
+    const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, this.getUsernameFromToken(token)))[0];
+
+    if (user === undefined) {
+      return false;
+    }
+
+    if (this.isPasswordValid(newPassword) && await this.checkPassword(oldPassword, user.hashedPassword)) {
+      const newHashedPassword: string = await this.hashPassword(newPassword);
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.changeUserPassword(newHashedPassword, user.id));
+    }
+
+    return false;
+  }
+
+  /**
+  * This method removes a target user from the database
+  * @param {string} userToken user token to verificate delete process
+  * @param {string} usernameToDelete username of user to delete
+  * @returns {Promise<boolean>} true if user was deleted, false if not
+  */
+  public async handleDeleteUser(userToken: string, usernameToDelete: string): Promise<boolean> {
+    if (!await this.isUserTokenValid(userToken)) {
+      return false;
+    }
+
+    const userTokenName = this.getUsernameFromToken(userToken);
+
+    // check whether an admin wants to delete a user or the user wants to delete itselfe
+    if (userTokenName !== usernameToDelete && !this.getIsAdminFromToken(userToken)) {
+      return false;
+    }
+
+    const targetUser: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, usernameToDelete))[0];
+
+    if (targetUser === undefined) {
+      return false;
+    }
+
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteUser(targetUser.id));
   }
 
   /** 
-   * This function is used to reset the password of a user
+   * This function is used to demote a user
    */
-  public resetPassword = async (token: string, name: string | undefined): Promise<boolean> => {
-    let resetSucessfully: boolean = false;
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return resetSucessfully;
+   public async handleUpdateUserAccessLevel(token: string, nameToPromote: string, proDemote: ProDemote): Promise<boolean> {
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      const updateUser: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, nameToPromote))[0];
+      if (updateUser === undefined) {
+        return false;
+      }
+      if (proDemote === ProDemote.PROMOTE && updateUser.accessLevel < (AccessLevel.MAX_LEVEL - 1)) {
+        return this.databaseModel.evaluateSuccess(await this.databaseModel.updateUserAccessLevel(updateUser.accessLevel + 1, updateUser.id));
+      } else if (proDemote === ProDemote.DEMOTE && updateUser.accessLevel > 0) {
+        return this.databaseModel.evaluateSuccess(await this.databaseModel.updateUserAccessLevel(updateUser.accessLevel - 1, updateUser.id));
+      }
     }
-    let hashedResetPassword = await this.hashPassword('klaushesse');
-    console.log("Das Passwort wird jetzt zurückgesetzt!!");
-    let resetID = await this.databaseModel.getUserIDByUsername(name);
-    return this.databaseModel.resetPassword(hashedResetPassword, resetID);
+    return false;
   }
 
   /**
@@ -309,51 +310,106 @@ export class BackEndController {
    * @param token 
    * @returns Array of all IUsers
    */
-  public fetchAllUsers = async (token: string): Promise<IUser[]> => {
-    let allUsers: IUser[] = [];
-    // check if user is valid
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+  public async handleGetAllUsers(token: string): Promise<IUser[]> {
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      return this.databaseModel.getIUserFromResponse(await this.databaseModel.fetchAllUsersAlphabeticalAndAccess());
+    }
+    return [];
+  }
 
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return allUsers;
+  /**
+  * This method logs in a user if the given credentials are valid.
+  * @param {string} username Username to log in
+  * @param {string} password Password for the given username
+  * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
+  */
+  public async handleLoginUser(username: string, password: string): Promise<string> {
+    const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, username))[0];
+
+    if (user === undefined) {
+      return "";
     }
 
-    allUsers = await this.databaseModel.fetchAllUsers();
+    if (await this.checkPassword(password, user.hashedPassword)) {
+      const token: string = jwt.sign({
+        username: username,
+        isAdmin: (user.accessLevel === AccessLevel.ADMIN)
+      }, BackEndController.KEY, { expiresIn: '1 day' });
+      return token;
+    }
 
-    return allUsers;
+    return "";
+  }
+
+  /**
+  * API function to register a user
+  * @param {string} user username to register
+  * @param {string} password password for the user
+  * @param {number} accessLevel access level for the user
+  * @returns {Promise<string>} true if registration was successfull, error Message if not
+  */
+  public async handleRegisterUser(username: string, password: string, accessLevel: AccessLevel = AccessLevel.USER): Promise<string> {
+    if (!await this.handleUserAlreadyExists(username)) {
+      let returnString: string = "";
+      const vUsernameValid: boolean = this.isUsernameValid(username);
+      const vPasswordValid: boolean = this.isPasswordValid(password);
+      if (!vUsernameValid && !vPasswordValid) {
+        returnString = "error_username_password";
+      }
+      else if (!vPasswordValid) {
+        returnString = "error_password";
+      }
+      else if (!vUsernameValid) {
+        returnString = "error_username";
+      }
+      else if (vUsernameValid && vPasswordValid) {
+        const hashedPassword = await this.hashPassword(password);
+
+        if (this.databaseModel.evaluateSuccess(await this.databaseModel.addUser(username, hashedPassword, accessLevel))) {
+          returnString = "True"
+        } else {
+          returnString = "False"
+        }
+      }
+      return returnString;
+    }
+    else {
+      return "False";
+    }
   }
 
   /** 
-  * API function to check if the username/userID and the password are correct 
-  * @param {string} username the username to check
-  * @param {number} userID the userID to check
-  * @param {string} password the password to check
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the username and password are correct
-  */
-  public isUserValid = async (user: { id?: number, name?: string, password: string }): Promise<boolean> => {
-    let currentUser: IUser = {};
+   * This function is used to reset the password of a user
+   */
+  public async handleResetUserPassword(token: string, name: string): Promise<boolean> {
+    const userIsValid: boolean = await this.isUserTokenValid(token) && this.getIsAdminFromToken(token);
 
-    if (user.id !== undefined) {
-      currentUser = await this.databaseModel.getIUserByUserID(user.id);
-    }
-    else if (user.name !== undefined) {
-      currentUser = await this.databaseModel.getIUserByUsername(user.name)
+    if (!userIsValid) {
+      return false;
     }
 
-    if (currentUser !== {} && currentUser.hashedPassword !== undefined) {
-      return this.checkPassword(user.password, currentUser.hashedPassword);
-    }
-    return false;
-  };
+    const resetUser: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, name))[0];
 
+    if (resetUser === undefined) {
+      return false;
+    }
+
+    const hashedResetPassword = await this.hashPassword(resetUser.name);
+    console.log("Das Passwort wird jetzt zurückgesetzt auf " + resetUser.name + "!!");
+
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.changeUserPassword(hashedResetPassword, resetUser.id));
+  }
+
+  public async handleUserAlreadyExists(username: string): Promise<boolean> {
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.selectUserTable(undefined, username));
+  }
 
   /**
   * This method checks a username for requirements
   * @param {string} username username to check
   * @returns {boolean} true if the username meets the requirements, false if not
   */
-  public isUsernameValid = (username: string): boolean => {
+  public isUsernameValid(username: string): boolean {
     /**
     * Requirements:
     * Length: 4-16 characters
@@ -371,141 +427,48 @@ export class BackEndController {
     return false;
   }
 
-  /**
-  * This method logs in a user if the given credentials are valid.
-  * @param {string} username Username to log in
-  * @param {string} password Password for the given username
-  * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
-  */
-  public loginUser = async (username: string, password: string): Promise<string> => {
-    if (await this.isUserValid({ name: username, password: password })) {
-      let user = await this.databaseModel.getIUserByUsername(username);
-      if (user !== {}) {
-        console.log("User logs in:", user)
-        let token = jwt.sign({
-          username: username,
-          isAdmin: (user.accessLevel === 1)
-        }, BackEndController.KEY, { expiresIn: '1 day' });
-        return token;
-      }
-    }
-    return "";
-  }
-
-  /**
-  * API function to register a user
-  * @param {string} user username to register
-  * @param {string} password password for the user
-  * @param {number} accessLevel access level for the user
-  * @returns {Promise<string>} true if registration was successfull, error Message if not
-  */
-  public registerUser = async (username: string, password: string, accessLevel: number = 0): Promise<string> => {
-    if (await this.databaseModel.userAlreadyExists(username) == false) {
-      let returnString: string = "";
-      let vUsernameValid: boolean = await this.isUsernameValid(username);
-      let vPasswordValid: boolean = await this.isPasswordValid(password);
-      // console.log("vPasswordValid: " + vPasswordValid);
-      // console.log("vUsernameValid: " + vUsernameValid);
-      if (vUsernameValid == false && vPasswordValid == false) {
-        returnString = "error_username_password";
-      }
-      else if (vPasswordValid == false) {
-        returnString = "error_password";
-      }
-      else if (vUsernameValid == false) {
-        returnString = "error_username";
-      }
-      else if (vUsernameValid && vPasswordValid) {
-        let hashedPassword = await this.hashPassword(password);
-
-        if (await this.databaseModel.registerUser(username, hashedPassword, accessLevel) === "True") {
-          returnString = "True"
-        } else {
-          returnString = "False"
-        }
-      }
-      return returnString;
-    }
-    else {
-      return "False";
-    }
-  }
-
-
-  /**
-  * This method removes a target user from the database
-  * @param {string} userToken user token to verificate delete process
-  * @param {string} usernameToDelete username of user to delete
-  * @returns {Promise<boolean>} true if user was deleted, false if not
-  */
-  public deleteUser = async (userToken: string, usernameToDelete: string): Promise<boolean> => {
-
-    const currentUserId = await this.getUserIDFromToken(userToken);
-    const targetUserId = await this.databaseModel.getUserIDByUsername(usernameToDelete);
-
-    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return false;
-    }
-
-    return this.databaseModel.deleteUser(targetUserId);
-  }
-
-  /**
-  * This method changes the password from the current user
-  * @param {string} token Token to extract username from
-  * @param {string} oldPassword contains the old User Password
-  * @param {string} newPassword contains the new User Password
-  * @returns {Promise<boolean>} if password was changed -> return true
-  */
-  public changeUserPassword = async (token: string, oldPassword: string, newPassword: string): Promise<boolean> => {
-    let userName: string = ""
-    let currentUser: IUser
-
-    if (await this.isUserTokenValid(token)) {
-      userName = this.getUsernameFromToken(token);
-      if (userName !== null && userName !== "") {
-        currentUser = await this.databaseModel.getIUserByUsername(userName);
-        if (currentUser !== null && this.isPasswordValid(newPassword) && currentUser.hashedPassword !== undefined && await this.checkPassword(oldPassword, currentUser.hashedPassword)) {
-          //first hash then Save
-          let hashedPassword = await this.hashPassword(newPassword);
-          if (currentUser.id !== undefined) {
-            return this.databaseModel.changeUserPassword(currentUser.id, hashedPassword);
-          }
-        }
-      }
-    }
-    return false;
-  }
-
   //#endregion
 
   //#region ChatKey Methods
 
-  public changeChatKeyExpirationDate = async (token: string, chatKeyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> => {
-    let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return changedSucessfully;
+  public async handleAddCustomChatKey(userToken: string, keyword: string): Promise<boolean> {
+    if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
+      return await this.addChatKey(keyword);
     }
-
-    return this.databaseModel.changeChatKeyExpirationDate(chatKeyID, newExpirationDate);
+    return false;
   }
 
-  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
-
-    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return false;
+  public async handleChangeChatKeyExpirationDate(token: string, chatKeyID: number, newExpirationDate: Date): Promise<boolean> {
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.changeChatKeyExpirationDate(chatKeyID, newExpirationDate));
     }
+    return false;    
+  }
 
-    return this.databaseModel.deleteChatKey(chatKeyToDelete);
+  public async handleDeleteOldChatKeys(): Promise<boolean> {
+    const currentDate = new Date();
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteChatKey(undefined, undefined, currentDate, true));
+  }
+
+  public async handleDeleteChatKey(userToken: string, chatKeyID: number): Promise<boolean> {
+    if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteChatKey(chatKeyID));
+    }
+    return false;
+  }
+
+  public async handleDoesChatKeyExist(chatKey: string): Promise<boolean> {
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey));
+  }
+
+  public async handleGenerateChatKey(): Promise<string> {
+    const keyword = getThreeWords();
+    console.log(keyword)
+    if (await this.addChatKey(keyword)) {
+      console.log("Test")
+      return keyword;
+    }
+    return "";
   }
 
   /**
@@ -513,20 +476,14 @@ export class BackEndController {
   * @param token 
   * @returns Array of all IChatKeys
   */
-  public fetchAllChatKeys = async (token: string): Promise<IChatKey[]> => {
-    let allChatKeys: IChatKey[] = [];
-    // check if user is valid
-    console.log("Es geht los!!!");
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
+  public async handleGetAllChatKeys(token: string): Promise<IChatKey[]> {
+    // delete all expired chatKeys
+    await this.handleDeleteOldChatKeys();
 
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return allChatKeys;
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      return this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable());
     }
-
-    allChatKeys = await this.databaseModel.fetchAllChatKeys();
-
-    return allChatKeys
+    return [];
   }
 
   /** 
@@ -534,20 +491,19 @@ export class BackEndController {
   * @param {string} chatKey the Id of the new Chatroom
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
   */
-  public addChatKey = async (chatKey: string): Promise<boolean> => {
-
-    let chatKeyExists = await this.databaseModel.chatKeyAlreadyExists(chatKey)
-
+  public async addChatKey(chatKey: string): Promise<boolean> {
+    const chatKeyExists:boolean = this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey))
+  
     if (chatKeyExists) {
       return false;
     }
 
-    var expirationDate = new Date();
+    const expirationDate = new Date();
     // currentDate + 1 Day = ExpirationDate
     expirationDate.setDate(expirationDate.getDate() + 1);
     // console.log("Chat Key expires: " + expirationDate);
-
-    return this.databaseModel.addChatKey(chatKey, expirationDate);
+  
+    return this.databaseModel.evaluateSuccess(await this.databaseModel.addChatKey(chatKey, expirationDate));
   };
 
   //#endregion
@@ -561,29 +517,78 @@ export class BackEndController {
   * @param {number} lastMessageID the last message id point to start fetching new messages
   * @returns {Promise<IChatKeyMessage[]>}
   */
-  public getChatMessages = async (token: string, chatKey: string, lastMessageID: number): Promise<IChatMessage[]> => {
-    let chatMessages: IChatMessage[] = [];
-
-    // check if user is valid
-    let userIsValid: boolean = await this.isUserTokenValid(token);
-
-    if (!userIsValid) {
-      return chatMessages;
+   public async handleGetChatMessages(token: string, keyword: string, lastMessageID: number): Promise<IFChatMessage[]> {
+    if (!this.isTokenValid(token)) {
+      return [];
     }
 
-    // get id of chatkey
-    let chatKeyID = await this.databaseModel.getChatKeyID(chatKey);
+    const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, this.getUsernameFromToken(token)))[0];
 
-    if (chatKeyID === null || chatKeyID === undefined) {
-      return chatMessages;
+    if (user === undefined) {
+      return [];
     }
 
-    let targetID = await this.getUserIDFromToken(token);
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
 
-    let filterString = "TargetUserID.eq." + String(targetID) + ",TargetUserID.eq.0";
+    if (chatKey === undefined) {
+      return [];
+    }
 
-    return this.databaseModel.getChatMessages(chatKeyID, filterString, lastMessageID);
+    // Messages: targetuser = targetID, targetUser = 0, chatkeyID, setLastMessageID
+    const messageTargetUser: IChatMessage[] = this.databaseModel.getIChatMessageFromResponse(await this.databaseModel.selectChatMessageTable(lastMessageID, chatKey.id, undefined, user.id, undefined, undefined, true));
+    const messageTargetZero: IChatMessage[] = this.databaseModel.getIChatMessageFromResponse(await this.databaseModel.selectChatMessageTable(lastMessageID, chatKey.id, undefined, SystemUser.BROADCAST, undefined, undefined, true));
+    const allMessages: IChatMessage[] = messageTargetUser.concat(messageTargetZero);
+
+    allMessages.sort((a, b) => a.id - b.id)
+
+    // Map allMessages to IFchatMessage[]
+    const allUsers: IUser[] = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable());
+
+    const allFChatMessages: IFChatMessage[] = allMessages.map(message => ({
+      id: message.id,
+      username: allUsers.find(user => user.id === message.userID)?.name || "",
+      dateSend: message.dateSend,
+      message: message.message,
+    }))
+
+    return allFChatMessages;
   };
+
+  /**
+   * API function to add a join/leave chat message to the database
+   * @param {string} userToken the token of the user
+   * @param {string} chatKey the chatKey of the chat
+   * @param {string} joinOrLeave "join" or "leave"
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
+   public async handleJoinLeaveRoomMessage(userToken: string, keyword: string, joinOrLeave: string): Promise<boolean> {
+    // verify if user is valid
+    if (!this.isTokenValid(userToken)) {
+      return false;
+    }
+
+    const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, this.getUsernameFromToken(userToken)))[0];
+
+    if (user === undefined) {
+      return false;
+    }
+
+    // get the chatKey
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
+    
+    if (chatKey === undefined) {
+      return false;
+    }
+
+    // send the message to the chatroom
+    if (joinOrLeave === "join") {
+      return await this.addChatMessage(user.name + " joined the chatroom", chatKey.id, SystemUser.SYSTEM);
+    } else if (joinOrLeave === "leave") {
+      return await this.addChatMessage(user.name + " left the chatroom", chatKey.id, SystemUser.SYSTEM);
+    } else {
+      return false;
+    }
+  }
 
   /** 
   * //TODO adding the cmd messages in the executeCommand Function
@@ -594,32 +599,29 @@ export class BackEndController {
   * @param {number} userId the Id of the User
   * @returns {Promise<boolean>} a promise that resolves to an boolean that the command or message was executed succesfully.
   */
-  public handleChatMessage = async (message: string, chatKeyId: number, userToken?: string, userId?: number): Promise<boolean> => {
-    if (userId === undefined && userToken !== undefined) {
-      if (await this.isUserTokenValid(userToken)) {
-        userId = await this.getUserIDFromToken(userToken);
-      } else {
-        return false;
-      }
-    } else if (userId !== undefined && userToken !== undefined) {
-      return false;
-    } else if (userId === undefined && userToken === undefined) {
-      return false;
-    } else if (userId === undefined) {
+   public async handleSaveChatMessage(message: string, keyword: string, userToken: string): Promise<boolean> {
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
+
+    if (chatKey === undefined) {
       return false;
     }
 
+    if(!await this.isUserTokenValid(userToken)) {
+      return false;
+    }
+
+    const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, this.getUsernameFromToken(userToken)))[0]
+
+    if (user === undefined) {
+      return false;
+    }
 
     if (message[0] === "/") {
-      await this.executeCommand(message, userId, chatKeyId);
-      return true;
+      return await this.executeCommand(message, user, chatKey);
     }
     else {
-      if (await this.addChatMessage(message, chatKeyId, userId)) {
-        return true;
-      }
+      return await this.addChatMessage(message, chatKey.id, user.id);
     }
-    return false;
   };
 
   /** 
@@ -631,73 +633,17 @@ export class BackEndController {
   * @param {number} userId the Id of the User
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
   */
-  public addChatMessage = async (message: string, chatKeyId: number, userId: number, targetUserId: number = 0): Promise<boolean> => {
-    if (await this.databaseModel.getChatKey(chatKeyId) !== null) {
+  public async addChatMessage(message: string, chatKeyId: number, userId: number, targetUserId: number = SystemUser.BROADCAST): Promise<boolean> {
+    if (this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(chatKeyId))) {
       console.log("UserID: " + targetUserId);
-      return this.databaseModel.addChatMessage(message, chatKeyId, userId, targetUserId);
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.addChatMessage(message, chatKeyId, userId, targetUserId));
     }
     return false;
   };
 
-  /**
-   * API function to add a join/leave chat message to the database
-   * @param {string} userToken the token of the user
-   * @param {string} chatKey the chatKey of the chat
-   * @param {string} joinOrLeave "join" or "leave"
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
-   */
-  public joinLeaveRoomMessage = async (userToken: string, chatKey: string, joinOrLeave: string): Promise<boolean> => {
-    // verify if user is valid
-    if (!this.isUserTokenValid(userToken)) {
-      return false;
-    }
-
-    // get the user 
-    let user = await this.databaseModel.getIUserByUserID(await this.getUserIDFromToken(userToken));
-    if (user === null) {
-      return false;
-    }
-
-    // get the chatKeyId
-    let chatKeyID = await this.databaseModel.getChatKeyID(chatKey);
-    if (chatKeyID === null) {
-      return false;
-    }
-
-    // send the message to the chatroom
-    if (joinOrLeave === "join") {
-      return await this.handleChatMessage(user.name + " joined the chatroom", chatKeyID, undefined, 1);
-    } else if (joinOrLeave === "leave") {
-      return await this.handleChatMessage(user.name + " left the chatroom", chatKeyID, undefined, 1);
-    } else {
-      return false;
-    }
-  }
-
   //#endregion
 
   //#region Ticket Methods
-
-
-  /**
-   * This function is used to fetch all Tickets from the Database
-   * @param token 
-   * @returns Array of all IBugTickets
-   */
-  public fetchAllTickets = async (token: string): Promise<IBugTicket[]> => {
-    let allTickets: IBugTicket[] = [];
-    // check if user is valid
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return allTickets;
-    }
-
-    allTickets = await this.databaseModel.fetchAllTickets();
-
-    return allTickets;
-  }
 
   /**
   * This function is used to change the status of a ticket from to-do to solved
@@ -706,14 +652,25 @@ export class BackEndController {
   * 
   * @returns boolean - true if ticked was sucessfully changed - false if not
   */
-  public changeSolvedState = async (currentToken: string, ticketToChange: number | undefined, currentState: boolean | undefined): Promise<boolean> => {
-    let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.getIsAdminFromToken(currentToken);
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return changedSucessfully;
+  public async handleChangeTicketSolvedState(currentToken: string, ticketToChange: number, currentState: boolean): Promise<boolean> {
+    if (await this.isUserTokenValid(currentToken) && this.getIsAdminFromToken(currentToken)) {
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.changeTicketSolvedState(ticketToChange, !currentState));
     }
-    return this.databaseModel.changeSolvedState(ticketToChange, !currentState);
+    return false;
+  }
+
+  /**
+   * This function is used to fetch all Tickets from the Database
+   * @param token 
+   * @returns Array of all IBugTickets
+   */
+  public async handleGetAllTickets(token: string): Promise<IBugTicket[]> {
+    let allTickets: IBugTicket[] = [];
+    // check if user is valid
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      return this.databaseModel.getIBugTicketFromResponse(await this.databaseModel.selectTicketTable());
+    }
+    return [];
   }
 
   //#endregion
@@ -727,16 +684,11 @@ export class BackEndController {
    * @param newExpirationDate 
    * @returns bool if sucessfull
    */
-  public changeSurveyExpirationDate = async (token: string, surveyID: number | undefined, newExpirationDate: Date | null): Promise<boolean> => {
-    let changedSucessfully: boolean = false;
-    let userIsValid: boolean = await this.getIsAdminFromToken(token);
-
-    if (!userIsValid) {
-      console.log("You are not an admin!");
-      return changedSucessfully;
+  public async handleChangeSurveyExpirationDate(token: string, surveyID: number, newExpirationDate: Date): Promise<boolean> {
+    if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.changeSurveyExpirationDate(surveyID, newExpirationDate));
     }
-
-    return this.databaseModel.changeSurveyExpirationDate(surveyID, newExpirationDate);
+    return false;
   }
 
   /**
@@ -745,17 +697,95 @@ export class BackEndController {
    * @param surveyIDToDelete 
    * @returns bool if sucessfull
    */
-  public deleteSurvey = async (userToken: string, surveyIDToDelete: number | undefined): Promise<boolean> => {
+   public async handleDeleteSurvey(userToken: string, surveyIDToDelete: number): Promise<boolean> {
+    if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
+      if (!this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurveyOption(surveyIDToDelete))) {
+        return false;
+      }
+      if (!this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurveyVote(surveyIDToDelete))) {
+        return false;
+      }
+      return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurvey(surveyIDToDelete));
+    }
+    return false;
+  }
 
-    let userIsValid: boolean = await this.getIsAdminFromToken(userToken);
-    if (!userIsValid) {
-      console.log("You are not an admin!");
+  public async handleGetAllSurveys(adminToken: string): Promise<ISurvey[]> {
+    if(await this.isUserTokenValid(adminToken) && this.getIsAdminFromToken(adminToken)) {
+      return this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable());
+    }
+    return [];
+  }
+
+  /**
+  * This method returns the current state of a survey for the given surveyID.
+  * @param {number} surveyID the surveyID of the survey 
+  * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
+  */
+   public async getSurveyState(surveyID: number, chatKeyID: number): Promise<ISurveyState | null> {
+    const survey: ISurvey = this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable(surveyID, undefined, undefined, undefined, undefined, chatKeyID))[0];
+
+    if (survey === undefined) {
+      return null;
+    }
+
+    const surveyOptions: ISurveyOption[] = this.databaseModel.getISurveyOptionFromResponse(await this.databaseModel.selectSurveyOptionTable(undefined, surveyID));
+
+    const surveyVotes: ISurveyVote[] = this.databaseModel.getISurveyVoteFromResponse(await this.databaseModel.selectSurveyVoteTable(surveyID));
+
+    // assemble the survey object
+    const surveyState: ISurveyState = {
+      survey: survey,
+      options: surveyOptions.map(option => {
+        let countVotes = 0;
+        if (surveyVotes !== null && surveyVotes.length > 0) {
+          countVotes = surveyVotes.filter(vote => vote.optionID === option.id).length
+        }
+        return {
+          option: option,
+          votes: countVotes
+        };
+      })
+    }
+
+    return surveyState;
+  }
+
+  /**
+  * This function is used to add a new vote for a survey option to the database.
+  * @param voteToAdd the vote object to add to the database
+  * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
+  */
+   public async addNewVote(voteToAdd: ISurveyVote): Promise<boolean> {
+    // check if survey is still open
+    const isExpired: boolean = await this.isSurveyExpired(voteToAdd.surveyID);
+
+    if (isExpired) {
       return false;
     }
-    this.databaseModel.deleteSurveyOption(surveyIDToDelete);
-    this.databaseModel.deleteSurveyVote(surveyIDToDelete);
 
-    return this.databaseModel.deleteSurvey(surveyIDToDelete);
+    // check if the survey and the option exist
+
+    const optionExists: boolean = this.databaseModel.evaluateSuccess(await this.databaseModel.selectSurveyOptionTable(voteToAdd.optionID, voteToAdd.surveyID));
+
+    if (!optionExists) {
+      return false;
+    }
+
+    // fetch the supabase database
+    const addedVoteSuccessfully = this.databaseModel.evaluateSuccess(await this.databaseModel.addSurveyVote(voteToAdd));
+
+    return addedVoteSuccessfully;
+  }
+
+  public async isSurveyExpired(surveyID: number): Promise<boolean> {
+    const survey = this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable(surveyID))[0];
+
+    if (survey === undefined) {
+      return false;
+    }
+
+    return new Date(survey.expirationDate) < new Date();
   }
 
   //#endregion

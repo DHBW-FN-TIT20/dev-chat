@@ -3,22 +3,21 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Main.module.css'
 import React, { Component } from 'react'
-import Header from './header'
+import Header from '../components/header'
 import FrontEndController from '../controller/frontEndController'
-import { stringify } from 'querystring'
 
 export interface MainState {
-  isLoggedIn: boolean,
-  inputChatKey: string,
-  feedbackMessage: string,
-  doesChatKeyExists: boolean,
+  isLoggedIn: boolean;
+  inputChatKey: string;
+  feedbackMessage: string;
+  doesChatKeyExists: boolean;
 }
 
-export interface MainProps extends WithRouterProps {}
+export interface MainProps extends WithRouterProps { }
 
 /**
  * Component-Class for the main Page
- * @component
+ * @category Page
  */
 class Main extends Component<MainProps, MainState> {
   constructor(props: MainProps) {
@@ -37,9 +36,9 @@ class Main extends Component<MainProps, MainState> {
   componentDidMount() {
     this.checkLoginState();
     window.addEventListener('storage', this.storageTokenListener);
-    this.connectToParamChatKey()
+    this.connectToParamChatKey();
   }
-  
+
   /**
    * is always called, if component will unmount
    */
@@ -49,9 +48,8 @@ class Main extends Component<MainProps, MainState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
-   * @param {any} event Event triggered by an EventListener
    */
-  storageTokenListener = async (event: any) => {
+  private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
@@ -60,18 +58,21 @@ class Main extends Component<MainProps, MainState> {
   /**
    * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
-  async checkLoginState() {
-    let currentToken = FrontEndController.getUserToken();
+  private async checkLoginState() {
+    const currentToken = FrontEndController.getUserToken();
     if (await FrontEndController.verifyUserByToken(currentToken)) {
       // logged in
-      this.setState({isLoggedIn: true})
+      this.setState({ isLoggedIn: true });
     } else {
       // not logged in
-      const { router } = this.props
-      router.push("/login")
+      const { router } = this.props;
+      router.push("/login");
     }
   }
 
+  /**
+   * This method updates the feedback-message in the chatKey error div
+   */
   private updateFeedbackMessage(doesChatKeyExists: boolean) {
     console.log("updateFeedbackMessage()");
     let feedbackMessage: string = "";
@@ -79,45 +80,62 @@ class Main extends Component<MainProps, MainState> {
     if (!doesChatKeyExists) {
       feedbackMessage = "Chat-Key does not exists";
     }
+    console.log("This in updateMessage " + this);
 
     this.setState({ feedbackMessage: feedbackMessage });
   }
 
   /**
-   * Handle of the Keypressed-Event from the Input
-   * Checks if Enter was pressed
-   * @param event Occurred Event
+   * Handle of the Keypressed-Event from the chatKey Input
    */
-  handleJoinEnterKeyPress = async (event: any) => {
+  private handleJoinEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
-      await this.onJoinButtonClick(event);
+      await this.onJoinButtonClick();
     }
   }
 
   /**
-   * Handle for On Click Event of the Button
-   * @param event 
+   * This method trys to join a chat
    */
-  onJoinButtonClick = async (event: any) => {
-    const { router } = this.props;
-    this.setState({feedbackMessage : ""});
-    let doesChatKeyExists = await FrontEndController.doesChatKeyExists(this.state.inputChatKey)
-    this.setState({
-      doesChatKeyExists: doesChatKeyExists
-    })
-    if(this.state.doesChatKeyExists)
-    {
+  private onJoinButtonClick = async () => {
+    const { router } = this.props
+    this.setState({ feedbackMessage: "" });
+    const doesChatKeyExists = await FrontEndController.doesChatKeyExists(this.state.inputChatKey);
+    this.setState({ doesChatKeyExists: doesChatKeyExists });
+    if (this.state.doesChatKeyExists) {
       console.log("EXISTS")
       FrontEndController.setChatKeyCookie(this.state.inputChatKey);
-      router.push("/chat")
-    }
-    else {
-      console.log("NOT EXISTS")
-      this.setState({ inputChatKey: ""})
+      router.push("/chat");
+    } else {
+      console.log("NOT EXISTS");
+      this.setState({ inputChatKey: "" });
     }
     this.updateFeedbackMessage(this.state.doesChatKeyExists);
   }
 
+  /**
+   * This method checks whether there is a parameter chatKey in the URL.
+   * If there is, it connects to the chat with the chatKey.
+   */
+  private async connectToParamChatKey() {
+
+    // check for parameter "chatkey" in url
+    const urlParams = new URLSearchParams(window.location.search);
+    const chatKey = urlParams.get("chatkey") || urlParams.get("chatKey") || "";
+
+    // if there is a chatKey, check if it exists and connect to the chat
+    if (chatKey !== "") {
+      const { router } = this.props
+      const doesChatKeyExists = await FrontEndController.doesChatKeyExists(chatKey)
+      if (doesChatKeyExists) {
+        console.log("EXISTS")
+        FrontEndController.setChatKeyCookie(chatKey);
+        router.push("/chat")
+      } else {
+        console.log("NOT EXISTS")
+      }
+    }
+  }
 
   /**
    * Generates the JSX Output for the Client
@@ -128,7 +146,7 @@ class Main extends Component<MainProps, MainState> {
      * Initialize Router to navigate to other pages
      */
     const { router } = this.props
-    
+
     if (this.state.isLoggedIn) {
       return (
         <div>
@@ -141,62 +159,67 @@ class Main extends Component<MainProps, MainState> {
           <header>
             <Header pageInformation="MAIN MENU" showName={true} showExit={false} showLogout={true} />
           </header>
-    
+
           <main>
-          <div className={styles.container}>
-            <div className={styles.left}>
-            <a hidden={false} href="/project-docs.pdf">Docs</a>
-              <h1>
-                Join Room
-              </h1>
-              <input type="text" placeholder="Chat-Key..." className='input' 
-                onChange={(event) => { 
-                  this.setState({ inputChatKey: event.currentTarget.value})
-                }}
-                onKeyPress={this.handleJoinEnterKeyPress}
-                value={this.state.inputChatKey} />           
-              <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
-              <button onClick={this.onJoinButtonClick}> Join </button>
-              <h1>
-                Create Room
-              </h1>
-              <button onClick={async () => {
-                if (await FrontEndController.addChatKey()) {
-                  router.push("/chat");
-                }
-              }}> 
-                Create
-              </button>
-              <h1>
-                Settings
-              </h1>
-              <button hidden={!FrontEndController.getAdminValueFromToken(FrontEndController.getUserToken())} onClick={() => router.push("/admin")}> 
-                Admin Settings
-              </button>
-              <button onClick={() => router.push("/password")}> 
-                Change Password
-              </button>
-              <button onClick={async () => {
-                if (await FrontEndController.deleteUser(FrontEndController.getUserToken(), FrontEndController.getUserFromToken(FrontEndController.getUserToken()))) {
-                  router.push("/login")
-                }
-              }}> 
-                Delete Account
-              </button>
-            </div>
-            
-            <div className={styles.right}>
-            <div className="image">
-              <Image
-                priority
-                src={"/logo.png"}
-                alt="DEV-CHAT Logo"
-                width={1000}
-                height={1000}
-                layout="responsive"
-              />
-            </div>
-            </div>
+            <div className={styles.container}>
+              <div className={styles.left}>
+                <a hidden={true} href="/project-docs.pdf">
+                  Docs
+                </a>
+                <h1>
+                  Join Room
+                </h1>
+                <input
+                  type="text"
+                  placeholder="Chat-Key..."
+                  className='input'
+                  onChange={(event) => { this.setState({ inputChatKey: event.currentTarget.value }) }}
+                  onKeyPress={this.handleJoinEnterKeyPress}
+                  value={this.state.inputChatKey} />
+                <div className='error' hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
+                <button onClick={this.onJoinButtonClick}> Join </button>
+                <h1>
+                  Create Room
+                </h1>
+                <button onClick={async () => {
+                  if (await FrontEndController.addChatKey()) {
+                    router.push("/chat");
+                  }
+                }}>
+                  Create
+                </button>
+                <h1>
+                  Settings
+                </h1>
+                <button
+                  hidden={!FrontEndController.getAdminValueFromToken(FrontEndController.getUserToken())}
+                  onClick={() => router.push("/admin")}
+                >
+                  Admin Settings
+                </button>
+                <button onClick={() => router.push("/password")}>
+                  Change Password
+                </button>
+                <button onClick={async () => {
+                  if (await FrontEndController.deleteUser(FrontEndController.getUserToken(), FrontEndController.getUserFromToken(FrontEndController.getUserToken()))) {
+                    router.push("/login")
+                  }
+                }}>
+                  Delete Account
+                </button>
+              </div>
+              <div className={styles.right}>
+                <div className="image">
+                  <Image
+                    priority
+                    src={"/logo.png"}
+                    alt="DEV-CHAT Logo"
+                    width={1000}
+                    height={1000}
+                    layout="responsive"
+                  />
+                </div>
+              </div>
             </div>
           </main>
         </div>
@@ -211,30 +234,6 @@ class Main extends Component<MainProps, MainState> {
           </Head>
         </div>
       )
-    }
-  }
-
-  /**
-   * This method checks whether there is a parameter chatKey in the URL.
-   * If there is, it connects to the chat with the chatKey.
-   */
-  private async connectToParamChatKey() {
-
-    // check for parameter "chatkey" in url
-    let urlParams = new URLSearchParams(window.location.search);
-    let chatKey = urlParams.get("chatkey") || urlParams.get("chatKey") || "";
-
-    // if there is a chatKey, check if it exists and connect to the chat
-    if (chatKey !== "") {
-      const { router } = this.props
-      let doesChatKeyExists = await FrontEndController.doesChatKeyExists(chatKey)      
-      if(doesChatKeyExists) {
-        console.log("EXISTS")
-        FrontEndController.setChatKeyCookie(chatKey);
-        router.push("/chat")
-      } else {
-        console.log("NOT EXISTS")
-      }
     }
   }
 }

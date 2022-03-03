@@ -1,5 +1,4 @@
 import withRouter, { WithRouterProps } from 'next/dist/client/with-router'
-import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Header.module.css'
 import React, { Component } from 'react'
@@ -9,87 +8,74 @@ export interface HeaderState {
 }
 
 export interface HeaderProps extends WithRouterProps {
-  pageInformation: string,
-  showName: boolean,
-  showExit: boolean,
-  showLogout: boolean,
+  pageInformation: string;
+  showName: boolean;
+  showExit: boolean;
+  showLogout: boolean;
 }
 
-
 /**
- * Component Class for the Header
- * @component
+ * Component-Class for the Header
+ * @category Component
  */
 class Header extends Component<HeaderProps, HeaderState> {
-  constructor(props: HeaderProps) {
-    super(props)
-    this.state = {
-    }
-    
-  }
-
-  componentDidMount() {}
-// noch ne variable für den header name
-  
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
    */
   render() {
-    /**
-     * Initialize Router to navigate to other pages
-     */
-    const { router } = this.props
+    //Initialize Router to navigate to other pages
+    const { router } = this.props;
 
-    let showName = <></>
+    let showName: JSX.Element = <></>
 
     if (this.props.showName) {
-      showName = <td className={styles.usertd}> 
-                  <div className={styles.user}>
-                    { FrontEndController.getUserFromToken(FrontEndController.getUserToken()) }
-                  </div>           
-                </td>
+      showName = <td className={styles.usertd}>
+        <div className={styles.user}>
+          {FrontEndController.getUserFromToken(FrontEndController.getUserToken())}
+        </div>
+      </td>
     }
 
-    let showExit = <></>
+    let showExit: JSX.Element = <></>
 
     if (this.props.showExit) {
       showExit = <td className={styles.exittd + " clickable"}>
-                  <div className={styles.exit}>
-                    <Image
-                      src={"/exit.png"}
-                      alt="DEV-CHAT Exit"
-                      width={50}
-                      height={50}
-                      onClick={() => router.push("/")}
-                    />
-                  </div>
-                </td>
+        <div className={styles.exit}>
+          <Image
+            src={"/exit.png"}
+            alt="DEV-CHAT Exit"
+            width={50}
+            height={50}
+            onClick={() => router.push("/")}
+          />
+        </div>
+      </td>
     }
 
-    let showLogout = <></>
+    let showLogout: JSX.Element = <></>
 
     if (this.props.showLogout) {
       showLogout = <td className={styles.exittd + " clickable"}>
-                    <div className={styles.exit}>
-                      <Image
-                        src={"/exit.png"}
-                        alt="DEV-CHAT Exit"
-                        width={50}
-                        height={50}
-                        onClick={() => {
-                          FrontEndController.logoutUser();
-                          router.reload();
-                        }}
-                      />
-                    </div>
-                  </td>
+        <div className={styles.exit}>
+          <Image
+            src={"/exit.png"}
+            alt="DEV-CHAT Exit"
+            width={50}
+            height={50}
+            onClick={() => {
+              FrontEndController.logoutUser();
+              router.reload();
+            }}
+          />
+        </div>
+      </td>
     }
 
     return (
-      <div>  
+      <div>
         <main>
-          <div className={styles.container}>         
+          <div className={styles.container}>
             <table className={styles.headertable} >
               <tbody>
                 <tr>
@@ -109,21 +95,21 @@ class Header extends Component<HeaderProps, HeaderState> {
                     <div className={styles.name}>
                       {this.props.pageInformation}
                     </div>
-                  </td> 
-              
+                  </td>
+
                   <td className={styles.spacetd}>
                     <div className={styles.space}></div>
                   </td>
-                  { showName }
+                  {showName}
                   <td className={styles.imptd + " clickable"}>
-                    <div 
+                    <div
                       className={styles.impressum}
                       onClick={() => router.push("/impressum")} >
                       §
-                    </div>  
+                    </div>
                   </td>
-                  { showExit }
-                  { showLogout }
+                  {showExit}
+                  {showLogout}
                 </tr>
               </tbody>
             </table>

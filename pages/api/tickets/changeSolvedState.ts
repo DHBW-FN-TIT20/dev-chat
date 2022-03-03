@@ -2,21 +2,24 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to invert the status of a ticket. (ToDo->Done | Done->ToDo)
- * @param req the request object (body: currentToken,ticketID,currentStatus)
+ * This is an api route to invert the status of a ticket. (ToDo->Done | Done->ToDo)
+ * @param req the request object (body: currentToken, ticketID, currentState)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory Ticket
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let currentToken = req.body.currentToken;
-  let ticketID = req.body.ticketID;
-  let currentState = req.body.currentState;
+export default async function changeSolvedStateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const currentToken: string = req.body.currentToken;
+  const ticketID: number = req.body.ticketID;
+  const currentState: boolean = req.body.currentState;
 
-  let wasSuccessfull = await backEndController.changeSolvedState(currentToken,ticketID,currentState)
-  res.status(200).json({ wasSuccessfull: wasSuccessfull });
+  const changedSuccessfully = await BACK_END_CONTROLLER.handleChangeTicketSolvedState(currentToken, ticketID, currentState)
+
+  res.status(200).json({ wasSuccessfull: changedSuccessfully });
 }

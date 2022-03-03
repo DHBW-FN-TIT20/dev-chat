@@ -2,26 +2,23 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const backEndController = new BackEndController();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to remove a survey from the database
- * @param req the request object (body: userToken, surveyIDToDelete)
+ * This is an api route to create a new chatKey (custom)
+ * @param req the request object (body: userToken, customChatKey)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory ChatKey
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let customChatKey = req.body.customChatKey
-  let wasSuccessfull: boolean = false;
-  
-  if(backEndController.getIsAdminFromToken(userToken)){
-    wasSuccessfull = await backEndController.addChatKey(customChatKey);
-  }
-  else{
-      console.log("You are allowed to create a custom ChatKey");
-  }
-  res.status(200).json({ wasSuccessfull: wasSuccessfull });
+export default async function addCustomChatKeyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const customChatKey: string = req.body.customChatKey;
+
+  const addedSucessfully: boolean = await BACK_END_CONTROLLER.handleAddCustomChatKey(userToken, customChatKey);
+
+  res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
