@@ -12,6 +12,7 @@ export interface ChatState {
   isLoggedIn: boolean;
   isChatKeyValid: boolean;
   messages: IFChatMessage[];
+  isSendingMessage: boolean;
 }
 
 export interface ChatProps extends WithRouterProps { }
@@ -26,12 +27,14 @@ class Chat extends Component<ChatProps, ChatState> {
   private chatLineInput: string = "";
   private historyMessage: string[] = [""];
   private historyIndex: number = 0;
+  private chatLine: any;
   constructor(props: ChatProps) {
     super(props)
     this.state = {
       isLoggedIn: false,
       isChatKeyValid: false,
       messages: [],
+      isSendingMessage: false,
     }
   }
 
@@ -145,7 +148,11 @@ class Chat extends Component<ChatProps, ChatState> {
       this.historyMessage.push("");
       this.historyIndex = this.historyMessage.length - 1;
       console.log("Entered new Message: " + this.chatLineInput);
-      FrontEndController.enteredNewMessage(this.chatLineInput);
+      this.setState({isSendingMessage: true});
+      await FrontEndController.enteredNewMessage(this.chatLineInput);
+      this.setState({isSendingMessage: false});
+      this.chatLine.focus();
+      document.getElementById("chatLineInput")?.focus();
       event.target.value = "";
       this.chatLineInput = "";
     }
@@ -235,13 +242,20 @@ class Chat extends Component<ChatProps, ChatState> {
                   </tbody>
                 </table>
               </div>
-              <input
-                className={styles.chatBox}
-                type="text" placeholder="Write a message..."
-                onKeyPress={this.handleEnterKeyPress}
+              <input 
+                key={"chatLineInput"}
+                className={styles.chatBox} 
+                type="text" placeholder="Write a message..." 
+                onKeyPress={this.handleEnterKeyPress} 
                 onChange={this.handleChatLineInput}
                 onKeyDown={this.handleKeyDown}
+                disabled={this.state.isSendingMessage}
+                style={{
+                  color: this.state.isSendingMessage ? "#9b9b9b" : "white",
+                }}
+                ref={(inputElement) => { this.chatLine = inputElement; }} 
               />
+
             </div>
           </main>
         </div>

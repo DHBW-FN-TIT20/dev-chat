@@ -168,11 +168,12 @@ export class FrontEndController {
   /**
    * This method is used to process a new message which is entered in the Chat.
    * @param {string} message The input string of the user which should be processed.
+  *  @returns — true if the message was send, false if not
    */
   public async enteredNewMessage(message: string) {
     console.log("DevChatController.enteredNewMessage()");
     console.log("in Controller: " + message);
-    this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
+    return await this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
   }
 
   //#endregion
