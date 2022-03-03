@@ -22,6 +22,7 @@ export interface ChatProps extends WithRouterProps { }
  */
 class Chat extends Component<ChatProps, ChatState> {
   private blockFetchMessages = false;
+  private redoFetch = false;
   private socket: any = null;
   private currentChatKeyCookie: string = "";
   private chatLineInput: string = "";
@@ -90,13 +91,19 @@ class Chat extends Component<ChatProps, ChatState> {
           elemHeight = elem.scrollTop;
         }
         // fetch new messages
-        const tempChatMessages: IFChatMessage[] = await FrontEndController.updateChatMessages();
-        this.setState({ messages: tempChatMessages });
+        do {
+          console.log("-----------------FETCH------------------")
+          this.redoFetch = false;
+          const tempChatMessages: IFChatMessage[] = await FrontEndController.updateChatMessages();
+          this.setState({ messages: tempChatMessages });
+        } while (this.redoFetch);
         this.blockFetchMessages = false;
         // Check for scrolling (If user can see one of the newest three lines (is at bottom of page))
         if (elem !== null && elemHeight >= -100) {
           elem.scrollTo(0, 0);
         }
+      } else if (this.blockFetchMessages) {
+        this.redoFetch = true;
       }
     });
   }
