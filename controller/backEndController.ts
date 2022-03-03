@@ -41,13 +41,13 @@ export class BackEndController {
     BackEndController.KEY = process.env.HASH_KEY || '';
     this.commands = [
       // add all command classes here
+      new MsgCommand,
       new SurveyCommand,
+      new ShowCommand,
       new VoteCommand,
       new CalcCommand,
       new ReportCommand,
-      new ShowCommand,
       new ExpireCommand,
-      new MsgCommand,
     ];
     this.commands.push(new HelpCommmand(this.commands))
   }
