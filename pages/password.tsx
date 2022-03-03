@@ -95,7 +95,7 @@ class Password extends Component<PasswordProps, PasswordState> {
     const oldPasswordIsCorrect = await FrontEndController.changePassword(FrontEndController.getUserToken(), this.state.inputOldPassword, this.state.inputNewPassword);
     this.setState({ oldPasswordIsCorrect: oldPasswordIsCorrect });
     if (oldPasswordIsCorrect) {
-      router.push("/");
+      this.togglePopup();
     } else {
       this.updateFeedbackMessage(oldPasswordIsCorrect, this.state.inputOldPassword, this.state.inputNewPassword, this.state.inputConfirmPassword);
       this.setState({
