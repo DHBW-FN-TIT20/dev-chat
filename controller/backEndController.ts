@@ -501,6 +501,7 @@ export class BackEndController {
     const expirationDate = new Date();
     // currentDate + 1 Day = ExpirationDate
     expirationDate.setDate(expirationDate.getDate() + 1);
+    expirationDate.setHours(expirationDate.getHours() + 1);
     // console.log("Chat Key expires: " + expirationDate);
   
     return this.databaseModel.evaluateSuccess(await this.databaseModel.addChatKey(chatKey, expirationDate));

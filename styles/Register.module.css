@@ -1,6 +1,10 @@
 @media screen and (max-width: 900px) {
   .container {
+    display: grid;
+    grid-template-rows: auto auto;
+    overflow: scroll;
     overflow-x: hidden;
+    height: calc(100vh - 58.5pt);
   }
 
   .left {
@@ -9,27 +13,50 @@
     padding-left: 30pt;
     padding-right: 30pt;
   }
+
+  .right {
+    position: relative;
+    width: inherit;
+    height: calc(100vw - 10px);
+  }
 }
 
 @media screen and (min-width: 900px) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: scroll;
+    overflow-x: hidden;
+    height: calc(100vh - 58.5pt);
+  }
+
   .left {
-    position: absolute;
-    left: 0;
-    top: 50pt;
-    width: 40%;
-    margin: 50pt;
+    padding: 10vh 5vw;
+    height: auto;
   }
 
   .right {
-    position: absolute;
-    left: 50%;
-    top: 50pt;
-    height: 100%;
-    width: 50%;
+    position: relative;
+    height: auto;
   }
+}
 
-  .container {
-    height: 100%;
-    overflow-x: hidden;
-  }
+.container::-webkit-scrollbar {
+  width: 10px;
+  height: 12px;
+}
+
+.container::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 10px black;
+  border-radius: 10px;
+}
+
+.container::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: black;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+.container::-webkit-scrollbar-thumb:hover {
+  background: black;
 }

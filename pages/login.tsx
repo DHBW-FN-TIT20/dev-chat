@@ -142,7 +142,7 @@ class Login extends Component<LoginProps, LoginState> {
                   onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputPassword}
                 />
-                <div hidden={this.state.feedbackMessage === ""}>
+                <div className='error' hidden={this.state.feedbackMessage === ""}>
                   {this.state.feedbackMessage}
                 </div>
                 <button onClick={this.onLoginButtonClick}>
@@ -163,8 +163,11 @@ class Login extends Component<LoginProps, LoginState> {
                     priority
                     src={"/logo.png"}
                     alt="DEV-CHAT Logo"
-                    width={1000}
-                    height={1000}
+                    // width={1000}
+                    // height={1000}
+                    objectFit='contain'
+                    sizes='fitContent'
+                    layout="fill"
                   />
                 </div>
               </div>

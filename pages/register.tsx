@@ -271,7 +271,7 @@ class Register extends Component<RegisterProps, RegisterState> {
                   }}
                   onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputConfirmPassword} />
-                <div hidden={this.state.feedbackMessage === ""}>
+                <div className='error' hidden={this.state.feedbackMessage === ""}>
                   <p>
                     {this.state.feedbackMessage}
                   </p>
@@ -287,17 +287,21 @@ class Register extends Component<RegisterProps, RegisterState> {
                   &nbsp;instead.
                 </div>
               </div>
-            </div>
-            <div className={styles.right}>
-              <div className="image">
-                <Image
-                  priority
-                  src={"/logo.png"}
-                  alt="DEV-CHAT Logo"
-                  width={1000}
-                  height={1000}
-                  layout="responsive"
-                />
+            
+              <div className={styles.right}>
+                <div className="image">
+                  <Image
+                    priority
+                    src={"/logo.png"}
+                    alt="DEV-CHAT Logo"
+                    // width={1000}
+                    // height={1000}
+                    // layout="responsive"
+                    objectFit='contain'
+                    sizes='fitContent'
+                    layout="fill"
+                  />
+                </div>
               </div>
             </div>
           </main >

@@ -199,9 +199,12 @@ class Password extends Component<PasswordProps, PasswordState> {
                     priority
                     src={"/logo.png"}
                     alt="DEV-CHAT Logo"
-                    width={1000}
-                    height={1000}
-                    layout="responsive"
+                    // width={1000}
+                    // height={1000}
+                    // layout="responsive"
+                    objectFit='contain'
+                    sizes='fitContent'
+                    layout="fill"
                   />
                 </div>
               </div>
