@@ -29,7 +29,7 @@ export class DatabaseModel {
 
   evaluateSuccess(dbResponse: PostgrestResponse<any>): boolean {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
-      console.log(dbResponse.error)
+      console.log("evaluateSuccess: " + dbResponse.error)
       return false;
     }
     return true;
