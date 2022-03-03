@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Message
  */
-export default async function saveChatMessageHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function saveChatMessageHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const message: string = req.body.message;
   const userToken: string = req.body.userToken;
   const chatKey: string = req.body.chatKey;
@@ -23,3 +23,4 @@ export default async function saveChatMessageHandler(req: NextApiRequest, res: N
 
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
+export default saveChatMessageHandler;

@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function registerHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function registerHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
   const password: string = req.body.password;
 
@@ -22,3 +22,4 @@ export default async function registerHandler(req: NextApiRequest, res: NextApiR
 
   res.status(200).json({ returnString: userRegisterReturn })
 }
+export default registerHandler;

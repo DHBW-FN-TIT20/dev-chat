@@ -14,12 +14,14 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
 */
-export default async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const chatKeyToAlter: number = req.body.chatKeyToAlter;
   const expirationDate: Date = req.body.expirationDate;
-console.log(expirationDate)
+  console.log(expirationDate)
   const addedSucessfully = await BACK_END_CONTROLLER.handleChangeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
 
   res.status(200).json({ wasSuccessfull: addedSucessfully });
 }
+
+export default changeExpirationDateHandler;

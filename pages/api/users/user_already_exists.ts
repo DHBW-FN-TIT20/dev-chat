@@ -14,10 +14,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function userAlreadyExistsHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function userAlreadyExistsHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const username: string = req.body.username;
 
   const userAlreadyExists: boolean = await BACK_END_CONTROLLER.handleUserAlreadyExists(username);
 
   res.status(200).json({ userExists: userAlreadyExists });
 }
+export default userAlreadyExistsHandler;

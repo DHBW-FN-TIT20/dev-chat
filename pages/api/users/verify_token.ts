@@ -14,10 +14,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function verifyTokenHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function verifyTokenHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const token: string = req.body.token;
 
   const isValid = await BACK_END_CONTROLLER.isUserTokenValid(token);
 
   res.status(200).json({ isVerified: isValid });
 }
+export default verifyTokenHandler;

@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Survey
  */
-export default async function deleteSurveyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function deleteSurveyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const surveyIDToDelete: number = req.body.surveyIDToDelete;
 
@@ -22,3 +22,4 @@ export default async function deleteSurveyHandler(req: NextApiRequest, res: Next
 
   res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }
+export default deleteSurveyHandler

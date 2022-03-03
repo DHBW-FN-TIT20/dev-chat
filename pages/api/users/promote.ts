@@ -15,7 +15,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function promoteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function promoteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const usernameToPromote: string = req.body.usernameToPromote;
 
@@ -23,3 +23,4 @@ export default async function promoteUserHandler(req: NextApiRequest, res: NextA
 
   res.status(200).json({ wasSuccessfull: promotedSuccessfully });
 }
+export default promoteUserHandler;

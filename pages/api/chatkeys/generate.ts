@@ -14,9 +14,10 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
  */
-export default async function generateChatKeyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function generateChatKeyHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
 
   const keyword = await BACK_END_CONTROLLER.handleGenerateChatKey();
 
   res.status(200).json({ newChatKey: keyword });
 }
+export default generateChatKeyHandler;

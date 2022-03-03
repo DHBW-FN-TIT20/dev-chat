@@ -15,7 +15,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function demoteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function demoteUserHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const usernameToDemote: string = req.body.usernameToDemote;
 
@@ -23,3 +23,4 @@ export default async function demoteUserHandler(req: NextApiRequest, res: NextAp
 
   res.status(200).json({ wasSuccessfull: demotedSuccessfully });
 }
+export default demoteUserHandler;

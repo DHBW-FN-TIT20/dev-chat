@@ -14,10 +14,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory ChatKey
  */
-export default async function doesChatKeyExistHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function doesChatKeyExistHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const chatKey: string = req.body.chatKey;
 
   const doesChatKeyExists = await BACK_END_CONTROLLER.handleDoesChatKeyExist(chatKey);
 
   res.status(200).json({ wasSuccessfull: doesChatKeyExists });
 }
+export default doesChatKeyExistHandler;

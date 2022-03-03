@@ -15,10 +15,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Ticket
  */
-export default async function getAllTicketsHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function getAllTicketsHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
 
   const allTickets = await BACK_END_CONTROLLER.handleGetAllTickets(userToken);
 
   res.status(200).json({ allTickets: allTickets })
 }
+export default getAllTicketsHandler;

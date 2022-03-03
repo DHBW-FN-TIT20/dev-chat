@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "doc": "jsdoc -c jsdoc.conf.json",
+    "docs": "jsdoc -c jsdoc.conf.json",
     "test": "jest"
   },
   "dependencies": {

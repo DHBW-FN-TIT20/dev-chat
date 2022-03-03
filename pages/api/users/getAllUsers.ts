@@ -15,10 +15,11 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function getAllUsersHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function getAllUsersHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
 
   const userData: IUser[] = await BACK_END_CONTROLLER.handleGetAllUsers(userToken);
 
   res.status(200).json({ allUsers: userData })
 }
+export default getAllUsersHandler;

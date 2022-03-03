@@ -16,6 +16,7 @@ export interface HeaderProps extends WithRouterProps {
 
 /**
  * Component-Class for the Header
+ * @component
  * @category Component
  */
 class Header extends Component<HeaderProps, HeaderState> {

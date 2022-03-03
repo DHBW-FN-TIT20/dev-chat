@@ -16,8 +16,9 @@ export interface LoginState {
 export interface LoginProps extends WithRouterProps { }
 
 /**
- * @class Login Componet Class
- * @category Page
+ * Class/Component for the Login Page
+ * @component
+ * @category Pages
  */
 class Login extends Component<LoginProps, LoginState> {
   private username = '';

@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory User
  */
-export default async function resetPasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function resetPasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const usernameToReset: string = req.body.usernameToReset;
 
@@ -22,3 +22,4 @@ export default async function resetPasswordHandler(req: NextApiRequest, res: Nex
 
   res.status(200).json({ wasSuccessfull: resetSuccessfully });
 }
+export default resetPasswordHandler;

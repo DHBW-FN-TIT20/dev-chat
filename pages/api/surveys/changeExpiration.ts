@@ -14,7 +14,7 @@ const BACK_END_CONTROLLER = new BackEndController();
  * @category API
  * @subcategory Survey
  */
-export default async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const userToken: string = req.body.userToken;
   const surveyIDToAlter: number = req.body.surveyIDToAlter;
   const expirationDate: Date = req.body.expirationDate;
@@ -23,3 +23,4 @@ console.log(expirationDate + userToken)
 
   res.status(200).json({ wasSuccessfull: changedSuccessfully });
 }
+export default changeExpirationDateHandler;

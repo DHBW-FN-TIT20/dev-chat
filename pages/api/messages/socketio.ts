@@ -14,7 +14,7 @@ export const CONFIG = { api: { bodyParser: false, }, };
  * @category API
  * @subcategory Message
  */
-export default async function socketHandler(req: NextApiRequest, res: NextApiResponseServerIO) {
+async function socketHandler(req: NextApiRequest, res: NextApiResponseServerIO) {
 
   // if there is no SocketIO server -> create one
   if (!res.socket.server.io) {
@@ -60,3 +60,4 @@ export default async function socketHandler(req: NextApiRequest, res: NextApiRes
 
   res.end();
 };
+export default socketHandler
