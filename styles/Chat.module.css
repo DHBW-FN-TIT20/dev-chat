@@ -1,6 +1,6 @@
 .messageTableDiv {
   overflow: scroll;
-  height: calc(100vh - 62pt - 30pt);
+  height: calc(100vh - 58.5pt - 27pt);
   margin-left: 2ch;
   scrollbar-width: 10pt;
   -ms-overflow-style: none;

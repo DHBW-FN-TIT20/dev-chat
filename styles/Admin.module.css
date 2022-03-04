@@ -1,12 +1,11 @@
 @media screen and (max-width: 1280px) {
   .left {
     position: absolute;
-    height: 92%;
+    height: inherit;
     width: 100%;
     overflow-y: auto;
     text-align: center;
-    padding-left: 50pt;
-    padding-right: 50pt;
+    padding: 5vh 5vw;
   }
 
   .table {
@@ -20,11 +19,11 @@
 
   .container {
     position: absolute;
-    height: 100%;
+    height: calc(100vh - 58.5pt);
     width: 100%;
     overflow-y: hidden;
     overflow-x: hidden;
-    margin-top: 5pt;
+    /* margin-top: 5pt; */
   }
 
   .left::-webkit-scrollbar {
@@ -51,23 +50,22 @@
 @media screen and (max-width: 900px) {
   .container {
     position: absolute;
-    height: 100%;
+    height: clac(100vh - 70pt);
     width: 100%;
     overflow-y: hidden;
-    margin-top: 5pt;
-    top: 50pt;
+    /* margin-top: 5pt; */
+    /* top: 50pt; */
   }
 }
 
 @media screen and (min-width: 1280px) {
   .left {
     position: absolute;
-    height: 92%;
+    height: inherit;
     width: 100%;
     overflow-y: auto;
     text-align: center;
-    padding-left: 50pt;
-    padding-right: 50pt;
+    padding: 5vh 5vw;
   }
 
   .table {
@@ -81,7 +79,7 @@
 
   .container {
     position: absolute;
-    height: 100%;
+    height: calc(100vh - 58.5pt);
     width: 100%;
     overflow-y: hidden;
     overflow-x: hidden;

@@ -1,7 +1,7 @@
 /** Background */
 @media screen and (max-height: 830px) {
   html {
-    overflow: scroll !important;
+    overflow: hidden !important;
   }
 }
 
@@ -337,7 +337,6 @@ input::placeholder {
 @media screen and (max-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
-    text-align: center;
     width: 100%;
     margin: 2pt;
     padding: 10pt;
@@ -352,9 +351,7 @@ input::placeholder {
 @media screen and (min-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
-    text-align: center;
     width: 100%;
-    margin: 2pt;
     padding: 10pt;
     border-color: #666666;
     border-width: 2pt;

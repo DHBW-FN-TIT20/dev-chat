@@ -295,14 +295,17 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
               </div>
             </div>
             <div className={styles.right}>
-              <div className="image">
+              <div className={styles.image}>
                 <Image
                   priority
                   src={"/logo.png"}
                   alt="DEV-CHAT Logo"
-                  width={1000}
-                  height={1000}
-                  layout="responsive"
+                  objectFit='contain'
+                  sizes='fitContent'
+                  layout="fill"
+                  // width="100%"
+                  // height="100%"
+                  // layout="responsive"
                 />
               </div>
             </div>
