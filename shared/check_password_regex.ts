@@ -39,10 +39,10 @@ export function checkPasswordOnRegex(password: string): string {
      feedbackMessage += ` ${bulletPoint} at least one lowercase letter  `;
    }
    if (!atLeastOneSpecialCharacter) {
-     feedbackMessage += ` ${bulletPoint} at least one of the following special characters: ${specialCharacters.split('').join(' ')}  `;
+     feedbackMessage += ` ${bulletPoint} at least one of the following special characters:\n    ${specialCharacters.split('').join(' ')}  `;
    }
    if (!onlyValidCharacters) {
-     feedbackMessage += ` ${bulletPoint} only alphanumeric characters and the following special characters: ${specialCharacters.split('').join(' ')}  `;
+     feedbackMessage += ` ${bulletPoint} only alphanumeric characters and the following special characters:\n  ${specialCharacters.split('').join(' ')}  `;
    }
  }
  return feedbackMessage;
