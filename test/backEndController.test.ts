@@ -16,27 +16,28 @@
 import { BackEndController } from '../controller/backEndController';
 import { ProDemote } from '../enums/accessLevel';
 
+// Due to DB-Connection, tests require more time -> set auto timeout to 20s
+jest.setTimeout(20000)
+
 const controller = new BackEndController();
 
 const invalidUserToken = "eyJhbGciOiJIdsfafsUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaGFubmVzIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY0NjMwNzQxNywiZXhwIjoxNjQ2MzkzODE3fQ.CUHeOP_Mei82UKjp14_MvujUibt6oFepSQtdM4KaroU";
 
 // NOTE: maybe change bc of hash change
-const validAdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkR1bW15QWRtaW4iLCJpc0FkbWluIjp0cnVlLCJpYXQiOjE2NDYzMjIxMDQsImV4cCI6MTY0NjQwODUwNH0.Gm11yjCgDSGnb9NmrQP43VMvzP3qgEpriZFbDk3Yey0";
+const validAdminToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFkbWluIiwiaXNBZG1pbiI6dHJ1ZSwiaWF0IjoxNjQ2NDk1ODkzLCJleHAiOjE2NDY1ODIyOTN9.DN-fCXOtXfLNV3H6N4wsUjnQfrEhIo9MpwQhxHIg3Ic";
 
 const dummyValidUser = {
   name: "dummy",
   password: "Dummy!809",
-  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bW15IiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY0NjMyMDg3MiwiZXhwIjoxNjQ2NDA3MjcyfQ.-WXMAkUmzshb7AcM2c7DiYDpVRnbxkPR6Pzm2uYztMw",
+  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImR1bW15IiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTY0NjQ5NTY3NywiZXhwIjoxNjQ2NTgyMDc3fQ.ijqmfl-ZKS-9ZP96hxnEfkhmKkqvLI4wfBsuMz5Nods",
   // idInDB: 1,
 };
 
 
 describe('The BackEndController should work as expected', () => {
-  
   /*
   unittest all public methods frhom the BackEndController:
   ( maybe not all :) )
-
     constructor()
     public isTokenValid(token: string): boolean
     public async isUserTokenValid(token: string): Promise<boolean>
@@ -72,7 +73,6 @@ describe('The BackEndController should work as expected', () => {
     public async getSurveyState(surveyID: number, chatKeyID: number): Promise<ISurveyState | null>
     public async addNewVote(voteToAdd: ISurveyVote): Promise<boolean>
     public async isSurveyExpired(surveyID: number): Promise<boolean>
-
   */
 
 
@@ -90,7 +90,6 @@ describe('The BackEndController should work as expected', () => {
   it('BackEndController.isUserTokenValid()', async () => {
     expect(await controller.isUserTokenValid(dummyValidUser.token)).toBeTruthy();
     expect(await controller.isUserTokenValid(invalidUserToken)).toBeFalsy();
-    
   });
 
 
@@ -126,7 +125,7 @@ describe('The BackEndController should work as expected', () => {
     expect(await controller.handleLoginUser(dummyValidUser.name, dummyValidUser.password)).not.toBe('');
     expect(await controller.handleLoginUser(dummyValidUser.name, dummyValidUser.password)).toContain('eyJhbGciOiJI');
   });
-  
+
 
   it('BackEndController.handleChangeUserPassword()', async () => {
     const newInvalidPassword = '123456789';
@@ -162,7 +161,7 @@ describe('The BackEndController should work as expected', () => {
     expect(await controller.handleRegisterUser(dummyValidUser.name, dummyValidUser.password)).not.toBe('');
     expect(await controller.handleLoginUser(dummyValidUser.name, dummyValidUser.password)).not.toBe('');
     expect(await controller.handleLoginUser(dummyValidUser.name, dummyValidUser.password)).toContain('eyJhbGciOiJI');
-    
+
     // delete other user
     expect(await controller.handleDeleteUser(invalidUserToken, dummyValidUser.name)).toBeFalsy();
     expect(await controller.handleDeleteUser(dummyValidUser.token, 'wrongUser')).toBeFalsy();
@@ -176,7 +175,7 @@ describe('The BackEndController should work as expected', () => {
   it('BackEndController.handleUpdateUserAccessLevel()', async () => {
     expect(await controller.handleUpdateUserAccessLevel(dummyValidUser.token, dummyValidUser.name, ProDemote.PROMOTE)).toBeFalsy();
     expect(await controller.handleUpdateUserAccessLevel(dummyValidUser.token, dummyValidUser.name, ProDemote.DEMOTE)).toBeFalsy();
-    
+
     expect(await controller.handleUpdateUserAccessLevel(validAdminToken, dummyValidUser.name, ProDemote.PROMOTE)).toBeTruthy();
     let newToken = await controller.handleLoginUser(dummyValidUser.name, dummyValidUser.password);
     expect(controller.getIsAdminFromToken(newToken)).toBeTruthy();
@@ -190,7 +189,4 @@ describe('The BackEndController should work as expected', () => {
     expect(controller.getIsAdminFromToken(dummyValidUser.token)).toBeFalsy();
     expect(await controller.isUserTokenValid(dummyValidUser.token)).toBeTruthy();
   });
-
-
-
 });
