@@ -1,0 +1,104 @@
+@media screen and (max-width: 1280px) {
+  .wrapper {
+    height: calc(100vh - 58.5pt);
+    display: grid;
+    grid-template-rows: auto auto;
+    row-gap: 5rem;
+    padding-right: 10pt;
+    overflow: scroll;
+    overflow-x: hidden;
+  }
+
+  .wrapper::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+  }
+
+  .wrapper::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 10px black;
+    border-radius: 10px;
+  }
+
+  .wrapper::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: black;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .wrapper::-webkit-scrollbar-thumb:hover {
+    background: black;
+  }
+
+  .content {
+    margin-top: 50pt;
+    margin-right: 50pt;
+    margin-left: 50pt;
+  }
+
+  .right {
+    height: calc(100vw - 10pt);
+    width: inherit;
+    overflow: hidden;
+  }
+
+  .image {
+    width: inherit;
+    height: inherit;
+    position: relative;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .wrapper {
+    height: calc(100vh - 58.5pt);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  .top {
+    height: inherit;
+    width: inherit;
+    padding-right: 10pt;
+    overflow-y: scroll;
+  }
+
+  .content {
+    margin-top: 30pt;
+    margin-bottom: 30pt;
+    margin-left: 30pt;
+  }
+
+  .right {
+    height: inherit;
+    width: inherit;
+    overflow: hidden;
+  }
+
+  .image {
+    width: inherit;
+    height: inherit;
+    position: relative;
+  }
+
+  .top::-webkit-scrollbar {
+    width: 10px;
+    height: 12px;
+  }
+
+  .top::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 10px black;
+    border-radius: 10px;
+  }
+
+  .top::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: black;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+  }
+
+  .top::-webkit-scrollbar-thumb:hover {
+    background: black;
+  }
+}

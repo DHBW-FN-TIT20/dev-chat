@@ -3,30 +3,34 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Login.module.css'
 import React, { Component } from 'react'
-import DevChatController from '../controller'
-import Header from './header'
+import FrontEndController from '../controller/frontEndController'
+import Header from '../components/header'
 
 export interface LoginState {
-  isNotLoggedIn: boolean,
+  isNotLoggedIn: boolean;
+  feedbackMessage: string;
+  inputUserName: string;
+  inputPassword: string;
 }
 
-export interface LoginProps extends WithRouterProps {
-  showError: boolean;
-}
+export interface LoginProps extends WithRouterProps { }
 
 /**
- * @class Login Componet Class
+ * Class/Component for the Login Page
  * @component
+ * @category Pages
  */
 class Login extends Component<LoginProps, LoginState> {
-  username = '';
-  password = '';
+  private username = '';
+  private password = '';
   constructor(props: LoginProps) {
     super(props)
     this.state = {
       isNotLoggedIn: false,
+      feedbackMessage: "",
+      inputUserName: "",
+      inputPassword: "",
     }
-    
   }
 
   /**
@@ -46,9 +50,8 @@ class Login extends Component<LoginProps, LoginState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
-   * @param {any} event Event triggered by an EventListener
    */
-  storageTokenListener = async (event: any) => {
+  private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
@@ -57,16 +60,44 @@ class Login extends Component<LoginProps, LoginState> {
   /**
    * This method checks and verifys the current user-token. If valid, it routes to root, if not, the isNotLoggedIn state is set to true.
    */
-  async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
+  private async checkLoginState() {
+    const currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
       const { router } = this.props
       router.push("/")
     } else {
-      this.setState({isNotLoggedIn: true})
+      this.setState({ isNotLoggedIn: true })
     }
   }
-  
+
+  /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   */
+  private handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onLoginButtonClick();
+    }
+  }
+
+  /**
+   * Trys to login with current input field states
+   */
+  private onLoginButtonClick = async () => {
+    const { router } = this.props;
+    this.setState({ feedbackMessage: "" });
+    if (await FrontEndController.loginUser(this.username, this.password)) {
+      router.push("/")
+    } // change to state later
+    else {
+      this.setState({
+        feedbackMessage: "Incorrect Username or Password",
+        inputPassword: "",
+        inputUserName: "",
+      });
+    }
+  }
+
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
@@ -90,45 +121,57 @@ class Login extends Component<LoginProps, LoginState> {
             <Header pageInformation="Welcome" showName={false} showExit={false} showLogout={false} />
           </header>
 
-          <main>          
+          <main>
             <div className={styles.container}>
               <div className={styles.left}>
                 <h1>
-                Login
-              </h1>
-              <input type="text" placeholder="Username..." onChange={(event) => {this.username = event.target.value}}/>
-              <input type="password" placeholder="Password..." onChange={(event) => {this.password = event.target.value}}/>
-                {
-                  this.props.showError && 
-                  <div className='error' id={styles.error1}> 
-                    Incorrect username or password. 
-                  </div>
-                }
-                <button onClick={async () => {
-                  if (await DevChatController.loginUser(this.username, this.password)) {
-                    router.push("/")
-                  } // change to state later
-                }}> Login </button>
+                  Login
+                </h1>
+                <input type="text" placeholder="Username..."
+                  onChange={(event) => {
+                    this.username = event.target.value;
+                    this.setState({ inputUserName: event.target.value });
+                  }}
+                  onKeyPress={this.handleEnterKeyPress}
+                  value={this.state.inputUserName}
+                />
+                <input type="password" placeholder="Password..."
+                  onChange={(event) => {
+                    this.password = event.target.value;
+                    this.setState({ inputPassword: event.target.value });
+                  }}
+                  onKeyPress={this.handleEnterKeyPress}
+                  value={this.state.inputPassword}
+                />
+                <div className='error' hidden={this.state.feedbackMessage === ""}>
+                  {this.state.feedbackMessage}
+                </div>
+                <button onClick={this.onLoginButtonClick}>
+                  Login
+                </button>
                 <div className='create'>
-                  Or&nbsp; 
+                  Or&nbsp;
                   <a onClick={() => router.push("/register")}>
                     create Account
-                  </a> 
+                  </a>
                   &nbsp;instead.
                 </div>
               </div>
-            
-            <div className={styles.right}>
-              <div className="image">
-                <Image
-                  priority
-                  src={"/logo.png"}
-                  alt="DEV-CHAT Logo"
-                  width={1000}
-                  height={1000}
-                />
+
+              <div className={styles.right}>
+                <div className="image">
+                  <Image
+                    priority
+                    src={"/logo.png"}
+                    alt="DEV-CHAT Logo"
+                    // width={1000}
+                    // height={1000}
+                    objectFit='contain'
+                    sizes='fitContent'
+                    layout="fill"
+                  />
+                </div>
               </div>
-            </div>
             </div>
           </main>
         </div>

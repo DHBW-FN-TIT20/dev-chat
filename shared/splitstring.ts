@@ -5,32 +5,36 @@
  * The quotation marks are removed from the string.
  * If there is a quotation mark standing alone, the input string is not valid.
  * Therefore, the function returns an empty array.
- * @param {string} str The string to split.
  * @returns The array of strings.
+ * @category Helper
  */
- export default function splitString(str: string): string[] {
-    let result: string[] = [];
-    let currentWord: string = "";
-    let inQuotation: boolean = false;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === "\"" || str[i] === "'") {
-            if (inQuotation) {
-                inQuotation = false;
-                result.push(currentWord);
-                currentWord = "";
-            } else {
-                inQuotation = true;
-            }
-        } else if (str[i] === " " && !inQuotation) {
-            result.push(currentWord);
-            currentWord = "";
-        } else {
-            currentWord += str[i];
-        }
+export function splitString(str: string): string[] {
+  let result: string[] = [];
+  let currentWord: string = "";
+  let inQuotation: boolean = false;
+  for (let i = 0; i < str.length; i++) {
+    if (str[i] === "\"" || str[i] === "'") {
+      if (inQuotation) {
+        inQuotation = false;
+        result.push(currentWord);
+        currentWord = "";
+      } else {
+        inQuotation = true;
+      }
+    } else if (str[i] === " " && !inQuotation) {
+      if (currentWord !== "") {
+        result.push(currentWord);
+      }
+      currentWord = "";
+    } else {
+      currentWord += str[i];
     }
-    if (inQuotation) {
-        return [];
-    }
+  }
+  if (inQuotation) {
+    return [];
+  }
+  if (currentWord !== "") {
     result.push(currentWord);
-    return result;
+  }
+  return result;
 }

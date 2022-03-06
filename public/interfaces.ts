@@ -1,121 +1,152 @@
-// ChatKey
+//#region DB interfaces
+
+import { AccessLevel } from "../enums/accessLevel";
+
+//#region ChatKey
 
 export interface IChatKey {
-    id?: number;
-    threeWord?: string;
-    expirationDate?: Date; // maybe change later
-}
+  id: number;
+  keyword: string;
+  expirationDate: Date;
+};
 
 export var emptyChatKey: IChatKey = {
-    id: 0,
-    threeWord: "",
-    expirationDate: new Date(0), // maybe change later
+  id: NaN,
+  keyword: "",
+  expirationDate: new Date(0),
 };
 
+//#endregion
 
-// User:
-
-export interface IUser {
-    /** 
-     * user.id=0 -> broadcast
-     * user.id=1 -> system
-     * user.id=2 -> admin (master-account)
-     */
-    id?: number;
-    name?: string;
-    hashedPassword?: string;
-    accessLevel?: number;
-}
-
-export var emptyUser: IUser = {
-    id: 0,
-    name: "",
-    hashedPassword: "",
-    accessLevel: 0,
-};
-
-
-
-// ChatMessage
+//#region ChatMessage
 
 export interface IChatMessage {
-    id: number;
-    chatKey?: IChatKey;
-    user: IUser; // maybe change to sender
-    target?: IUser;
-    date: Date; // maybe change later
-    message: string;
-}
+  id: number;
+  chatKeyID: number;
+  userID: number;
+  targetUserID: number;
+  dateSend: Date;
+  message: string;
+};
 
 export var emptyChatMessage: IChatMessage = {
-    id: 0,
-    chatKey: emptyChatKey,
-    user: emptyUser,
-    target: emptyUser,
-    date: new Date(0), // maybe change later
-    message: "",
+  id: NaN,
+  chatKeyID: NaN,
+  userID: NaN,
+  targetUserID: NaN,
+  dateSend: new Date(0),
+  message: "",
 };
 
+//#endregion
 
-// SurveyOption
-
-export interface ISurveyOption {
-    id?: number;
-    name?: string;
-}
-
-export var emptySurveyOption: ISurveyOption = {
-    id: 0,
-    name: "",
-};
-
-
-// SurveyVote
-
-export interface ISurveyVote {
-    userID: number;
-    optionID: number;
-    surveyID: number;
-}
-
-
-// Survey
+//#region Survey
 
 export interface ISurvey {
-    id?: number;
-    name: string;
-    description: string;
-    expirationDate: Date;
-    ownerID?: number;
-    options: ISurveyOption[];
-}
+  id: number;
+  name: string;
+  description: string;
+  expirationDate: Date;
+  ownerID: number;
+  chatKeyID: number;
+};
+
+export var emptySurvey = {
+  id: NaN,
+  name: "",
+  description: "",
+  expirationDate: new Date(0),
+  ownderID: NaN,
+  chatKeyID: NaN,
+};
+
+export interface ISurveyOption {
+  id: number;
+  surveyID: number;
+  name: string;
+};
+
+export var emptySurveyOption: ISurveyOption = {
+  id: NaN,
+  surveyID: NaN,
+  name: "",
+};
+
+export interface ISurveyVote {
+  surveyID: number;
+  userID: number;
+  optionID: number;
+};
+
+export var emptySurveyVote: ISurveyVote = {
+  surveyID: NaN,
+  userID: NaN,
+  optionID: NaN,
+};
+
+//#endregion
+
+//#region Ticket
+
+export interface IBugTicket {
+  id: number;
+  submitterID: number;
+  createDate: Date;
+  message: string;
+  solved: boolean;
+};
+
+export var emptyBugTicket: IBugTicket = {
+  id: NaN,
+  submitterID: NaN,
+  createDate: new Date(0),
+  message: "",
+  solved: false,
+};
+
+//#endregion
+
+//#region User
+
+export interface IUser {
+  /** 
+   * user.id=0 -> broadcast
+   * user.id=1 -> system
+   * user.id=2 -> admin (master-account)
+   */
+  id: number;
+  name: string;
+  hashedPassword: string;
+  accessLevel: AccessLevel;
+};
+
+export var emptyUser: IUser = {
+  id: NaN,
+  name: "",
+  hashedPassword: "",
+  accessLevel: NaN,
+};
+
+//#endregion
+
+//#endregion
+
+//#region custom interfaces
 
 // Survey with votes (Survey State)
 export interface ISurveyState {
-    id: number;
-    name: string;
-    description: string;
-    expirationDate: Date;
-    ownerID?: number;
-    options: {
-        option: ISurveyOption, votes: number
-    }[];
+  survey: ISurvey;
+  options: {
+    option: ISurveyOption, votes: number
+  }[];
 }
 
-// BugTicket
-
-export interface IBugTicket {
-    id?: number;
-    submitter: IUser;
-    date?: Date; // maybe change later
-    message: string;
-    solved?: boolean;
-}
-
-export var emptyBugTicket: IBugTicket = {
-    id: 0,
-    submitter: emptyUser,
-    date: new Date(0), // maybe change later
-    message: "",
-    solved: false,
+// Chat message object for HMI
+export interface IFChatMessage {
+  id: number;
+  username: string;
+  dateSend: Date;
+  message: string;
 };
+
+//#endregion

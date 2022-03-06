@@ -1,36 +1,38 @@
 /** Background */
+@media screen and (max-height: 830px) {
+  html {
+    overflow: hidden !important;
+  }
+}
 
 @media screen and (max-width: 900px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 12pt;
   }
 }
 
 @media screen and (min-width: 900px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 12pt;
   }
 }
 
 @media screen and (min-width: 1280px) {
-  html,
-  body {
+  html, body {
     padding: 0;
     margin: 0;
     background-color: #1A1A1A;
-    font-family: 'Red Hat Mono', monospace;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #D7BA7D;
     font-size: 16pt;
     overflow: hidden;
@@ -48,6 +50,11 @@ p {
   display: inline;
   overflow-wrap: break-word;
   white-space: pre-wrap;
+  color: white;
+}
+
+ul {
+  color: white;
 }
 
 /** Headlines */
@@ -65,7 +72,7 @@ p {
     color: #D7BA7D;
     font-size: 30pt;
     margin: 2pt;
-  }  
+  }
 }
 
 @media screen and (min-width: 1280px) {
@@ -73,7 +80,7 @@ p {
     color: #D7BA7D;
     font-size: 40pt;
     margin: 2pt;
-  }  
+  }
 }
 
 /** Links */
@@ -97,12 +104,9 @@ a:hover {
 
 /** Input fields */
 
-input::placeholder {
-  color: #CCCCCC;
-}
-
 @media screen and (max-width: 900px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 12pt;
     color: white;
@@ -112,13 +116,13 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
-    margin: 0 auto;
+    margin: 2pt 0;
   }
 }
 
 @media screen and (min-width: 900px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 12pt;
     color: white;
@@ -128,12 +132,13 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }
 }
 
 @media screen and (min-width: 1280px) {
   input {
+    font-family: 'Red Hat Mono', monospace;
     width: 100%;
     font-size: 16pt;
     color: white;
@@ -143,8 +148,12 @@ input::placeholder {
     border-width: 2pt;
     border-color: #666666;
     padding: 10pt;
-    margin: 2pt;
+    margin: 2pt 0;
   }
+}
+
+input::placeholder {
+  color: #CCCCCC;
 }
 
 /** Buttons */
@@ -160,14 +169,16 @@ input::placeholder {
     border-width: 2pt;
     border-color: #FF9933;
     padding: 10pt;
-    margin: 2pt;
-    margin: 0 auto;
-  }  
+    margin: 2pt 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
   button:hover {
     background-color: #FF9933;
     cursor: pointer;
     transition: 0.3s;
   }
+
   button:active {
     background-color: #FF6F1C;
     border-color: #FF6F1C;
@@ -186,13 +197,16 @@ input::placeholder {
     border-width: 2pt;
     border-color: #FF9933;
     padding: 10pt;
-    margin: 2pt;
-  }  
+    margin: 2pt 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  }
+
   button:hover {
     background-color: #FF9933;
     cursor: pointer;
     transition: 0.3s;
   }
+
   button:active {
     background-color: #FF6F1C;
     border-color: #FF6F1C;
@@ -203,24 +217,6 @@ input::placeholder {
 @media screen and (min-width: 1280px) {
   button {
     font-size: 16pt;
-    color: white;
-    background-color: transparent;
-    border-style: solid;
-    border-radius: 5pt;
-    border-width: 2pt;
-    border-color: #FF9933;
-    padding: 10pt;
-    margin: 2pt;
-  }  
-  button:hover {
-    background-color: #FF9933;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  button:active {
-    background-color: #FF6F1C;
-    border-color: #FF6F1C;
-    transition: 0.2s;
   }
 }
 
@@ -254,7 +250,7 @@ input::placeholder {
     border-collapse: collapse;
     white-space: nowrap;
   }
-  
+
   table th {
     border-color: #CCCCCC;
     border-style: solid;
@@ -263,8 +259,11 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
     width: max-content;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  
+
   table td {
     border-color: #CCCCCC;
     border-style: solid;
@@ -272,6 +271,9 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
     overflow: auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   table td input {
@@ -297,7 +299,7 @@ input::placeholder {
     color: white;
     border-collapse: collapse;
   }
-  
+
   table th {
     border-color: #CCCCCC;
     border-style: solid;
@@ -306,7 +308,7 @@ input::placeholder {
     padding: 2pt 4pt 2pt 4pt;
     text-align: center;
   }
-  
+
   table td {
     border-color: #CCCCCC;
     border-style: solid;
@@ -335,27 +337,23 @@ input::placeholder {
 @media screen and (max-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
-    text-align: center;
     width: 100%;
     margin: 2pt;
     padding: 10pt;
-    border-color:  #666666;
+    border-color: #666666;
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
     margin: 0 auto;
-    
   }
 }
 
 @media screen and (min-width: 900px) {
   .error {
     background-color: rgb(150, 25, 25);
-    text-align: center;
     width: 100%;
-    margin: 2pt;
     padding: 10pt;
-    border-color:  #666666;
+    border-color: #666666;
     border-width: 2pt;
     border-radius: 5pt;
     border-style: solid;
@@ -373,7 +371,7 @@ input::placeholder {
 }
 
 .red {
-  columns: #FF0000;
+  color: #FF0000;
 }
 
 .orange {

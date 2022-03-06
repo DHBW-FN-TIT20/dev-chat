@@ -3,25 +3,27 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Register.module.css'
 import React, { Component } from 'react'
-import Header from './header'
-import DevChatController from '../controller'
+import Header from '../components/header'
+import FrontEndController from '../controller/frontEndController'
+import { checkPasswordOnRegex } from '../shared/check_password_regex'
 
 export interface RegisterState {
-  isNotLoggedIn: boolean,
-  userAlreadyExists: boolean,
-  inputUsername: string,
-  inputPassword: string,
-  inputConfirmPassword: string,
-  feedbackMessage: string,
-  newUsernameValid: boolean,
-  newPasswordValid: boolean
+  isNotLoggedIn: boolean;
+  userAlreadyExists: boolean;
+  inputUsername: string;
+  inputPassword: string;
+  inputConfirmPassword: string;
+  feedbackMessage: string;
+  newUsernameValid: boolean;
+  newPasswordValid: boolean;
 }
 
-export interface RegisterProps extends WithRouterProps {}
+export interface RegisterProps extends WithRouterProps { }
 
 /**
- * @class Class of the register Component
+ * Class/Component for the Register Page
  * @component
+ * @category Pages
  */
 class Register extends Component<RegisterProps, RegisterState> {
   constructor(props: RegisterProps) {
@@ -36,7 +38,6 @@ class Register extends Component<RegisterProps, RegisterState> {
       newPasswordValid: true,
       newUsernameValid: true,
     }
-    
   }
 
   /**
@@ -56,9 +57,8 @@ class Register extends Component<RegisterProps, RegisterState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
-   * @param {any} event Event triggered by an EventListener
    */
-  storageTokenListener = async (event: any) => {
+  private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
       this.checkLoginState();
     }
@@ -67,16 +67,108 @@ class Register extends Component<RegisterProps, RegisterState> {
   /**
    * This method checks and verifys the current user-token. If valid, it routes to root, if not, the isNotLoggedIn state is set to true.
    */
-  async checkLoginState() {
-    let currentToken = DevChatController.getUserToken();
-    if (await DevChatController.verifyUserByToken(currentToken)) {
-      const { router } = this.props
-      router.push("/")
+  private async checkLoginState() {
+    const currentToken = FrontEndController.getUserToken();
+    if (await FrontEndController.verifyUserByToken(currentToken)) {
+      const { router } = this.props;
+      router.push("/");
     } else {
-      this.setState({isNotLoggedIn: true})
+      this.setState({ isNotLoggedIn: true });
     }
   }
-  
+
+  /**
+   * Handle of the Keypressed-Event from the Input
+   * Checks if Enter was pressed
+   */
+  private handleEnterKeyPress = async (event: any) => {
+    if (event.key === 'Enter') {
+      await this.onRegisterButtonClick();
+    }
+  }
+
+  /**
+   * Handle for On Click Event of the Button
+   */
+  private onRegisterButtonClick = async () => {
+    const { router } = this.props;
+    this.setState({ feedbackMessage: "" });
+    const userAlreadyExists = await FrontEndController.userAlreadyExists(this.state.inputUsername);
+    let vNewUsernameValid: boolean = true;
+    let vNewPasswordValid: boolean = true;
+    this.setState({ userAlreadyExists: userAlreadyExists });
+    if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
+      console.log("Pressed Register Button")
+      const registerUserReturnString: string = await FrontEndController.registerUser(this.state.inputUsername, this.state.inputPassword);
+      console.log(registerUserReturnString)
+      if (registerUserReturnString == "True") {
+        this.setState({ newPasswordValid: true, newUsernameValid: true });
+        router.push("/");
+      }
+      else if (registerUserReturnString == "error_username_password") {
+        //Password and username not Valid
+        vNewUsernameValid = false;
+        vNewPasswordValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
+      }
+      else if (registerUserReturnString == "error_username") {
+        vNewUsernameValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
+      }
+      else if (registerUserReturnString == "error_password") {
+        vNewPasswordValid = false;
+        this.setState({
+          inputUsername: "",
+          inputPassword: "",
+          inputConfirmPassword: "",
+        })
+      }
+    }
+    this.setState({ newPasswordValid: vNewPasswordValid, newUsernameValid: vNewUsernameValid });
+    this.updateFeedbackMessage(userAlreadyExists, this.state.inputUsername, this.state.inputPassword, this.state.inputConfirmPassword, vNewPasswordValid, vNewUsernameValid);
+  }
+
+  /**
+   * This method sets the error div for the register feedback message.
+   */
+  private updateFeedbackMessage(userAlreadyExists: boolean, inputUsername: string, inputPassword: string, inputConfirmPassword: string, newPasswordValid: boolean, newUsernameValid: boolean) {
+    console.table({ userAlreadyExists, inputUsername, inputPassword, inputConfirmPassword, newPasswordValid, newUsernameValid })
+    let feedbackMessage: string = "";
+
+    const regexFeedbackMessage: string = checkPasswordOnRegex(inputPassword);
+    if (regexFeedbackMessage !== "" && inputPassword !== "") {
+      feedbackMessage = regexFeedbackMessage;
+      this.setState({ feedbackMessage: feedbackMessage });
+      return;
+    }
+
+    if (userAlreadyExists) {
+      feedbackMessage = "Username already exists";
+    } else if (inputConfirmPassword !== inputPassword) {
+      feedbackMessage = "Passwords are not correct";
+    } else if (inputUsername === "" || inputPassword === "" || inputConfirmPassword === "") {
+      feedbackMessage = "Please enter all required fields";
+    }
+
+    if (newPasswordValid == false && newUsernameValid == false) {
+      feedbackMessage = "The Password and the Username doesnt fulfil the requirements.";
+    } else if (newPasswordValid == false) {
+      feedbackMessage = "The Password doesnt fulfil the requirements.";
+    } else if (newUsernameValid == false) {
+      feedbackMessage = "The Username doesnt fulfil the requirements.";
+    }
+
+    this.setState({ feedbackMessage: feedbackMessage });
+  }
+
   /**
    * Generates the JSX Output for the Client
    * @returns JSX Output
@@ -85,7 +177,7 @@ class Register extends Component<RegisterProps, RegisterState> {
     /**
      * Initialize Router to navigate to other pages
      */
-    const { router } = this.props
+    const { router } = this.props;
 
     if (this.state.isNotLoggedIn) {
       return (
@@ -106,57 +198,37 @@ class Register extends Component<RegisterProps, RegisterState> {
                 <h1>
                   Create Account
                 </h1>
-                <input type="text" placeholder="Username..."
+                <input
+                  type="text"
+                  placeholder="Username..."
                   onChange={(event) => {
                     this.setState({ inputUsername: event.currentTarget.value, userAlreadyExists: false })
-                    this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword, this.state.newPasswordValid, this.state.newUsernameValid); 
+                    this.updateFeedbackMessage(false, event.currentTarget.value, this.state.inputPassword, this.state.inputConfirmPassword, this.state.newPasswordValid, this.state.newUsernameValid);
                   }}
+                  onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputUsername} />
-                <input type="password" placeholder="Password..."
+                <input
+                  type="password"
+                  placeholder="Password..."
                   onChange={(event) => {
                     this.setState({ inputPassword: event.currentTarget.value })
-                    this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword, this.state.newPasswordValid, this.state.newUsernameValid); 
+                    this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, event.currentTarget.value, this.state.inputConfirmPassword, this.state.newPasswordValid, this.state.newUsernameValid);
                   }}
+                  onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputPassword} />
                 <input type="password" placeholder="Confirm Password..."
                   onChange={(event) => {
                     this.setState({ inputConfirmPassword: event.currentTarget.value })
                     this.updateFeedbackMessage(this.state.userAlreadyExists, this.state.inputUsername, this.state.inputPassword, event.currentTarget.value, this.state.newPasswordValid, this.state.newUsernameValid);
                   }}
+                  onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputConfirmPassword} />
-
-                <div hidden={this.state.feedbackMessage === ""}>{this.state.feedbackMessage}</div>
-
-                <button onClick={async () => {
-                  let userAlreadyExists = await DevChatController.userAlreadyExists(this.state.inputUsername)
-                  let vNewUsernameValid: boolean = true;
-                  let vNewPasswordValid: boolean = true;
-                  this.setState({
-                    userAlreadyExists: userAlreadyExists
-                  })
-                  if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
-                    console.log("Pressed Register Button")
-                    let registerUserReturnString :string = await DevChatController.registerUser(this.state.inputUsername, this.state.inputPassword);
-                    console.log(registerUserReturnString)
-                    if (registerUserReturnString == "True") {
-                      this.setState({newPasswordValid: true, newUsernameValid: true});
-                      router.push("/")
-                    }
-                    else if(registerUserReturnString == "error_username_password"){
-                      //Password and username not Valid
-                      vNewUsernameValid = false;
-                      vNewPasswordValid = false;
-                    }
-                    else if (registerUserReturnString == "error_username"){
-                      vNewUsernameValid = false;
-                    }
-                    else if(registerUserReturnString == "error_password"){
-                      vNewPasswordValid = false;
-                    }
-                  }
-                  this.setState({newPasswordValid: vNewPasswordValid, newUsernameValid: vNewUsernameValid});
-                  this.updateFeedbackMessage(userAlreadyExists, this.state.inputUsername, this.state.inputPassword, this.state.inputConfirmPassword, vNewPasswordValid, vNewUsernameValid);
-                }}>
+                <div className='error' hidden={this.state.feedbackMessage === ""}>
+                  <p>
+                    {this.state.feedbackMessage}
+                  </p>
+                </div>
+                <button onClick={this.onRegisterButtonClick}>
                   Create
                 </button>
                 <div>
@@ -167,23 +239,26 @@ class Register extends Component<RegisterProps, RegisterState> {
                   &nbsp;instead.
                 </div>
               </div>
-            </div>
-            <div className={styles.right}>
-              <div className="image">
-                <Image
-                  priority
-                  src={"/logo.png"}
-                  alt="DEV-CHAT Logo"
-                  width={1000}
-                  height={1000}
-                  layout="responsive"
-                />
+            
+              <div className={styles.right}>
+                <div className="image">
+                  <Image
+                    priority
+                    src={"/logo.png"}
+                    alt="DEV-CHAT Logo"
+                    // width={1000}
+                    // height={1000}
+                    // layout="responsive"
+                    objectFit='contain'
+                    sizes='fitContent'
+                    layout="fill"
+                  />
+                </div>
               </div>
             </div>
-        </main >
-      </div>
-
-    )
+          </main >
+        </div>
+      )
     } else {
       return (
         <div>
@@ -196,34 +271,6 @@ class Register extends Component<RegisterProps, RegisterState> {
       )
     }
   }
-  
-  private updateFeedbackMessage(userAlreadyExists: boolean, inputUsername: string, inputPassword: string, inputConfirmPassword: string, newPasswordValid:boolean, newUsernameValid:boolean) {
-    console.table({userAlreadyExists, inputUsername, inputPassword, inputConfirmPassword, newPasswordValid, newUsernameValid})
-    let feedbackMessage: string = "";
-    
-    if(userAlreadyExists) {
-      feedbackMessage = "Username already exists";
-    } 
-      else if (inputConfirmPassword !== inputPassword) {
-      feedbackMessage = "Passwords are not correct";  
-    } 
-      else if (inputUsername === "" || inputPassword === "" || inputConfirmPassword === "") {
-      feedbackMessage = "Please enter all required fields"
-    } 
-    if(newPasswordValid == false && newUsernameValid == false)
-    {
-      feedbackMessage = "The Password and the Username doesnt fulfil the requirements.";
-    }
-    else if(newPasswordValid == false){
-      feedbackMessage = "The Password doesnt fulfil the requirements.";
-    }
-    else if(newUsernameValid == false){
-      feedbackMessage = "The Username doesnt fulfil the requirements.";
-    }
-
-    this.setState({ feedbackMessage: feedbackMessage });
-  }
-
 }
 
 export default withRouter(Register)

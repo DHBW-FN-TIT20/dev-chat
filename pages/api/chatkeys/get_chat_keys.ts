@@ -1,20 +1,25 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { IChatKey } from '../../../public/interfaces';
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  placeholder: any
+  allChatKeys: IChatKey[],
 }
 
-const supabaseConnection = new SupabaseConnection();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * !!! not working yet !!!
- * This is a api route get chat keys.
- * @param req the request object 
- * @param res the response object 
+ * This is an api route to get all chat keys.
+ * @param req the request object (body: userToken)
+ * @param res the response object (body: allChatKeys)
+ * @category API
+ * @subcategory ChatKey
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  res.status(200).json({ placeholder: "messages" });
+async function getChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+
+  const allChatKeys: IChatKey[] = await BACK_END_CONTROLLER.handleGetAllChatKeys(userToken);
+
+  res.status(200).json({ allChatKeys: allChatKeys });
 }
+export default getChatKeysHandler;

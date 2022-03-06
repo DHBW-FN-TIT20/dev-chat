@@ -1,17 +1,25 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { SupabaseConnection } from "../supabaseAPI";
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  userToken: string;
+  userToken: string,
 }
 
-const supabaseConnection = new SupabaseConnection();
+const BACK_END_CONTROLLER = new BackEndController();
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let username = req.body.username;
-  let password = req.body.password;
+/**
+ * This is an api route to get a valid userToken
+ * @param req the request object (body: username, password)
+ * @param res the response object (body: userToken)
+ * @category API
+ * @subcategory User
+ */
+async function loginHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const username: string = req.body.username;
+  const password: string = req.body.password;
 
-  let token = await supabaseConnection.loginUser(username,password);
+  const token = await BACK_END_CONTROLLER.handleLoginUser(username, password);
 
   res.status(200).json({ userToken: token })
 }
+export default loginHandler;

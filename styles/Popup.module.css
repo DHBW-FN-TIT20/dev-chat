@@ -7,17 +7,104 @@
   right: 0;
   bottom: 0;
   margin: auto;
-  background-color: rgba(0,0,0, 0.5);
-  }
-.popup_inner {
-  position: absolute;
-  left: 25%;
-  right: 25%;
-  top: 25%;
-  bottom: 25%;
-  margin: auto;
-  background: white;
+  background-color: rgba(0, 0, 0, 0.5);
 }
-.buttonPopup{
-  color: #000000;
+
+.buttonPopup {
+  cursor: pointer;
+  transition: all 0.3s ease-out;
+}
+
+.delacc {
+  border-bottom: solid black 2px;
+  padding: 4pt;
+  height: 30pt;
+  width: 100%;
+}
+
+.delacchead {
+  margin-top: 0;
+}
+
+.attention {
+  display: flex;
+  margin-top: 20pt;
+  margin-left: 30pt;
+  float: left;
+  height: 100px;
+  width: 100px;
+  background-color: #1A1A1A;
+  border-radius: 50%;
+  border: 2pt solid blue;
+  justify-content: center;
+  font-size: 50pt;
+  color: blue;
+}
+
+.popup .content {
+  margin-top: 20pt;
+  padding: 20pt;
+  max-height: 50%;
+  width: 70%;
+  float: right;
+  overflow: hidden;
+  bottom: 0;
+  word-break: normal;
+}
+
+.button1 {
+  width: 100%;
+  padding-left: 20pt;
+  padding-right: 20pt;
+  bottom: 0;
+  position: absolute;
+  bottom: 10pt;
+}
+
+@media screen and (max-height: 830px) {
+  .popup_inner {
+    height: 50% !important;
+  }
+}
+
+@media screen and (max-height: 400px) {
+  .popup_inner {
+    height: 70% !important;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .popup_inner {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 80%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .popup_inner {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 80%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .popup_inner {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 90%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
 }

@@ -1,19 +1,23 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-    wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const supabaseConnection = new SupabaseConnection();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to delete old chat keys
+ * This is an api route to delete old/expired chat keys
+ * @param req the request object (body: empty)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory ChatKey
  */
-    export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {  
-        console.log("TEST 2");
-    let deleted = await supabaseConnection.deleteOldChatKeys();
-    res.status(200).json({ wasSuccessfull: deleted });
+async function deleteOldChatKeysHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+
+  const deletedSuccessfully: boolean = await BACK_END_CONTROLLER.handleDeleteOldChatKeys();
+
+  res.status(200).json({ wasSuccessfull: deletedSuccessfully });
 }
+export default deleteOldChatKeysHandler;

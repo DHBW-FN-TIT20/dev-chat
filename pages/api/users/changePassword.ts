@@ -1,26 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { SupabaseConnection } from '../supabaseAPI';
+import { BackEndController } from '../../../controller/backEndController';
 
 type Data = {
-  wasSuccessfull: boolean
+  wasSuccessfull: boolean,
 }
 
-const supabaseConnection = new SupabaseConnection();
+const BACK_END_CONTROLLER = new BackEndController();
 
 /**
- * This is a api route to changes the password from the current user from the database.
- * @param req the request object (body: userToken, oldPassword, newPassword)
+ * This is an api route to changes the password from the current user in the database.
+ * @param req the request object (body: userToken, newPassword, oldPassword)
  * @param res the response object (body: wasSuccessfull)
+ * @category API
+ * @subcategory User
  */
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  let userToken = req.body.userToken;
-  let newPassword = req.body.newPassword;
-  let oldPassword = req.body.oldPassword;
+async function changePasswordHandler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  const userToken: string = req.body.userToken;
+  const newPassword: string = req.body.newPassword;
+  const oldPassword: string = req.body.oldPassword;
 
-
-  let changedSuccesfully = await supabaseConnection.changeUserPassword(userToken, oldPassword, newPassword);
-
-  console.log(String(changedSuccesfully))
+  const changedSuccesfully = await BACK_END_CONTROLLER.handleChangeUserPassword(userToken, oldPassword, newPassword);
 
   res.status(200).json({ wasSuccessfull: changedSuccesfully });
 }
+export default changePasswordHandler;
