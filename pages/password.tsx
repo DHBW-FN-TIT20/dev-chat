@@ -5,7 +5,7 @@ import styles from '../styles/Password.module.css'
 import React, { Component } from 'react'
 import Header from '../components/header'
 import FrontEndController from '../controller/frontEndController'
-import Popup  from '../components/popup';
+import Popup from '../components/popup';
 import { checkPasswordOnRegex } from '../shared/check_password_regex'
 
 export interface PasswordState {
@@ -199,7 +199,9 @@ class Password extends Component<PasswordProps, PasswordState> {
                   onKeyPress={this.handleEnterKeyPress}
                   value={this.state.inputConfirmPassword} />
                 <div className='error' hidden={this.state.feedBackMessage === ""}>
-                  {this.state.feedBackMessage}
+                  <p>
+                    {this.state.feedBackMessage}
+                  </p>
                 </div>
                 <button onClick={this.onPasswordChangeButtonClick}> Change Password </button>
               </div>
