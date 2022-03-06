@@ -32,15 +32,16 @@ export class CalcCommand extends Command {
     }
 
     console.log("Executing command: ", this.callString, " with arguments: ", args);
-    const expression: string = args.join("");
+    let expression: string = args.join("");
 
     if (expression.replace(/\s/g, "") === "") {
       return answerLines;
     }
 
     try {
-      console.log(eval(expression));
-      answerLines.push(String("Your Answer is: " + eval(expression)));
+      let finalExpression = expression.replace(",",".");
+      console.log(eval(finalExpression));
+      answerLines.push(String("Your Answer is: " + eval(finalExpression)));
     } catch (error) {
       console.log(error);
     }
