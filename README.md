@@ -1,5 +1,5 @@
 # Welcome to DEV-CHAT!
-Hello World! This is [DEV-CHAT](dev-chat.me), a webchat for all the developers out there. In simple throw-away chatrooms you can talk to others, without leaving your comfort zone of the command-line. It is a current project of six second-year students at the  university [DHBW Friedrichshafen](https://www.ravensburg.dhbw.de/startseite) located in the south of germany and was created as a part of an exam. 
+Hello World! This is [DEV-CHAT](https://dev-chat.me), a webchat for all the developers out there. In simple throw-away chatrooms you can talk to others, without leaving your comfort zone of the command-line. It is a current project of six second-year students at the  university [DHBW Friedrichshafen](https://www.ravensburg.dhbw.de/startseite) located in the south of germany and was created as a part of an exam. 
 
 ## Folder structure
 
