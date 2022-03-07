@@ -30,9 +30,11 @@
   }
 
   .content {
+    word-wrap: break-word;
     margin-top: 50pt;
     margin-right: 50pt;
     margin-left: 50pt;
+    width: calc(100vw - 100pt);
   }
 
   .right {
