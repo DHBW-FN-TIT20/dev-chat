@@ -433,7 +433,7 @@ export class FrontEndController {
 
   /**
    * This function is used to get all Tickets
-   * @returns {Promise>IBugTicket>} all IBugTickets in an array
+   * @returns {Promise<IBugTicket>} all IBugTickets in an array
    */
   public getAllTickets = async (): Promise<IBugTicket[]> => {
     let allTickets: IBugTicket[] = [];
@@ -457,7 +457,7 @@ export class FrontEndController {
 
   /**
    * This Method is used to get an Array of all Users
-   * @returns {Promise<IUser} array of all IUsers
+   * @returns {Promise<IUser>} array of all IUsers
    */
   public getAllUsers = async (): Promise<IUser[]> => {
     let allUsers: IUser[] = [];

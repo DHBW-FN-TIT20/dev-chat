@@ -252,7 +252,7 @@ export class DatabaseModel {
    * @param {string} keyword the keyword of the chatKey to delete
    * @param {Date} expirationDate the expiration date of the chatKey to delete
    * @param {boolean} lowerThan if true -> filter the result to lowerThan expirationDate
-   * @returns 
+   * @returns {Promise<PostgrestResponse<IChatKey>>}
    */
   public async deleteChatKey(id?: number, keyword?: string, expirationDate?: Date, lowerThan: boolean = false): Promise<PostgrestResponse<IChatKey>> {
     let idColumnName = "";
@@ -265,7 +265,7 @@ export class DatabaseModel {
     if (!(expirationDate === undefined) && !lowerThan) expirationDateColumnName = "expirationDate";
     if (!(expirationDate === undefined) && lowerThan) lowerExpirationDateColumnName = "expirationDate";
 
-    const deletedUser = await DatabaseModel.CLIENT
+    const deletedChatKey = await DatabaseModel.CLIENT
       .from('ChatKey')
       .delete()
       .eq(idColumnName, id)
@@ -273,7 +273,7 @@ export class DatabaseModel {
       .eq(expirationDateColumnName, expirationDate)
       .lt(lowerExpirationDateColumnName, expirationDate?.toISOString().toLocaleLowerCase());
 
-    return deletedUser;
+    return deletedChatKey;
   }
 
   //#endregion
