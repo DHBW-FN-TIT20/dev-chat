@@ -35,10 +35,10 @@
   width: 100px;
   background-color: #1A1A1A;
   border-radius: 50%;
-  border: 2pt solid blue;
+  border: 2pt solid #FF9933;
   justify-content: center;
   font-size: 50pt;
-  color: blue;
+  color: #FF9933;
 }
 
 .popup .content {
