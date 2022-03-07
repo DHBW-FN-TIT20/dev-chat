@@ -34,7 +34,7 @@ To chat with others simply visit the website of [DEV-CHAT](https://dev-chat.me),
 
  - Johannes Brandenburger / [github](https://github.com/johannesbrandenburger) / [E-mail](mailto:johannes@brandenburger.dev)
  - Lukas Braun / [github](https://github.com/lukbra0108) / [E-mail]()
- - Henry Schuler / [github](https://github.com/schuler-henry) / [email]()
+ - Henry Schuler / [github](https://github.com/schuler-henry) / [E-mail]()
  - Jan Brutscher / [github](https://github.com/withernext) / [E-mail](mailto:janbrutscher@gmail.com)
  - Phillipp Patzelt / [github](https://github.com/PhillippPatzelt) / [E-mail]()
  - Nico Bayer / [github](https://github.com/NicoB-Code) / [E-mail](mailto:bayernico@web.de)
