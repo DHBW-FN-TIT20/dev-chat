@@ -179,7 +179,7 @@ export class FrontEndController {
 
   /**
    * This method checks the database for a ChatKey with the given ChatKeyName
-   * @param {string} ChatKey ChatKey to check
+   * @param {string} chatKey ChatKey to check
    * @returns {Promise<boolean>} True if ChatKey exists, false if not
    */
   public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
@@ -286,7 +286,7 @@ export class FrontEndController {
 
   /**
    * This functions is used to get all chatKeys 
-   * @returns {Promise<IChatKey>}all IChatKeys in an array
+   * @returns {Promise<IChatKey>} all IChatKeys in an array
    */
   public getAllChatKeys = async (): Promise<IChatKey[]> => {
     let allChatKeys: IChatKey[] = [];
@@ -555,7 +555,7 @@ export class FrontEndController {
   /**
    * This method deletes a target user.
    * @param {string} userToken token for user verification
-   * @param {string} usernameTodelete username of user that should be deleted
+   * @param {string} usernameToDelete username of user that should be deleted
    * @returns {Promise<boolean>} true if target user was deleted, false if not
    */
   public deleteUser = async (userToken: string, usernameToDelete: string | undefined): Promise<boolean> => {
