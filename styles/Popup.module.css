@@ -29,6 +29,7 @@
 .attention {
   display: flex;
   margin-top: 20pt;
+  padding-top: 5pt;
   margin-left: 30pt;
   float: left;
   height: 100px;
@@ -41,16 +42,6 @@
   color: #FF9933;
 }
 
-.popup .content {
-  margin-top: 20pt;
-  padding: 20pt;
-  max-height: 50%;
-  width: 70%;
-  float: right;
-  overflow: hidden;
-  bottom: 0;
-  word-break: normal;
-}
 
 .button1 {
   width: 100%;
@@ -63,13 +54,35 @@
 
 @media screen and (max-height: 830px) {
   .popup_inner {
-    height: 50% !important;
+    height: 40% !important;
+  }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
+    
   }
 }
 
 @media screen and (max-height: 400px) {
   .popup_inner {
     height: 70% !important;
+  }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
+    
   }
 }
 
@@ -83,6 +96,17 @@
     position: relative;
     transition: all 3s;
   }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
+    font-size: x-large;
+  }
 }
 
 @media screen and (max-width: 1280px) {
@@ -95,6 +119,17 @@
     position: relative;
     transition: all 3s;
   }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
+    font-size: x-large;
+  }
 }
 
 @media screen and (max-width: 900px) {
@@ -106,5 +141,39 @@
     height: 30%;
     position: relative;
     transition: all 3s;
+  }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 70%;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
+    font-size: x-large;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .popup_inner {
+    margin: 70px auto;
+    background: #1A1A1A;
+    border: solid black 2px;
+    width: 90%;
+    height: 30%;
+    position: relative;
+    transition: all 3s;
+  }
+  .popup .content {
+    margin-top: 20pt;
+    padding: 20pt;
+    max-height: 50%;
+    width: 50%;
+    font-size: medium;
+    float: right;
+    overflow: hidden;
+    bottom: 0;
+    word-break: normal;
   }
 }
