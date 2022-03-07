@@ -18,7 +18,7 @@ async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResp
   const userToken: string = req.body.userToken;
   const surveyIDToAlter: number = req.body.surveyIDToAlter;
   const expirationDate: Date = req.body.expirationDate;
-console.log(expirationDate + userToken)
+
   const changedSuccessfully = await BACK_END_CONTROLLER.handleChangeSurveyExpirationDate(userToken, surveyIDToAlter, expirationDate);
 
   res.status(200).json({ wasSuccessfull: changedSuccessfully });

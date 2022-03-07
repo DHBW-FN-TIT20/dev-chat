@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { BackEndController } from '../../../controller/backEndController';
-import { AccessLevel, ProDemote } from '../../../enums/accessLevel';
+import { ProDemote } from '../../../enums/accessLevel';
 
 type Data = {
   wasSuccessfull: boolean,
