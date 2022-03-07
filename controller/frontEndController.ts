@@ -35,11 +35,11 @@ export class FrontEndController {
 
   /**
    * This is a function that adds a message to the database
-   * @param {string} message the message of the user to added
+   * @param {string} message the message of the user to be added
    * @param {string} userToken the user token of the user who sends the message (logged in)
    * @param {string} chatKey the chat key of the chatroom
    * @returns {Promise<boolean>} true if the message was send, false if not
-  **/
+   **/
   public addChatMessage = async (message: string, userToken: string, chatKey: string): Promise<boolean> => {
     let response = await fetch('./api/messages/save_chat_message', {
       method: 'POST',
@@ -92,20 +92,17 @@ export class FrontEndController {
    */
   public async updateChatMessages(): Promise<IFChatMessage[]> {
     console.log("DevChatController.updateChatMessages()");
-    
+
     // get the highest id of the chat messages to only get the new messages
     let lastMessageId: number = 0;
     if (this.chatMessages.length > 0) {
-      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function(message) { return message.id; }) || [0]);
+      lastMessageId = Math.max.apply(Math, this.chatMessages.map(function (message) { return message.id; }) || [0]);
     }
-    
+
     let userToken = this.getUserToken();
 
     // get the new messages
-    let newMessages: IFChatMessage[] = await this.fetchChatMessages(userToken , this.getChatKeyFromCookie(), lastMessageId);
-
-    // console.log("newMessages: ");
-    // console.table(newMessages);
+    let newMessages: IFChatMessage[] = await this.fetchChatMessages(userToken, this.getChatKeyFromCookie(), lastMessageId);
 
     // add the new messages to the chat messages
     this.chatMessages = this.chatMessages.concat(newMessages);
@@ -168,7 +165,7 @@ export class FrontEndController {
   /**
    * This method is used to process a new message which is entered in the Chat.
    * @param {string} message The input string of the user which should be processed.
-  *  @returns — true if the message was send, false if not
+   * @returns — true if the message was send, false if not
    */
   public async enteredNewMessage(message: string) {
     console.log("DevChatController.enteredNewMessage()");
@@ -181,10 +178,10 @@ export class FrontEndController {
   //#region Chat Key Methods
 
   /**
-* This method checks the database for a ChatKey with the given ChatKeyName
-* @param {string} ChatKey ChatKey to check
-* @returns {Promise<boolean>} True if ChatKey exists, false if not
-*/
+   * This method checks the database for a ChatKey with the given ChatKeyName
+   * @param {string} ChatKey ChatKey to check
+   * @returns {Promise<boolean>} True if ChatKey exists, false if not
+   */
   public doesChatKeyExists = async (chatKey: string): Promise<boolean> => {
     let response = await fetch('./api/chatkeys/does_chat_key_exists', {
       method: 'POST',
@@ -202,9 +199,8 @@ export class FrontEndController {
   /**
    * This is a function that delete old chat keys from the database
    * @returns {Promise<boolean>} true if old chat keys were deleted
-   **/
+   */
   public deleteOldChatKeys = async (): Promise<boolean> => {
-    console.log("TEST VON PHILLIPP DELETE IM CONTROLLER")
     let response = await fetch('./api/chatkeys/delete_old_chat_keys', {
       method: 'POST',
       headers: {
@@ -218,7 +214,7 @@ export class FrontEndController {
   /**
    * Function to create a ChatKey and add it to DB
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
-  **/
+   */
   public async addChatKey(): Promise<boolean> {
     //Creates new chat Key and adds to DB
     //TODO set Coockie
@@ -239,9 +235,11 @@ export class FrontEndController {
 
   /**
    * Function to create a custom ChatKey and add it to DB
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {string} customChatKey the custom ChatKey to be added
    * @returns {Promise<boolean>} true if the chatkey was created, false if the chat Key was not created
-  **/
-   public async addCustomChatKey(userToken: string, customChatKey: string): Promise<boolean> {
+   */
+  public async addCustomChatKey(userToken: string, customChatKey: string): Promise<boolean> {
     //Creates new chat Key and adds to DB
     let response = await fetch('./api/chatkeys/add_custom_chat_key', {
       method: 'POST',
@@ -256,7 +254,71 @@ export class FrontEndController {
     let data = await response.json();
     return data.wasSuccessfull;
   }
-  
+
+  /**
+   * This function is used to change the expiration Date of a certain ChatKey
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {number} chatKeyToAlter chatKeyID to update
+   * @param {Date} expirationDate new expiration Date of the chat
+   * @returns {Promise<boolean>} bool if changing was successfull or not
+   */
+  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number, expirationDate: Date): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/changeExpiration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToAlter: chatKeyToAlter,
+        expirationDate: expirationDate,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This function deletes a certain chatKey
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {number} chatKeyToDelete chatKeyID to delete
+   * @returns {Promise<boolean>} bool if deleting was successfull or not
+   */
+  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
+    let response = await fetch('./api/chatkeys/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        chatKeyToDelete: chatKeyToDelete,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This functions is used to get all chatKeys 
+   * @returns {Promise<IChatKey>}all IChatKeys in an array
+   */
+  public getAllChatKeys = async (): Promise<IChatKey[]> => {
+    let allChatKeys: IChatKey[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/chatkeys/get_chat_keys', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+      })
+    });
+    let dataUser = await response.json();
+    allChatKeys = dataUser.allChatKeys;
+    return allChatKeys;
+  }
   //#endregion 
 
   //#region Cookie Methods
@@ -295,10 +357,10 @@ export class FrontEndController {
 
   /**
    * This function is used to change the expiration Date of a survey
-   * @param userToken 
-   * @param surveyIDToAlter 
-   * @param expirationDate 
-   * @returns 
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {number} surveyIDToAlter survey ID to update
+   * @param {Date} expirationDate the new expirationDate of the survey
+   * @returns {Promise<boolean>} if changing the expiration Date was succesfull or not
    */
   public changeSurveyExpirationDate = async (userToken: string, surveyIDToAlter: number, expirationDate: Date): Promise<boolean> => {
     let response = await fetch('./api/surveys/changeExpiration', {
@@ -316,70 +378,21 @@ export class FrontEndController {
     return data.wasSuccessfull;
   }
 
-     /**
-      *  A function that is used to delete a certain survey
-      * @param userToken - userToken of the current user
-      * @param surveyIDToDelete  - ID of the survey that should be deleted
-      * @returns 
-      */
-     public deleteSurvey = async (userToken: string, surveyIDToDelete: number): Promise<boolean> => {
-      let response = await fetch('./api/surveys/delete', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userToken: userToken,
-          surveyIDToDelete: surveyIDToDelete,
-        })
-      });
-      let data = await response.json();
-      return data.wasSuccessfull;
-    }
-
-     /**
-      * This function is used to get all Surveys
-      * @returns Array of ISurveys
-      */
-     public getAllSurveys = async (): Promise<ISurvey[]> => {
-      let allSurveys: ISurvey[] = [];
-      let userToken = this.getUserToken();
-      let response = await fetch('/api/surveys/getAllSurveys',{
-       method: 'POST',
-       headers: {
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({
-         userToken: userToken,
-       })
-     });
-     let dataUser = await response.json();
-     allSurveys = dataUser.allSurveys;
-     return allSurveys;
-     }
-
-  //#endregion
-
-  //#region ChatKey Methods
-
-
   /**
-   * This function is used to change the expiration Date of a certain ChatKey
-   * @param userToken current User
-   * @param chatKeyToAlter 
-   * @param expirationDate wanted date
-   * @returns bool was sucessfull
+   * A function that is used to delete a certain survey
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {number} surveyIDToDelete - ID of the survey that should be deleted
+   * @returns {Promise<boolean>} if the deletion was successfull or not
    */
-  public changeChatKeyExpirationDate = async (userToken: string, chatKeyToAlter: number, expirationDate: Date): Promise<boolean> => {
-    let response = await fetch('./api/chatkeys/changeExpiration', {
+  public deleteSurvey = async (userToken: string, surveyIDToDelete: number): Promise<boolean> => {
+    let response = await fetch('./api/surveys/delete', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         userToken: userToken,
-        chatKeyToAlter: chatKeyToAlter,
-        expirationDate: expirationDate,
+        surveyIDToDelete: surveyIDToDelete,
       })
     });
     let data = await response.json();
@@ -387,56 +400,35 @@ export class FrontEndController {
   }
 
   /**
-   * This function deletes a certain chatKey
-   * @param userToken current User
-   * @param chatKeyToDelete 
-   * @returns bool was successfull
+   * This function is used to get all Surveys
+   * @returns {Promise<ISurvey>} Array of ISurveys
    */
-  public deleteChatKey = async (userToken: string, chatKeyToDelete: number | undefined): Promise<boolean> => {
-    let response = await fetch('./api/chatkeys/delete', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        userToken: userToken,
-        chatKeyToDelete: chatKeyToDelete,
-      })
-    });
-    let data = await response.json();
-    return data.wasSuccessfull;
-  }
-
-  /**
-   * This functions is used to get all chatKeys 
-   * @returns all IChatKeys in an array
-   */
-  public getAllChatKeys = async (): Promise<IChatKey[]> => {
-    let allChatKeys: IChatKey[] = [];
+  public getAllSurveys = async (): Promise<ISurvey[]> => {
+    let allSurveys: ISurvey[] = [];
     let userToken = this.getUserToken();
-    let response = await fetch('/api/chatkeys/get_chat_keys',{
-     method: 'POST',
-     headers: {
-       'Content-Type': 'application/json'
-     },
-     body: JSON.stringify({
-       userToken: userToken,
-     })
-   });
-   let dataUser = await response.json();
-   allChatKeys = dataUser.allChatKeys;
-   return allChatKeys;
-   }
+    let response = await fetch('/api/surveys/getAllSurveys', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+      })
+    });
+    let dataUser = await response.json();
+    allSurveys = dataUser.allSurveys;
+    return allSurveys;
+  }
 
   //#endregion
 
   //#region Ticket Methods
   /**
    * This function is used to invert the status of a ticket. (ToDo->Done | Done->ToDo) It calls a API Route (changeSolvedState.ts)
-   * @param currentToken 
-   * @param ticketID 
-   * @param currentState 
-   * @returns 
+   * @param {string} currentToken the user token of the user who sends the message (logged in)
+   * @param {number} ticketID the ticketID to change 
+   * @param {boolean} currentState the currentState of the Ticket
+   * @returns {Promise<boolean>} if changing was succesfull or not
    */
   public changeSolvedState = async (currentToken: string, ticketID: number | undefined, currentState: boolean | undefined): Promise<boolean> => {
     let response = await fetch('./api/tickets/changeSolvedState', {
@@ -456,111 +448,117 @@ export class FrontEndController {
 
   /**
    * This function is used to get all Tickets
-   * @returns all IBugTickets in an array
+   * @returns {Promise>IBugTicket>} all IBugTickets in an array
    */
   public getAllTickets = async (): Promise<IBugTicket[]> => {
     let allTickets: IBugTicket[] = [];
     let userToken = this.getUserToken();
-    let response = await fetch('/api/tickets/getAllTickets',{
-     method: 'POST',
-     headers: {
-       'Content-Type': 'application/json'
-     },
-     body: JSON.stringify({
-       userToken: userToken,
-     })
-   });
-   let dataUser = await response.json();
-   allTickets = dataUser.allTickets;
-   return allTickets;
-   }
+    let response = await fetch('/api/tickets/getAllTickets', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+      })
+    });
+    let dataUser = await response.json();
+    allTickets = dataUser.allTickets;
+    return allTickets;
+  }
   //#endregion
 
   //#region User Methods
 
-    /**
-     * This Method is used to get an Array of all Users
-     * @returns array of all IUsers
-     */
-    public getAllUsers = async (): Promise<IUser[]> => {
-      let allUsers: IUser[] = [];
-      let userToken = this.getUserToken();
-      let response = await fetch('/api/users/getAllUsers',{
-       method: 'POST',
-       headers: {
-         'Content-Type': 'application/json'
-       },
-       body: JSON.stringify({
-         userToken: userToken,
-       })
-     });
-     let dataUser = await response.json();
-     allUsers = dataUser.allUsers;
-     return allUsers;
-     }
-   
-
-    /**
-    * This method is used to promote a certain user
-    */
-     public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
-       let response = await fetch('./api/users/promote', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json'
-         },
-         body: JSON.stringify({
-           userToken: userToken,
-           usernameToPromote: usernameToPromote,
-         })
-       });
-       let data = await response.json();
-       return data.wasSuccessfull;
-     }
-
-     /**
-      * This function is used to reset the password of a certain user, it calls the supabase handler (resetPassword.ts)
-      * @param userToken 
-      * @param usernameToReset 
-      * @returns 
-      */
-     public resetPassword = async (userToken: string, usernameToReset: string): Promise<boolean> => {
-      let response = await fetch('./api/users/resetPassword', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userToken: userToken,
-          usernameToReset: usernameToReset,
-        })
-      });
-      let data = await response.json();
-      return data.wasSuccessfull;  
-     }
-   
-     /**
-      * This method is used to demote a certain User
-      */
-      public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
-       let response = await fetch('./api/users/demote', {
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json'
-         },
-         body: JSON.stringify({
-           userToken: userToken,
-           usernameToDemote: usernameToDemote,
-         })
-       });
-       let data = await response.json();
-       return data.wasSuccessfull;
-     }
-   
   /**
- * This mehtod loggs out the current user.
- * @returns {boolean} True if logout was successfull, false if not
- */
+   * This Method is used to get an Array of all Users
+   * @returns {Promise<IUser} array of all IUsers
+   */
+  public getAllUsers = async (): Promise<IUser[]> => {
+    let allUsers: IUser[] = [];
+    let userToken = this.getUserToken();
+    let response = await fetch('/api/users/getAllUsers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+      })
+    });
+    let dataUser = await response.json();
+    allUsers = dataUser.allUsers;
+    return allUsers;
+  }
+
+
+  /**
+   * This method is used to promote a certain user
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {string} usernameToPromote the userName to promote
+   * @returns {Promise<boolean>} if promoting was successfull or not
+   */
+  public promoteUser = async (userToken: string, usernameToPromote: string | undefined): Promise<boolean> => {
+    let response = await fetch('./api/users/promote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        usernameToPromote: usernameToPromote,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This function is used to reset the password of a certain user, it calls the supabase handler (resetPassword.ts)
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {string} usernameToReset this is the userName to reset it's password
+   * @returns {Promise<boolean>} if resetting was successfull or not
+   */
+  public resetPassword = async (userToken: string, usernameToReset: string): Promise<boolean> => {
+    let response = await fetch('./api/users/resetPassword', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        usernameToReset: usernameToReset,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This method is used to demote a certain User
+   * @param {string} userToken the user token of the user who sends the message (logged in)
+   * @param {string} usernameToDemote the username to demote
+   * @returns {Promise<boolean>} if demoting was successfull or not
+   */
+  public demoteUser = async (userToken: string, usernameToDemote: string | undefined): Promise<boolean> => {
+    let response = await fetch('./api/users/demote', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userToken: userToken,
+        usernameToDemote: usernameToDemote,
+      })
+    });
+    let data = await response.json();
+    return data.wasSuccessfull;
+  }
+
+  /**
+   * This mehtod loggs out the current user.
+   * @returns {boolean} True if logout was successfull, false if not
+   */
   public logoutUser = (): boolean => {
     localStorage.removeItem("DevChat.auth.token")
     if (localStorage.getItem("DevChat.auth.token") == null) {
@@ -614,11 +612,11 @@ export class FrontEndController {
   }
 
   /**
- * This method logs a user in if there is a match with the database. Therfore a token is created which is stored in the browsers local storage.
- * @param {string} username Username to log in
- * @param {string} password Password for user
- * @returns {Promise<boolean>} True if login was successfull, false if not
- */
+   * This method logs a user in if there is a match with the database. Therfore a token is created which is stored in the browsers local storage.
+   * @param {string} username Username to log in
+   * @param {string} password Password for user
+   * @returns {Promise<boolean>} True if login was successfull, false if not
+   */
   public loginUser = async (username: string, password: string): Promise<boolean> => {
     let response = await fetch('./api/users/login', {
       method: 'POST',
@@ -714,6 +712,11 @@ export class FrontEndController {
     return "";
   }
 
+  /**
+   * This method extracts the admin value from the token and returns it
+   * @param {string} token Token with user information
+   * @returns the admin value
+   */
   public getAdminValueFromToken = (token: string): boolean => {
     let content = jwt.decode(token)
     if (typeof content === "object" && content !== null) {
