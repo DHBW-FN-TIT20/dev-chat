@@ -89,7 +89,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to change the expirationDate of a certain ChatKey
-   * @param chatKeyID - the ID of the ChatKey that should be altered
+   * @param {number} chatKeyID - the ID of the ChatKey that should be altered
    */
   private async chatKeySetTime(chatKeyID: number) {
     const wantedExpirationDate = new Date((document.getElementById("ChatKey" + String(chatKeyID)) as HTMLInputElement).value);
@@ -109,7 +109,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function sets the expiration Time of a survey
-   * @param surveyID ID of the survey whose time should be changed
+   * @param {number} surveyID ID of the survey whose time should be changed
    */
   private async surveySetTime(surveyID: number) {
     const wantedExpirationDate = new Date((document.getElementById("Survey" + String(surveyID)) as HTMLInputElement).value);
@@ -148,8 +148,9 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function takes in a bool and returns the wanted string (+ adds coloring to <p> tag)
-   * @param boolToPrint the bool that should be printed
-   * @returns string, either "Done" or "To-Do"
+   * @param {boolean} boolToPrint the bool that should be printed
+   * @param {number} ticketID the wanted ticketID
+   * @returns {string} string, either "Done" or "To-Do"
    */
   private giveBoolStringTicket(boolToPrint: boolean, ticketID: number): string {
     const elem: HTMLElement | null = document.getElementById("Ticket" + String(ticketID));
@@ -164,7 +165,8 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This funcitons returns the string value of AccessLevel
-   * @returns AccessLevel as string
+   * @param {AccessLevel} userAccessLevel the user accessLevel to check
+   * @returns {string} AccessLevel as string
    */
   private giveAdminOrUser(userAccessLevel: AccessLevel): string {
     if (userAccessLevel === AccessLevel.ADMIN) {
@@ -180,7 +182,7 @@ class Admin extends Component<AdminProps, AdminState> {
    * Function to change the solved State of a ticket
    * @param ticketID ticket that should be changed
    * @param currentState currentState of the ticket (true or false)
-   * @returns true if change was successfull, false if not
+   * @returns {Promise<boolean>} true if change was successfull, false if not
    */
   private async ticketChangeSolvedClick(ticketID: number, currentState: boolean): Promise<boolean> {
     const currentToken = FrontEndController.getUserToken();
@@ -198,6 +200,10 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function returns the given username if UserID-OwnerID match
+   * @param {number} userID the userID to match
+   * @param {string} username the given username
+   * @param {number} ownerID the ownerID to match
+   * @returns {string} returns the username it there is a match, returns "" if there is no match
    */
   private matchingUsername(userID: number, username: string, ownerID: number): string {
     if (userID === ownerID) {
@@ -207,7 +213,23 @@ class Admin extends Component<AdminProps, AdminState> {
   }
 
   /**
+   * This function is used to get the name of a chatKey (used by survey table)
+   * @param {IChatKey} chatKey the chatKey to match
+   * @param {number} surveyID the surveyID to match
+   * @returns chatKey or empty string
+   */
+  private matchingChatkey(chatKey: IChatKey, surveyID: number){
+    if(surveyID === chatKey.id){
+      return chatKey.keyword;
+    }
+    else{
+      return "";
+    }
+  }
+
+  /**
    * This function is used to delete a user via admin interface
+   * @param {string} name the userName to delete
    */
   private async userClickDelete(name: string) {
     const currentToken = FrontEndController.getUserToken();
@@ -222,6 +244,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to handle the delete click of a chatKey
+   * @param {number} chatID the chatID to delete
    */
   private async chatClickDelete(chatID: number) {
     const currentToken = FrontEndController.getUserToken();
@@ -236,6 +259,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to handle the delet click of a survey
+   * @param {number} the surveyID to delete
    */
   private async surveyClickDelete(surveyID: number) {
     const currentToken = FrontEndController.getUserToken();
@@ -250,6 +274,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to promote a certain user, identified by its username
+   * @param {string} the username to promote
    */
   private async promoteUser(name: string) {
     const currentToken = FrontEndController.getUserToken();
@@ -264,6 +289,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to demote a certain user, identified by its username
+   * @param {string} name the username to demote
    */
   private async demoteUser(name: string) {
     const currentToken = FrontEndController.getUserToken();
@@ -278,6 +304,7 @@ class Admin extends Component<AdminProps, AdminState> {
 
   /**
    * This function is used to reset the password of a certain user, identified by its username
+   * @param {string} name the username to reset the password
    */
   private async resetPassword(name: string) {
     const currentToken = FrontEndController.getUserToken();
@@ -455,12 +482,17 @@ class Admin extends Component<AdminProps, AdminState> {
                         <tr key={survey.id}>
                           <td>
                             <p>
+                              
                               {survey.name}
                             </p>
                           </td>
                           <td>
                             <p>
-                              {survey.id}
+                            {this.state.allChatKeysState.map(chatKey => (
+                              <div key={chatKey.id}>
+                                {this.matchingChatkey(chatKey, survey.chatKeyID)}
+                              </div>
+                            ))}
                             </p>
                           </td>
                           <td>

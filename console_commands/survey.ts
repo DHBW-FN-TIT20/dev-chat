@@ -37,9 +37,18 @@ export class SurveyCommand extends Command {
     // ----------------------------------------------------------------
     const databaseModel = new DatabaseModel();
     const backEndController = new BackEndController();
-
-    const survey: ISurvey = databaseModel.getISurveyFromResponse(await databaseModel.addSurvey(args[0], args[1], expirationDate, currentUser.id, currentChatKeyID))[0];
-
+  
+    let survey: any;
+    let currentDate = getDateByGermanString(new Date().toLocaleDateString());
+    if (currentDate === null){
+      currentDate = new Date();
+    }
+    if(expirationDate < currentDate) {
+      survey = undefined;
+    }
+    else {
+      survey = databaseModel.getISurveyFromResponse(await databaseModel.addSurvey(args[0], args[1], expirationDate, currentUser.id, currentChatKeyID))[0];
+    }
     if (survey === undefined) {
       answerLines.push("Error: Could not create survey.");
       return answerLines;
