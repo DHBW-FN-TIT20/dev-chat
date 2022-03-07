@@ -50,6 +50,7 @@ class Login extends Component<LoginProps, LoginState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
+   * @param {any} event Event triggered by an Eventlistener
    */
   private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
@@ -73,6 +74,7 @@ class Login extends Component<LoginProps, LoginState> {
   /**
    * Handle of the Keypressed-Event from the Input
    * Checks if Enter was pressed
+   * @param {any} event Event triggered by an Eventlistener
    */
   private handleEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
