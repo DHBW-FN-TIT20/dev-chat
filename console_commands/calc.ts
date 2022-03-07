@@ -40,8 +40,8 @@ export class CalcCommand extends Command {
 
     try {
       let finalExpression = expression.replace(",",".");
-      console.log(eval(finalExpression));
-      answerLines.push(String("Your Answer is: " + eval(finalExpression)));
+      let basicMath = require('advanced-calculator')
+      answerLines.push(String("Your Answer is: " + basicMath.evaluate(finalExpression)));
     } catch (error) {
       console.log(error);
     }
