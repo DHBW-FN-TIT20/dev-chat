@@ -47,7 +47,7 @@ export class VoteCommand extends Command {
 
     // check if the vote was added successfully 
     if (!addedVote) {
-      answerLines.push("Error: Vote not successfull. If you have not voted already, try again.");
+      answerLines.push("Error: The survey you voted for is finished. See the results with /show " + String(voteToAdd.surveyID));
       return answerLines;
     }
 
