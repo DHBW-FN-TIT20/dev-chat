@@ -1,7 +1,7 @@
 /**
  * This function is used to create a date object from a string in german format.
- * @param germanString The string which should be converted to a date. Pattern: "DD.MM.YYYY-HH:MM".
- * @returns null indicates string is in wrong format.
+ * @param {string} germanString The string which should be converted to a date. Pattern: "DD.MM.YYYY-HH:MM".
+ * @returns {Date} the result date (null indicates string is in wrong format)
  * @category Helper
  */
 export function getDateByGermanString(germanString: string): Date | null {

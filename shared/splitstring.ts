@@ -5,7 +5,8 @@
  * The quotation marks are removed from the string.
  * If there is a quotation mark standing alone, the input string is not valid.
  * Therefore, the function returns an empty array.
- * @returns The array of strings.
+ * @param {string} str the string to split
+ * @returns {string[]} The array of strings.
  * @category Helper
  */
 export function splitString(str: string): string[] {

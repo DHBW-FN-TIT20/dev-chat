@@ -8,8 +8,8 @@
  * - at least one lowercase letter
  * - at least one of the following special characters: ! * # , ; ? + - _ . = ~ ^ % ( ) { } | : " /
  * - only alphanumeric characters and the special characters mentioned above
- * @param password the Password to check
- * @returns the feedback message (empty if password is valid)
+ * @param {string} password the Password to check
+ * @returns {string} the feedback message (empty if password is valid)
  * @category Helper
  */
 export function checkPasswordOnRegex(password: string): string {
