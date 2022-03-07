@@ -108,6 +108,9 @@ class Chat extends Component<ChatProps, ChatState> {
         this.redoFetch = true;
       }
     });
+
+    // focus on chat line input
+    this.chatLine.focus();
   }
 
   /**
