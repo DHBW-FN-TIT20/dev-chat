@@ -207,6 +207,21 @@ class Admin extends Component<AdminProps, AdminState> {
   }
 
   /**
+   * This function is used to get the name of a chatKey (used by survey table)
+   * @param chatKey 
+   * @param surveyID 
+   * @returns chatKey or empty string
+   */
+  private matchingChatkey(chatKey: IChatKey, surveyID: number){
+    if(surveyID === chatKey.id){
+      return chatKey.keyword;
+    }
+    else{
+      return "";
+    }
+  }
+
+  /**
    * This function is used to delete a user via admin interface
    */
   private async userClickDelete(name: string) {
@@ -455,12 +470,17 @@ class Admin extends Component<AdminProps, AdminState> {
                         <tr key={survey.id}>
                           <td>
                             <p>
+                              
                               {survey.name}
                             </p>
                           </td>
                           <td>
                             <p>
-                              {survey.id}
+                            {this.state.allChatKeysState.map(chatKey => (
+                              <div key={chatKey.id}>
+                                {this.matchingChatkey(chatKey, survey.chatKeyID)}
+                              </div>
+                            ))}
                             </p>
                           </td>
                           <td>
