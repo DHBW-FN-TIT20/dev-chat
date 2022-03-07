@@ -29,8 +29,8 @@ export class DatabaseModel {
 
   /**
    * Checks if DB-Response is sucessfull
-   * @param dbResponse Response of DB
-   * @returns {boolean} if Response Sucessful
+   * @param {PostgrestResponse<any>} dbResponse Response of database
+   * @returns {boolean} if response is sucessfull
    */
   evaluateSuccess(dbResponse: PostgrestResponse<any>): boolean {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
@@ -46,8 +46,8 @@ export class DatabaseModel {
 
   /**
    * Gets der IUserFromResponse
-   * @param dbResponse Response of Database
-   * @returns {IUser} UserInterface
+   * @param {PostgrestResponse<IUser>} dbResponse Response of database
+   * @returns {IUser[]} Array of IUser objects
    */
   getIUserFromResponse(dbResponse: PostgrestResponse<IUser>): IUser[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
@@ -64,10 +64,10 @@ export class DatabaseModel {
 
   /**
    * This is a universal select function for the user database
-   * @param userID  Filter userID
-   * @param username Filter username
-   * @param password Filter password (hash)
-   * @param accessLevel Filter accessLevel
+   * @param {number} userID  Filter userID
+   * @param {string} username Filter username
+   * @param {string} hashedPassword Filter password (hash)
+   * @param {number} accessLevel Filter accessLevel
    * @returns {Promise<PostgrestResponse<IUser>>} DB result as list of IUser objects
    */
   async selectUserTable(userID?: number, username?: string, hashedPassword?: string, accessLevel?: number): Promise<PostgrestResponse<IUser>> {
@@ -94,7 +94,7 @@ export class DatabaseModel {
 
   /**
    * This function is used to fetch all Users from the Database
-   * @returns {Promise<PostgrestResponse<IUser>>} Array of all IUsers
+   * @returns {Promise<PostgrestResponse<IUser>>} DB result as list of IUser objects
    */
   async fetchAllUsersAlphabeticalAndAccess(): Promise<PostgrestResponse<IUser>> {
     const userResponse = await DatabaseModel.CLIENT
@@ -108,10 +108,10 @@ export class DatabaseModel {
 
   /**
   * API function to register a user
-  * @param {string} user username to register
-  * @param {string} password password for the user
+  * @param {string} username username to register
+  * @param {string} hashedPassword password for the user
   * @param {number} accessLevel access level for the user
-  * @returns {string} true if registration was successfull, error Message if not
+  * @returns {Promise<PostgrestResponse<IUser>>} DB result as a IUser object
   */
   public async addUser(username: string, hashedPassword: string, accessLevel: number = 0): Promise<PostgrestResponse<IUser>> {
     const addedUser = await DatabaseModel.CLIENT
@@ -124,7 +124,9 @@ export class DatabaseModel {
   }
 
   /** 
-  * This function is used to reset the password of a user
+  * This function is used to change the password of a user
+  * @param {string} newHashedPassword user token to verificate change password process
+  * @param {number} userID userID of user to change password
   */
   public async changeUserPassword(newHashedPassword: string, userID: number): Promise<PostgrestResponse<IUser>> {
     const updatedUser = await DatabaseModel.CLIENT
@@ -137,9 +139,8 @@ export class DatabaseModel {
 
   /**
    * API function to update User Access Level
-   * @param accessLevel 
-   * @param userToUpdate 
-   * @returns 
+   * @param {number} accessLevel access level to update
+   * @returns {Promise<PostgrestResponse<IUser>>} DB result as a IUser object
    */
   public async updateUserAccessLevel(accessLevel: number, userID: number): Promise<PostgrestResponse<IUser>> {
     const updatedUser = await DatabaseModel.CLIENT
@@ -152,9 +153,8 @@ export class DatabaseModel {
 
   /**
    * This method removes a target user from the database
-   * @param {string} userToken user token to verificate delete process
-   * @param {string} usernameToDelete username of user to delete
-   * @returns {Promise<boolean>} true if user was deleted, false if not
+   * @param {number} targetUserID userID of user to remove
+   * @returns {Promise<PostgrestResponse<IUser>>} DB result as a IUser object
    */
   public async deleteUser(targetUserID: number): Promise<PostgrestResponse<IUser>> {
     const deletedUser = await DatabaseModel.CLIENT
@@ -169,6 +169,11 @@ export class DatabaseModel {
 
   //#region ChatKey Methods
 
+  /**
+   * This is a function to get a chatKey from a the database response
+   * @param {PostgrestResponse<IChatKey>} dbResponse A response of database
+   * @returns {IChatKey[]} Array of IChatKey objects
+   */
   getIChatKeyFromResponse(dbResponse: PostgrestResponse<IChatKey>): IChatKey[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       return [];
@@ -184,11 +189,13 @@ export class DatabaseModel {
   }
 
   /**
-  * This function is used to fetch all ChatKeys from the Database
-  * @param token 
-  * @returns Array of all IChatKeys
-  */
-   public async selectChatKeyTable(id?: number, keyword?: string, expirationDate?: Date): Promise<PostgrestResponse<IChatKey>> {
+   * This function is used to fetch all ChatKeys from the Database
+   * @param {number} id ChatKey ID to filter
+   * @param {string} keyword ChatKey keyword to filter
+   * @param {Date} expirationDate ChatKey expirationDate to filter 
+   * @returns {Promise<PostgrestResponse<IChatKey>>} DB result as list of IChatKey objects
+   */
+  public async selectChatKeyTable(id?: number, keyword?: string, expirationDate?: Date): Promise<PostgrestResponse<IChatKey>> {
     let idColumnName = "";
     let keywordColumnName = "";
     let expirationDateColumnName = "";
@@ -210,7 +217,8 @@ export class DatabaseModel {
 
   /** 
   * API function to add a Chat Key to the database 
-  * @param {string} chatKey the Id of the new Chatroom
+  * @param {string} keyword the Id of the new Chatroom
+  * @param {Date} expirationDate the expiration date of the new Chatroom
   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
   */
    public async addChatKey(keyword: string, expirationDate: Date): Promise<PostgrestResponse<IChatKey>> {
@@ -223,6 +231,12 @@ export class DatabaseModel {
     return addedUser;
   };
 
+  /**
+   * This function is used to change the expirationDate of a ChatKey
+   * @param {number} chatKeyID the id of the chatKey to delete
+   * @param {Date} expirationDate the expiration date of the chatKey to delete
+   * @returns {Promise<PostgrestResponse<IChatKey>>} DB result as a IChatKey object
+   */
   public async changeChatKeyExpirationDate(chatKeyID: number, expirationDate: Date): Promise<PostgrestResponse<IChatKey>> {
     const updatedChatKey = await DatabaseModel.CLIENT
       .from('ChatKey')
@@ -232,6 +246,14 @@ export class DatabaseModel {
     return updatedChatKey;
   }
 
+  /**
+   * This function is used to delete a ChatKey from the database
+   * @param {number} id the id of the chatKey to delete
+   * @param {string} keyword the keyword of the chatKey to delete
+   * @param {Date} expirationDate the expiration date of the chatKey to delete
+   * @param {boolean} lowerThan if true -> filter the result to lowerThan expirationDate
+   * @returns 
+   */
   public async deleteChatKey(id?: number, keyword?: string, expirationDate?: Date, lowerThan: boolean = false): Promise<PostgrestResponse<IChatKey>> {
     let idColumnName = "";
     let keywordColumnName = "";
@@ -258,6 +280,11 @@ export class DatabaseModel {
 
   //#region Chat Methods
 
+  /**
+   * This is a function to get a chat message from a the database response
+   * @param {PostgrestResponse<IChatMessage>} dbResponse A response of database with a IChatMessage object
+   * @returns {IChatMessage[]} Array of IChatMessage objects
+   */
   getIChatMessageFromResponse(dbResponse: PostgrestResponse<IChatMessage>): IChatMessage[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       // console.log(dbResponse.error)
@@ -280,10 +307,14 @@ export class DatabaseModel {
   }
 
   /** 
-  * API function to get all chat messages from the database 
-  * @param {string} token the token of the logged in user
-  * @param {string} chatKey the chat key of the chat that is currently open
-  * @param {number} lastMessageID the last message id point to start fetching new messages
+  * API function to get chat messages from the database 
+  * @param {number} id the id of the message to filter
+  * @param {number} chatKeyID the chatKeyID of the message to filter
+  * @param {number} userID the userID of the message to filter
+  * @param {number} targetUserID the targetUserID of the message to filter
+  * @param {Date} dateSend the dateSend of the message to filter
+  * @param {string} message the message of the message to filter
+  * @param {boolean} greaterMessageID if true -> filter the result to greater messageID
   * @returns {Promise<IChatKeyMessage[]>}
   */
   public async selectChatMessageTable(id?: number, chatKeyID?: number, userID?: number, targetUserID?: number, dateSend?: Date, message?: string, greaterMessageID: boolean = false): Promise<PostgrestResponse<IChatMessage>> {
@@ -319,13 +350,12 @@ export class DatabaseModel {
   };
 
   /** 
-  * //TODO adding the cmd messages in the executeCommand Function
   * API function to add a Chat Message to the database 
   * @param {string} message the message of the user
-  * @param {number} chatKeyId the chatKeyId of the Chatroom  
-  * @param {number} targetUserId the Id of the User
-  * @param {number} userId the Id of the User
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+  * @param {number} chatKeyID the chatKeyID of the chat to add the message to
+  * @param {number} userID the userID of the message to add
+  * @param {number} targetUserID the targetUserID of the message to add
+  * @returns {Promise<PostgrestResponse<IChatMessage>>} a promise that resolves to an boolean that indicates if the message was added
   */
   public async addChatMessage(message: string, chatKeyID: number, userID: number, targetUserID: number = 0): Promise<PostgrestResponse<IChatMessage>> {
     const addedMessages = await DatabaseModel.CLIENT
@@ -341,6 +371,11 @@ export class DatabaseModel {
 
   //#region Ticket Methods
 
+  /**
+   * This is a function to get a ticket from a the database response
+   * @param {PostgrestResponse<IBugTicket>} dbResponse A response of database with a IBugTicket object
+   * @returns {IBugTicket[]} Array of IBugTicket objects
+   */
   getIBugTicketFromResponse(dbResponse: PostgrestResponse<IBugTicket>): IBugTicket[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       return [];
@@ -361,9 +396,13 @@ export class DatabaseModel {
   }
 
   /**
-   * This function is used to fetch all Tickets from the Database
-   * @param token 
-   * @returns Array of all IBugTickets
+   * This function is used to fetch tickets from the Database
+   * @param {number} id the id of the ticket to filter
+   * @param {number} submitterID the submitterID of the ticket to filter
+   * @param {Date} createDate the createDate of the ticket to filter
+   * @param {string} message the message of the ticket to filter
+   * @param {boolean} solved the solved of the ticket to filter
+   * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
    */
   public async selectTicketTable(id?: number, submitterID?: number, createDate?: Date, message?: string, solved?: boolean): Promise<PostgrestResponse<IBugTicket>> {
     let idColumnName = "";
@@ -394,8 +433,9 @@ export class DatabaseModel {
 
   /**
   * This Method adds a new ticket to the supabase database
-  * @param bugToReport the bug that should be reported (see report.ts)
-  * @returns returns the ticket which was added to the supabase database
+  * @param {number} submitterID the submitterID of the ticket to add
+  * @param {string} message the message of the ticket to add
+  * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
   */
    public async addTicket(submitterID: number, message: string): Promise<PostgrestResponse<IBugTicket>> {
     const addedTicket = await DatabaseModel.CLIENT
@@ -409,10 +449,9 @@ export class DatabaseModel {
 
   /**
   * This function is used to change the status of a ticket from to-do to solved
-  * NOTE -- This function only gives feedback inside the console, not the browser!
-  * @param ticketToChange The ID of the ticket, that should be changed
-  * 
-  * @returns boolean - true if ticked was sucessfully changed - false if not
+  * @param {number} ticketID the id of the ticket to change the status of
+  * @param {boolean} newState the new status of the ticket
+  * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
   */
   public async changeTicketSolvedState(ticketID: number, newState: boolean): Promise<PostgrestResponse<IBugTicket>> {
     const updatedTicket = await DatabaseModel.CLIENT
@@ -427,6 +466,11 @@ export class DatabaseModel {
 
   //#region Survey Methods
 
+  /**
+   * This is a function to get a survey from a database response
+   * @param {PostgrestResponse<ISurvey>} dbResponse A response of database with a ISurvey object
+   * @returns {ISurvey[]} Array of ISurvey objects
+   */
   getISurveyFromResponse(dbResponse: PostgrestResponse<ISurvey>): ISurvey[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       console.log(dbResponse.error)
@@ -448,6 +492,11 @@ export class DatabaseModel {
     return allSurveys;
   }
 
+  /**
+   * This function is used to get the survey options from a database response
+   * @param {PostgrestResponse<ISurveyOption>} dbResponse A response of database with a ISurveyOption object
+   * @returns {ISurveyOption[]} Array of ISurveyOption objects
+   */
   getISurveyOptionFromResponse(dbResponse: PostgrestResponse<ISurveyOption>): ISurveyOption[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       console.log(dbResponse.error)
@@ -466,6 +515,11 @@ export class DatabaseModel {
     return allSurveyOptions;
   }
 
+  /**
+   * This function is used to get the survey votes from a database response
+   * @param {PostgrestResponse<ISurveyVote>} dbResponse A response of database with a ISurveyVote object
+   * @returns {ISurveyVote[]} Array of ISurveyVote objects
+   */
   getISurveyVoteFromResponse(dbResponse: PostgrestResponse<ISurveyVote>): ISurveyVote[] {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
       console.log(dbResponse.error)
@@ -485,11 +539,16 @@ export class DatabaseModel {
   }
 
   /**
-  * This function is used to get all surveys (optionally only for one room).
-  * @param {number | undefined} chatKeyID Optional chatKey filter argument
-  * @returns {Promise<ISurvey[]>} all surveys in the database (for the chatKey)
-  */
-   public async selectSurveyTable(id?: number, name?: string, description?: string, expirationDate?: Date, ownerID?: number, chatKeyID?: number): Promise<PostgrestResponse<ISurvey>> {
+   * This function is used to get a survey from the database
+   * @param {number} id the id of the survey to get
+   * @param {string} name the name of the survey to get
+   * @param {string} description the description of the survey to get
+   * @param {Date} expirationDate the expiration date of the survey to get
+   * @param {number} ownerID the ownerID of the survey to get
+   * @param {number} chatKeyID the chatKeyID of the survey to get
+   * @returns {Promise<PostgrestResponse<ISurvey>>} A promise that resolves to a database response with a ISurvey object
+   */
+  public async selectSurveyTable(id?: number, name?: string, description?: string, expirationDate?: Date, ownerID?: number, chatKeyID?: number): Promise<PostgrestResponse<ISurvey>> {
     let idColumnName = "";
     let nameColumnName = "";
     let descriptionColumnName = "";
@@ -517,6 +576,13 @@ export class DatabaseModel {
     return surveyResponse;
   }
 
+  /**
+   * This function is used to get a survey options from the database
+   * @param {number} id the id of the survey option to get
+   * @param {number} surveyID the surveyID of the survey option to get
+   * @param {string} name the name of the survey option to get
+   * @returns {Promise<PostgrestResponse<ISurveyOption>>} A promise that resolves to a database response with a ISurveyOption object
+   */
   public async selectSurveyOptionTable(id?: number, surveyID?: number, name?: string): Promise<PostgrestResponse<ISurveyOption>> {
     let idColumnName = "";
     let surveyIDColumnName = "";
@@ -536,6 +602,13 @@ export class DatabaseModel {
     return surveyOptionResponse;
   }
 
+  /**
+   * This function is used to get a survey votes from the database
+   * @param {number} surveyID the surveyID of the survey vote to get
+   * @param {number} userID the userID of the survey vote to get
+   * @param {number} optionID the optionID of the survey vote to get
+   * @returns {Promise<PostgrestResponse<ISurveyVote>>} A promise that resolves to a database response with a ISurveyVote object
+   */
   public async selectSurveyVoteTable(surveyID?: number, userID?: number, optionID?: number): Promise<PostgrestResponse<ISurveyVote>> {
     let surveyIDColumnName = "";
     let userIDColumnName = "";
@@ -555,6 +628,15 @@ export class DatabaseModel {
     return surveyVoteResponse;
   }
 
+  /**
+   * This function is used to insert a survey into the database (name: string, description: string, expirationDate: Date, ownerID: number, chatKeyID: number): Promise<PostgrestResponse<ISurvey>>
+   * @param {string} name the name of the survey to insert
+   * @param {string} description the description of the survey to insert
+   * @param {Date} expirationDate the expiration date of the survey to insert
+   * @param {number} ownerID the ownerID of the owner of the survey to insert
+   * @param {number} chatKeyID the chatKeyID of the survey to insert
+   * @returns {Promise<PostgrestResponse<ISurvey>>} A promise that resolves to a database response with the added ISurvey object
+   */
   public async addSurvey(name: string, description: string, expirationDate: Date, ownerID: number, chatKeyID: number): Promise<PostgrestResponse<ISurvey>> {
     const addedSurvey = await DatabaseModel.CLIENT
       .from('Survey')
@@ -571,6 +653,11 @@ export class DatabaseModel {
     return addedSurvey;
   }
 
+  /**
+   * This function is used to insert a survey options into the database
+   * @param {ISurveyOption[]} surveyOpitons the survey options to insert
+   * @returns {Promise<PostgrestResponse<ISurveyOption>>} A promise that resolves to a database response with the added ISurveyOption object
+   */
   public async addSurveyOption(surveyOpitons: ISurveyOption[]): Promise<PostgrestResponse<ISurveyOption>> {
     const addedSurveyOptions = await DatabaseModel.CLIENT
       .from('SurveyOption')
@@ -580,9 +667,9 @@ export class DatabaseModel {
   }
 
   /**
-   * 
-   * @param vote 
-   * @returns 
+   * This function is used to insert a survey vote into the database
+   * @param {ISurveyVote} vote the survey vote to insert
+   * @returns {Promise<PostgrestResponse<ISurveyVote>>} A promise that resolves to a database response with the added ISurveyVote object
    */
   public async addSurveyVote(vote: ISurveyVote): Promise<PostgrestResponse<ISurveyVote>> {
     const addedSurveyVote = await DatabaseModel.CLIENT
@@ -595,11 +682,10 @@ export class DatabaseModel {
   }
 
   /**
-   * change the expiration Date of a certain survey inside supabase
-   * @param id {int}  
-   * @param surveyID 
-   * @param newExpirationDate 
-   * @returns {bool} if sucessfull
+   * This function is used to change the expiration date of a survey
+   * @param {number} id the id of the survey to change
+   * @param {Date} newExpirationDate the new expiration date of the survey to change
+   * @returns {Promise<PostgrestResponse<ISurvey>>} A promise that resolves to a database response with the changed ISurvey object
    */
   public async changeSurveyExpirationDate(id: number, newExpirationDate: Date): Promise<PostgrestResponse<ISurvey>> {
     const updatedSurvey = await DatabaseModel.CLIENT
@@ -611,10 +697,9 @@ export class DatabaseModel {
   }
 
   /**
-   * deletes a survey inside supabase
-   * @param userToken 
-   * @param surveyIDToDelete 
-   * @returns {bool} if sucessfull
+   * This function is used to delete a survey from the database
+   * @param {number} id the id of the survey to delete
+   * @returns {Promise<PostgrestResponse<ISurvey>>} A promise that resolves to a database response with the deleted ISurvey object
    */
    public async deleteSurvey(id: number): Promise<PostgrestResponse<ISurvey>> {
     const deletedSurvey = await DatabaseModel.CLIENT
@@ -626,9 +711,9 @@ export class DatabaseModel {
   }
 
   /**
-   * deletes a survey inside supabase
-   * @param surveyIDToDelete 
-   * @returns {bool} if sucessfull
+   * This function is used to delete a survey option from the database
+   * @param {number} surveyID the surveyID of the survey option to delete
+   * @returns {Promise<PostgrestResponse<ISurveyOption>>} A promise that resolves to a database response with the deleted ISurveyOption object
    */
   public async deleteSurveyOption(surveyID: number): Promise<PostgrestResponse<ISurveyOption>> {
     const deletedSurveyOption = await DatabaseModel.CLIENT
@@ -640,9 +725,9 @@ export class DatabaseModel {
   }
 
   /**
-   * function that deletes all votes of a certain survey
-   * @param surveyIDToDelete 
-   * @returns {bool} if sucessfull
+   * This function is used to delete a survey vote from the database
+   * @param {number} surveyID the surveyID of the survey vote to delete
+   * @returns {Promise<PostgrestResponse<ISurveyVote>>} A promise that resolves to a database response with the deleted ISurveyVote object
    */
   public async deleteSurveyVote(surveyID: number): Promise<PostgrestResponse<ISurveyVote>> {
     const deletedSurveyVote = await DatabaseModel.CLIENT
