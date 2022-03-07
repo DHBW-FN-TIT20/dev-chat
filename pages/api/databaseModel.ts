@@ -28,9 +28,9 @@ export class DatabaseModel {
   //#region Universal Methods
 
   /**
-   * Checks if DB-Response is sucessfull
+   * Checks if DB-Response is successfull
    * @param {PostgrestResponse<any>} dbResponse Response of database
-   * @returns {boolean} if response is sucessfull
+   * @returns {boolean} if response is successfull
    */
   evaluateSuccess(dbResponse: PostgrestResponse<any>): boolean {
     if (dbResponse.data === null || dbResponse.error !== null || dbResponse.data.length === 0) {
@@ -107,12 +107,12 @@ export class DatabaseModel {
   }
 
   /**
-  * API function to register a user
-  * @param {string} username username to register
-  * @param {string} hashedPassword password for the user
-  * @param {number} accessLevel access level for the user
-  * @returns {Promise<PostgrestResponse<IUser>>} DB result as a IUser object
-  */
+   * API function to register a user
+   * @param {string} username username to register
+   * @param {string} hashedPassword password for the user
+   * @param {number} accessLevel access level for the user
+   * @returns {Promise<PostgrestResponse<IUser>>} DB result as a IUser object
+   */
   public async addUser(username: string, hashedPassword: string, accessLevel: number = 0): Promise<PostgrestResponse<IUser>> {
     const addedUser = await DatabaseModel.CLIENT
       .from('User')
@@ -124,10 +124,10 @@ export class DatabaseModel {
   }
 
   /** 
-  * This function is used to change the password of a user
-  * @param {string} newHashedPassword user token to verificate change password process
-  * @param {number} userID userID of user to change password
-  */
+   * This function is used to change the password of a user
+   * @param {string} newHashedPassword user token to verificate change password process
+   * @param {number} userID userID of user to change password
+   */
   public async changeUserPassword(newHashedPassword: string, userID: number): Promise<PostgrestResponse<IUser>> {
     const updatedUser = await DatabaseModel.CLIENT
       .from('User')
@@ -216,11 +216,11 @@ export class DatabaseModel {
   }
 
   /** 
-  * API function to add a Chat Key to the database 
-  * @param {string} keyword the Id of the new Chatroom
-  * @param {Date} expirationDate the expiration date of the new Chatroom
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
-  */
+   * API function to add a Chat Key to the database 
+   * @param {string} keyword the Id of the new Chatroom
+   * @param {Date} expirationDate the expiration date of the new Chatroom
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
+   */
    public async addChatKey(keyword: string, expirationDate: Date): Promise<PostgrestResponse<IChatKey>> {
     const addedUser = await DatabaseModel.CLIENT
       .from('ChatKey')
@@ -307,16 +307,16 @@ export class DatabaseModel {
   }
 
   /** 
-  * API function to get chat messages from the database 
-  * @param {number} id the id of the message to filter
-  * @param {number} chatKeyID the chatKeyID of the message to filter
-  * @param {number} userID the userID of the message to filter
-  * @param {number} targetUserID the targetUserID of the message to filter
-  * @param {Date} dateSend the dateSend of the message to filter
-  * @param {string} message the message of the message to filter
-  * @param {boolean} greaterMessageID if true -> filter the result to greater messageID
-  * @returns {Promise<IChatKeyMessage[]>}
-  */
+   * API function to get chat messages from the database 
+   * @param {number} id the id of the message to filter
+   * @param {number} chatKeyID the chatKeyID of the message to filter
+   * @param {number} userID the userID of the message to filter
+   * @param {number} targetUserID the targetUserID of the message to filter
+   * @param {Date} dateSend the dateSend of the message to filter
+   * @param {string} message the message of the message to filter
+   * @param {boolean} greaterMessageID if true -> filter the result to greater messageID
+   * @returns {Promise<IChatKeyMessage[]>}
+   */
   public async selectChatMessageTable(id?: number, chatKeyID?: number, userID?: number, targetUserID?: number, dateSend?: Date, message?: string, greaterMessageID: boolean = false): Promise<PostgrestResponse<IChatMessage>> {
     let idColumnName = "";
     let chatKeyIDColumnName = "";
@@ -350,13 +350,13 @@ export class DatabaseModel {
   };
 
   /** 
-  * API function to add a Chat Message to the database 
-  * @param {string} message the message of the user
-  * @param {number} chatKeyID the chatKeyID of the chat to add the message to
-  * @param {number} userID the userID of the message to add
-  * @param {number} targetUserID the targetUserID of the message to add
-  * @returns {Promise<PostgrestResponse<IChatMessage>>} a promise that resolves to an boolean that indicates if the message was added
-  */
+   * API function to add a Chat Message to the database 
+   * @param {string} message the message of the user
+   * @param {number} chatKeyID the chatKeyID of the chat to add the message to
+   * @param {number} userID the userID of the message to add
+   * @param {number} targetUserID the targetUserID of the message to add
+   * @returns {Promise<PostgrestResponse<IChatMessage>>} a promise that resolves to an boolean that indicates if the message was added
+   */
   public async addChatMessage(message: string, chatKeyID: number, userID: number, targetUserID: number = 0): Promise<PostgrestResponse<IChatMessage>> {
     const addedMessages = await DatabaseModel.CLIENT
       .from('ChatMessage')
@@ -432,11 +432,11 @@ export class DatabaseModel {
   }
 
   /**
-  * This Method adds a new ticket to the supabase database
-  * @param {number} submitterID the submitterID of the ticket to add
-  * @param {string} message the message of the ticket to add
-  * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
-  */
+   * This Method adds a new ticket to the supabase database
+   * @param {number} submitterID the submitterID of the ticket to add
+   * @param {string} message the message of the ticket to add
+   * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
+   */
    public async addTicket(submitterID: number, message: string): Promise<PostgrestResponse<IBugTicket>> {
     const addedTicket = await DatabaseModel.CLIENT
       .from('Ticket')
@@ -449,10 +449,10 @@ export class DatabaseModel {
 
   /**
   * This function is used to change the status of a ticket from to-do to solved
-  * @param {number} ticketID the id of the ticket to change the status of
-  * @param {boolean} newState the new status of the ticket
-  * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
-  */
+   * @param {number} ticketID the id of the ticket to change the status of
+   * @param {boolean} newState the new status of the ticket
+   * @returns {Promise<PostgrestResponse<IBugTicket>>} A promise that resolves to a database response with a IBugTicket object
+   */
   public async changeTicketSolvedState(ticketID: number, newState: boolean): Promise<PostgrestResponse<IBugTicket>> {
     const updatedTicket = await DatabaseModel.CLIENT
       .from('Ticket')

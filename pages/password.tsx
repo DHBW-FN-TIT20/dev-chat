@@ -233,7 +233,7 @@ class Password extends Component<PasswordProps, PasswordState> {
             {this.state.showPopup ?
               <Popup
                 headerText='Change Password'
-                textDisplay='The Password was changed sucessfully.'
+                textDisplay='The Password was changed successfully.'
                 closePopup={this.togglePopup.bind(this)}
               />
               : null
