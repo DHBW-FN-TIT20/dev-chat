@@ -103,18 +103,21 @@ class Landing extends Component<LandingProps, LandingState> {
                         /msg
                         <br></br>
                         "/msg -User- -Direct message-" is used to whisper to another user.
+                        <br></br><br></br>
                       </li>
                       <li>
                         /calc
                         <br></br>
                         By typing "/calc -mathematical expression-" you can calculate your very own math homework. Just keep in mind, that this is no
                         scientifical calculator and can't solve e.g. factorials.
+                        <br></br><br></br>
                       </li>
                       <li>
                         /report 
                         <br></br>
                         The report function is used to report a bug to our team. Just write plain text after "/report" and press enter to send
                         your problem to us.
+                        <br></br><br></br>
                       </li>
                       
                     </ul>
@@ -124,12 +127,16 @@ class Landing extends Component<LandingProps, LandingState> {
                     There are 3 commands for surveys.
                     <ul>
                       <li>
-                        /survey
+                        /survey -SurveyName- -"Description"- -ExpirationDate (DD.MM.YYYY-HH:MM)- -Option1- -Option2- ... -OptionN-'
+                        <br></br><br></br>
+          	            For example: /survey Food "Please Vote for your favorite food!" 13.03.2022-13:10 Bananas Apples Peaches
+                        <br></br><br></br>
                       </li>
                       <li>
                         /vote
                         <br></br>
                         "/vote -surveyID- -voteOptionID-" is used to vote for an option of a survey.
+                        <br></br><br></br>
                       </li>
                       <li>
                         /show  
