@@ -211,6 +211,12 @@ class Main extends Component<MainProps, MainState> {
                 }}>
                   Delete Account
                 </button>
+                <h1>
+                  Getting Started
+                </h1>
+                <button onClick={() => router.push("/getting-started")}>
+                  Getting Started
+                </button>
               </div>
               <div className={styles.right}>
                 <div className="image">
