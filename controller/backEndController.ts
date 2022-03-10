@@ -57,15 +57,15 @@ export class BackEndController {
   //#region "Command" Methods
 
   /**
-  * This function is used to check a new message for commands. 
-  * After the command is found, the command is executed.
-  * The Command.execute() method is called and it returns the answer of the command as an array of strings.
-  * Each string represents one line of the answer and is sent as a message to the user.
-  * @param {string} userInput the message typed in by the user
-  * @param {IUser} currentUser the user who fired the command
-  * @param {number} currentChatKeyID the id of the chat the user is in
-  * @returns {Promise<boolean>} Returns true if a command was executed successfully. Returns false if no command was executed or if the command failed to execute.
-  */
+   * This function is used to check a new message for commands. 
+   * After the command is found, the command is executed.
+   * The Command.execute() method is called and it returns the answer of the command as an array of strings.
+   * Each string represents one line of the answer and is sent as a message to the user.
+   * @param {string} userInput the message typed in by the user
+   * @param {IUser} currentUser the user who fired the command
+   * @param {IChatKey} currentChatKey the chatkey of the chat the command was fired in  
+   * @returns {Promise<boolean>} a promise that resolves to true if the command was executed, false if not
+   */
   private async executeCommand(userInput: string, currentUser: IUser, currentChatKey: IChatKey): Promise<boolean> {
     // split the user input into the command and the arguments
     const callString: string = splitString(userInput)[0].slice(1);
@@ -104,15 +104,11 @@ export class BackEndController {
             await this.databaseModel.addChatMessage(answerLines[i], currentChatKey.id, SystemUser.SYSTEM, currentUser.id);
           }
 
-          // console.log("Command executed successfully.");
-
           return true; // answer -> command was executed successfully
         }
       }
     }
 
-    // No match was fund
-    // console.log("No command /" + callString + " found");
     this.databaseModel.addChatMessage('No Command /' + callString + ' found', currentChatKey.id, SystemUser.SYSTEM, currentUser.id);
 
     return false; // command was not found
@@ -123,10 +119,10 @@ export class BackEndController {
   //#region Token Methods
 
   /**
-  * This method validates a given token with the current key.
-  * @param {string} token Token to validate
-  * @returns {boolean} True if the token is valid, false if not
-  */
+   * This method validates a given token with the current key.
+   * @param {string} token Token to validate
+   * @returns {boolean} True if the token is valid, false if not
+   */
   public isTokenValid(token: string): boolean {
     try {
       jwt.verify(token, BackEndController.KEY);
@@ -138,10 +134,10 @@ export class BackEndController {
   }
 
   /**
-  * This method checks whether a given token is valid and contains an existing user
-  * @param {string} token Token with user credentials
-  * @returns {boolean} True if token contains a valid user, false if not
-  */
+   * This method checks whether a given token is valid and contains an existing user
+   * @param {string} token Token with user credentials
+   * @returns {boolean} True if token contains a valid user, false if not
+   */
   public async isUserTokenValid(token: string): Promise<boolean> {
     if (this.isTokenValid(token) && await this.handleUserAlreadyExists(this.getUsernameFromToken(token))) {
       // console.log("user exists")
@@ -151,10 +147,10 @@ export class BackEndController {
   }
 
   /**
-  * This method extracts the username from a token
-  * @param {string} token Token to extract username from
-  * @returns {string} Username if token contains username, empty string if not
-  */
+   * This method extracts the username from a token
+   * @param {string} token Token to extract username from
+   * @returns {string} Username if token contains username, empty string if not
+   */
   public getUsernameFromToken(token: string): string {
     try {
       let data = jwt.decode(token);
@@ -167,10 +163,10 @@ export class BackEndController {
   }
 
   /**
-  * This method checks a User for Admin-Status via his Token
-  * @param {string} token Token to check for Admin-Status
-  * @returns {string} true if Token is Admin-Token, false if not
-  */
+   * This method checks a User for Admin-Status via his Token
+   * @param {string} token Token to check for Admin-Status
+   * @returns {string} True if Token is Admin-Token, false if not
+   */
   public getIsAdminFromToken(token: string): boolean {
     try {
       let data = jwt.decode(token);
@@ -188,17 +184,17 @@ export class BackEndController {
   //#region Password Methods
 
   /**
-  * This method checks a password for requirements
-  * @param {string} password password to check
-  * @returns {boolean} true if the password meets the requirements, false if not
-  */
+   * This method checks a password for requirements
+   * @param {string} password password to check
+   * @returns {boolean} true if the password meets the requirements, false if not
+   */
   public isPasswordValid(password: string): boolean {
     /**
-    * Requirements:
-    * Length: min. 8 characters
-    * Characters: min. 1 number, 1 uppercase character, 1 lowercase character, 1 special character
-    * Characters: only letters and numbers + !*#,;?+-_.=~^%(){}|:"/
-    */
+     * Requirements:
+     * Length: min. 8 characters
+     * Characters: min. 1 number, 1 uppercase character, 1 lowercase character, 1 special character
+     * Characters: only letters and numbers + !*#,;?+-_.=~^%(){}|:"/
+     */
     if (password.length >= 8) {
       if (password.match(".*[0-9].*") && password.match(".*[A-Z].*") && password.match(".*[a-z].*") && password.match('.*[!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-].*')) {
         if (password.match('^[a-z,A-Z,0-9,!,*,#,;,?,+,_,.,=,~,^,%,(,),{,},|,:,",/,\,,\-]*$')) {
@@ -210,10 +206,10 @@ export class BackEndController {
   }
 
   /**
-  * Function to hash a password
-  * @param {string} password password to hash
-  * @returns {Promise<string>} hashed password
-  */
+   * Function to hash a password
+   * @param {string} password password to hash
+   * @returns {Promise<string>} hashed password
+   */
   private async hashPassword(password: string): Promise<string> {
     const saltOrRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltOrRounds);
@@ -221,11 +217,11 @@ export class BackEndController {
   }
 
   /**
-  * Function to check plain text with hash
-  * @param {string} clearPassword password as plain text
-  * @param {string} hashedpassword password as hash from db
-  * @returns {Promise<boolean>} true if password and hash match, flase if not
-  */
+   * Function to check plain text with hash
+   * @param {string} clearPassword password as plain text
+   * @param {string} hashedpassword password as hash from db
+   * @returns {Promise<boolean>} promise with boolean if password is correct
+   */
   private async checkPassword(clearPassword: string, hashedpassword: string): Promise<boolean> {
     return await bcrypt.compare(clearPassword, hashedpassword);
   }
@@ -235,12 +231,12 @@ export class BackEndController {
   //#region User Methods
 
   /**
-  * This method changes the password from the current user
-  * @param {string} token Token to extract username from
-  * @param {string} oldPassword contains the old User Password
-  * @param {string} newPassword contains the new User Password
-  * @returns {Promise<boolean>} if password was changed -> return true
-  */
+   * This method changes the password from the current user
+   * @param {string} token Token to extract username from
+   * @param {string} oldPassword contains the old User Password
+   * @param {string} newPassword contains the new User Password
+   * @returns {Promise<boolean>} if password was changed -> return true
+   */
   public async handleChangeUserPassword(token: string, oldPassword: string, newPassword: string): Promise<boolean> {
     if (!this.isTokenValid(token)) {
       return false;
@@ -261,11 +257,11 @@ export class BackEndController {
   }
 
   /**
-  * This method removes a target user from the database
-  * @param {string} userToken user token to verificate delete process
-  * @param {string} usernameToDelete username of user to delete
-  * @returns {Promise<boolean>} true if user was deleted, false if not
-  */
+   * This method removes a target user from the database
+   * @param {string} userToken user token to verificate delete process
+   * @param {string} usernameToDelete username of user to delete
+   * @returns {Promise<boolean>} true if user was deleted, false if not
+   */
   public async handleDeleteUser(userToken: string, usernameToDelete: string): Promise<boolean> {
     if (!await this.isUserTokenValid(userToken)) {
       return false;
@@ -288,9 +284,13 @@ export class BackEndController {
   }
 
   /** 
-   * This function is used to demote a user
+   * This function is used to promote/demote a user
+   * @param {string} token user token to verificate delete process
+   * @param {string} nameToPromote username of user to promote/demote
+   * @param {ProDemote} proDemote promote or demote
+   * @returns {Promise<boolean>} true if user was promoted/demoted, false if not
    */
-   public async handleUpdateUserAccessLevel(token: string, nameToPromote: string, proDemote: ProDemote): Promise<boolean> {
+  public async handleUpdateUserAccessLevel(token: string, nameToPromote: string, proDemote: ProDemote): Promise<boolean> {
     if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
       const updateUser: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, nameToPromote))[0];
       if (updateUser === undefined) {
@@ -306,9 +306,9 @@ export class BackEndController {
   }
 
   /**
-   * This function is used to fetch all Users from the Database
-   * @param token 
-   * @returns Array of all IUsers
+   * This function is used to fetch all users from the Database
+   * @param {string} token user token to verificate delete process 
+   * @returns {Promise<IUser[]>} array of users
    */
   public async handleGetAllUsers(token: string): Promise<IUser[]> {
     if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
@@ -318,11 +318,11 @@ export class BackEndController {
   }
 
   /**
-  * This method logs in a user if the given credentials are valid.
-  * @param {string} username Username to log in
-  * @param {string} password Password for the given username
-  * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
-  */
+   * This method logs in a user if the given credentials are valid.
+   * @param {string} username Username to log in
+   * @param {string} password Password for the given username
+   * @returns {Promise<string>} Signed token with username if login was successfull, empty string if not
+   */
   public async handleLoginUser(username: string, password: string): Promise<string> {
     const user: IUser = this.databaseModel.getIUserFromResponse(await this.databaseModel.selectUserTable(undefined, username))[0];
 
@@ -342,12 +342,12 @@ export class BackEndController {
   }
 
   /**
-  * API function to register a user
-  * @param {string} user username to register
-  * @param {string} password password for the user
-  * @param {number} accessLevel access level for the user
-  * @returns {Promise<string>} true if registration was successfull, error Message if not
-  */
+   * API function to register a user
+   * @param {string} username username to register
+   * @param {string} password password for the user
+   * @param {AccessLevel} accessLevel access level for the user
+   * @returns {Promise<string>} "true" if registration was successfull, "error_message" if not
+   */
   public async handleRegisterUser(username: string, password: string, accessLevel: AccessLevel = AccessLevel.USER): Promise<string> {
     if (!await this.handleUserAlreadyExists(username)) {
       let returnString: string = "";
@@ -380,6 +380,9 @@ export class BackEndController {
 
   /** 
    * This function is used to reset the password of a user
+   * @param {string} token user token to verificate reset process
+   * @param {string} name username of user to reset password
+   * @returns {Promise<boolean>} true if password was reset, false if not
    */
   public async handleResetUserPassword(token: string, name: string): Promise<boolean> {
     const userIsValid: boolean = await this.isUserTokenValid(token) && this.getIsAdminFromToken(token);
@@ -405,10 +408,10 @@ export class BackEndController {
   }
 
   /**
-  * This method checks a username for requirements
-  * @param {string} username username to check
-  * @returns {boolean} true if the username meets the requirements, false if not
-  */
+   * This method checks a username for requirements
+   * @param {string} username username to check
+   * @returns {boolean} true if the username meets the requirements, false if not
+   */
   public isUsernameValid(username: string): boolean {
     /**
     * Requirements:
@@ -431,6 +434,12 @@ export class BackEndController {
 
   //#region ChatKey Methods
 
+  /**
+   * This function adds a new custom chatkey to the database
+   * @param userToken user token to verificate the process
+   * @param keyword keyword to add
+   * @returns {Promise<boolean>} true if the keyword was added, false if not
+   */
   public async handleAddCustomChatKey(userToken: string, keyword: string): Promise<boolean> {
     if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
       return await this.addChatKey(keyword);
@@ -438,18 +447,26 @@ export class BackEndController {
     return false;
   }
 
+  /**
+   * This function is used to chage the expiration date of a chatkey.
+   * @param {string} token user token to verificate the process
+   * @param {number} chatKeyID id of the chat to change
+   * @param {Date} newExpirationDate new expiration date of the chatkey
+   * @returns {Promise<boolean>} true if the expiration date was changed, false if not
+   */
   public async handleChangeChatKeyExpirationDate(token: string, chatKeyID: number, newExpirationDate: Date): Promise<boolean> {
     if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
       return this.databaseModel.evaluateSuccess(await this.databaseModel.changeChatKeyExpirationDate(chatKeyID, newExpirationDate));
     }
-    return false;    
+    return false;
   }
 
-  public async handleDeleteOldChatKeys(): Promise<boolean> {
-    const currentDate = new Date();
-    return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteChatKey(undefined, undefined, currentDate, true));
-  }
-
+  /**
+   * This function is used to delete a chatkey from the database.
+   * @param {string} userToken user token to verificate the process
+   * @param {number} chatKeyID id of the chat to delete
+   * @returns {Promise<boolean>} true if the chatkey was deleted, false if not
+   */
   public async handleDeleteChatKey(userToken: string, chatKeyID: number): Promise<boolean> {
     if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
       return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteChatKey(chatKeyID));
@@ -457,10 +474,19 @@ export class BackEndController {
     return false;
   }
 
+  /**
+   * This function is used to evaluate if a chatkey exists in the database.
+   * @param {string} chatKey chatkey to check
+   * @returns {Promise<boolean>} true if the chatkey exists, false if not
+   */
   public async handleDoesChatKeyExist(chatKey: string): Promise<boolean> {
     return this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey));
   }
 
+  /**
+   * This function generates a new chatkey and adds it to the database.
+   * @returns {Promise<string>} the generated chatkey
+   */
   public async handleGenerateChatKey(): Promise<string> {
     const keyword = getThreeWords();
     console.log(keyword)
@@ -472,13 +498,11 @@ export class BackEndController {
   }
 
   /**
-  * This function is used to fetch all ChatKeys from the Database
-  * @param token 
-  * @returns Array of all IChatKeys
-  */
+   * This function is used to fetch all ChatKeys from the Database
+   * @param {stirng} token 
+   * @returns {Promise<IChatKey[]>} array of chatkeys
+   */
   public async handleGetAllChatKeys(token: string): Promise<IChatKey[]> {
-    // delete all expired chatKeys
-    await this.handleDeleteOldChatKeys();
 
     if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
       return this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable());
@@ -487,23 +511,21 @@ export class BackEndController {
   }
 
   /** 
-  * API function to add a Chat Key to the database 
-  * @param {string} chatKey the Id of the new Chatroom
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
-  */
+   * API function to add a Chat Key to the database 
+   * @param {string} chatKey chatkey to add
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the chatKey was added
+   */
   public async addChatKey(chatKey: string): Promise<boolean> {
-    const chatKeyExists:boolean = this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey))
-  
+    const chatKeyExists: boolean = this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(undefined, chatKey))
+
     if (chatKeyExists || chatKey.replace(/\s/g, "") === "") {
       return false;
     }
 
     const expirationDate = new Date();
-    // currentDate + 1 Day = ExpirationDate
     expirationDate.setDate(expirationDate.getDate() + 1);
     expirationDate.setHours(expirationDate.getHours() + 1);
-    // console.log("Chat Key expires: " + expirationDate);
-  
+
     return this.databaseModel.evaluateSuccess(await this.databaseModel.addChatKey(chatKey, expirationDate));
   };
 
@@ -514,11 +536,11 @@ export class BackEndController {
   /** 
   * API function to get all chat messages from the database 
   * @param {string} token the token of the logged in user
-  * @param {string} chatKey the chat key of the chat that is currently open
+  * @param {string} currentChatKey the chat key of the chat that is currently open
   * @param {number} lastMessageID the last message id point to start fetching new messages
   * @returns {Promise<IChatKeyMessage[]>}
   */
-   public async handleGetChatMessages(token: string, keyword: string, lastMessageID: number): Promise<IFChatMessage[]> {
+  public async handleGetChatMessages(token: string, currentChatKey: string, lastMessageID: number): Promise<IFChatMessage[]> {
     if (!this.isTokenValid(token)) {
       return [];
     }
@@ -529,7 +551,7 @@ export class BackEndController {
       return [];
     }
 
-    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, currentChatKey))[0];
 
     if (chatKey === undefined) {
       return [];
@@ -556,13 +578,13 @@ export class BackEndController {
   };
 
   /**
-   * API function to add a join/leave chat message to the database
-   * @param {string} userToken the token of the user
-   * @param {string} chatKey the chatKey of the chat
-   * @param {string} joinOrLeave "join" or "leave"
-   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
-   */
-   public async handleJoinLeaveRoomMessage(userToken: string, keyword: string, joinOrLeave: string): Promise<boolean> {
+    * API function to add a join/leave chat message to the database
+    * @param {string} userToken the token of the user
+    * @param {string} currentChatKey the chatKey of the chat
+    * @param {string} joinOrLeave "join" or "leave"
+    * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+    */
+  public async handleJoinLeaveRoomMessage(userToken: string, currentChatKey: string, joinOrLeave: string): Promise<boolean> {
     // verify if user is valid
     if (!this.isTokenValid(userToken)) {
       return false;
@@ -575,8 +597,8 @@ export class BackEndController {
     }
 
     // get the chatKey
-    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
-    
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, currentChatKey))[0];
+
     if (chatKey === undefined) {
       return false;
     }
@@ -592,26 +614,24 @@ export class BackEndController {
   }
 
   /** 
-  * //TODO adding the cmd messages in the executeCommand Function
-  * API function to handle a Chat Message
-  * @param {string} message the message of the user
-  * @param {number} chatKeyId the chatKeyId of the Chatroom
-  * @param {string} userToken the token from the logged in user
-  * @param {number} userId the Id of the User
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that the command or message was executed succesfully.
-  */
-  public async handleSaveChatMessage(message: string, keyword: string, userToken: string): Promise<boolean> {
+   * API function to handle a Chat Message
+   * @param {string} message the message of the user
+   * @param {number} currentChatKey the chatKeyId of the Chatroom
+   * @param {string} userToken the token from the logged in user
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that the command or message was executed succesfully.
+   */
+  public async handleSaveChatMessage(message: string, currentChatKey: string, userToken: string): Promise<boolean> {
     if (message.replace(/\s/g, "") === "") {
       return false;
     }
 
-    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, keyword))[0];
+    const chatKey: IChatKey = this.databaseModel.getIChatKeyFromResponse(await this.databaseModel.selectChatKeyTable(undefined, currentChatKey))[0];
 
     if (chatKey === undefined) {
       return false;
     }
 
-    if(!await this.isUserTokenValid(userToken)) {
+    if (!await this.isUserTokenValid(userToken)) {
       return false;
     }
 
@@ -630,14 +650,13 @@ export class BackEndController {
   };
 
   /** 
-  * //TODO adding the cmd messages in the executeCommand Function
-  * API function to add a Chat Message to the database 
-  * @param {string} message the message of the user
-  * @param {number} chatKeyId the chatKeyId of the Chatroom  
-  * @param {number} targetUserId the Id of the User
-  * @param {number} userId the Id of the User
-  * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
-  */
+   * API function to add a Chat Message to the database 
+   * @param {string} message the message of the user
+   * @param {number} chatKeyId the chatKeyId of the Chatroom  
+   * @param {number} targetUserId the Id of the User
+   * @param {number} userId the Id of the User
+   * @returns {Promise<boolean>} a promise that resolves to an boolean that indicates if the message was added
+   */
   public async addChatMessage(message: string, chatKeyId: number, userId: number, targetUserId: number = SystemUser.BROADCAST): Promise<boolean> {
     if (this.databaseModel.evaluateSuccess(await this.databaseModel.selectChatKeyTable(chatKeyId))) {
       console.log("UserID: " + targetUserId);
@@ -651,12 +670,11 @@ export class BackEndController {
   //#region Ticket Methods
 
   /**
-  * This function is used to change the status of a ticket from to-do to solved
-  * NOTE -- This function only gives feedback inside the console, not the browser!
-  * @param ticketToChange The ID of the ticket, that should be changed
-  * 
-  * @returns boolean - true if ticked was sucessfully changed - false if not
-  */
+   * This function is used to change the status of a ticket from to-do to solved
+   * @param {string} currentToken the token of the user
+   * @param {number} ticketToChange The ID of the ticket, that should be changed
+   * @returns {Promise<boolean>} A promise that resolves to a boolean that indicates if the ticket was changed
+   */
   public async handleChangeTicketSolvedState(currentToken: string, ticketToChange: number, currentState: boolean): Promise<boolean> {
     if (await this.isUserTokenValid(currentToken) && this.getIsAdminFromToken(currentToken)) {
       return this.databaseModel.evaluateSuccess(await this.databaseModel.changeTicketSolvedState(ticketToChange, !currentState));
@@ -665,9 +683,9 @@ export class BackEndController {
   }
 
   /**
-   * This function is used to fetch all Tickets from the Database
-   * @param token 
-   * @returns Array of all IBugTickets
+   * This function is used to fetch all tickets from the Database
+   * @param {string} token the token of the user
+   * @returns {Promise<ITicket[]>} A promise that resolves to an array of ITicket objects
    */
   public async handleGetAllTickets(token: string): Promise<IBugTicket[]> {
     let allTickets: IBugTicket[] = [];
@@ -683,11 +701,11 @@ export class BackEndController {
   //#region Survey Methods
 
   /**
-   * change the expiration Date of a certain survey inside supabase
-   * @param token 
-   * @param surveyID 
-   * @param newExpirationDate 
-   * @returns bool if sucessfull
+   * This function is used to change the survey expiration date
+   * @param {string} token the token of the user
+   * @param {number} surveyID the ID of the survey
+   * @param {Date} newExpirationDate the new date of the survey
+   * @returns {Promise<boolean>} a promise that resolves to a boolean that indicates if the survey was changed successfully
    */
   public async handleChangeSurveyExpirationDate(token: string, surveyID: number, newExpirationDate: Date): Promise<boolean> {
     if (await this.isUserTokenValid(token) && this.getIsAdminFromToken(token)) {
@@ -697,31 +715,37 @@ export class BackEndController {
   }
 
   /**
-   * deletes a survey inside supabase
-   * @param userToken 
-   * @param surveyIDToDelete 
-   * @returns bool if sucessfull
+   * This function deletes a survey
+   * @param {string} userToken the token of the user
+   * @param {number} surveyIDToDelete the ID of the survey
+   * @returns {Promise<boolean>} a promise that resolves to a boolean that indicates if the survey was deleted successfully
    */
-   public async handleDeleteSurvey(userToken: string, surveyIDToDelete: number): Promise<boolean> {
+  public async handleDeleteSurvey(userToken: string, surveyIDToDelete: number): Promise<boolean> {
     if (await this.isUserTokenValid(userToken) && this.getIsAdminFromToken(userToken)) {
       return this.databaseModel.evaluateSuccess(await this.databaseModel.deleteSurvey(surveyIDToDelete));
     }
     return false;
   }
 
+  /**
+   * This function is used to fetch all surveys from the Database
+   * @param {string} adminToken the token of the user
+   * @returns {Promise<ISurvey[]>} a promise that resolves to an array of ISurvey objects
+   */
   public async handleGetAllSurveys(adminToken: string): Promise<ISurvey[]> {
-    if(await this.isUserTokenValid(adminToken) && this.getIsAdminFromToken(adminToken)) {
+    if (await this.isUserTokenValid(adminToken) && this.getIsAdminFromToken(adminToken)) {
       return this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable());
     }
     return [];
   }
 
   /**
-  * This method returns the current state of a survey for the given surveyID.
-  * @param {number} surveyID the surveyID of the survey 
-  * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
-  */
-   public async getSurveyState(surveyID: number, chatKeyID: number): Promise<ISurveyState | null> {
+   * This method returns the current state of a survey for the given surveyID.
+   * @param {number} surveyID the surveyID of the survey 
+   * @param {number} chatKeyID the chatKeyID of the chatroom
+   * @returns {Promise<ISurvey>} the survey object containing all information about the survey and its status
+   */
+  public async getSurveyState(surveyID: number, chatKeyID: number): Promise<ISurveyState | null> {
     const survey: ISurvey = this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable(surveyID, undefined, undefined, undefined, undefined, chatKeyID))[0];
 
     if (survey === undefined) {
@@ -751,11 +775,12 @@ export class BackEndController {
   }
 
   /**
-  * This function is used to add a new vote for a survey option to the database.
-  * @param voteToAdd the vote object to add to the database
-  * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
-  */
-   public async addNewVote(voteToAdd: ISurveyVote): Promise<boolean> {
+   * This function is used to add a new vote for a survey option to the database.
+   * @param {ISurveyVote} voteToAdd the vote object to add to the database
+   * @returns {Promise<ISurveyVote>} the vote object containing all information (with the added voteID)
+   */
+  public async addNewVote(voteToAdd: ISurveyVote): Promise<boolean> {
+
     // check if survey is still open
     const isExpired: boolean = await this.isSurveyExpired(voteToAdd.surveyID);
 
@@ -777,6 +802,11 @@ export class BackEndController {
     return addedVoteSuccessfully;
   }
 
+  /**
+   * This function is used to check if a survey is expired
+   * @param {number} surveyID the ID of the survey to check
+   * @returns {Promise<boolean>} a promise that resolves to a boolean that indicates if the survey is expired
+   */
   public async isSurveyExpired(surveyID: number): Promise<boolean> {
     const survey = this.databaseModel.getISurveyFromResponse(await this.databaseModel.selectSurveyTable(surveyID))[0];
 

@@ -57,6 +57,7 @@ class Register extends Component<RegisterProps, RegisterState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
+   * @param {any} event Event triggered by an Eventlistener
    */
   private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
@@ -80,6 +81,7 @@ class Register extends Component<RegisterProps, RegisterState> {
   /**
    * Handle of the Keypressed-Event from the Input
    * Checks if Enter was pressed
+   * @param {any} event Event triggered by an Eventlistener
    */
   private handleEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
@@ -138,6 +140,12 @@ class Register extends Component<RegisterProps, RegisterState> {
 
   /**
    * This method sets the error div for the register feedback message.
+   * @param {boolean} userAlreadyExists checks if the user already exists
+   * @param {string} inputUsername the input of the username
+   * @param {string} inputPassword the input of the new password
+   * @param {string} inputConfirmPassword the input of the confirm password
+   * @param {boolean} newPasswordValid check if the new password is valid
+   * @param {boolean} newUsernameValid check if the new username is valid
    */
   private updateFeedbackMessage(userAlreadyExists: boolean, inputUsername: string, inputPassword: string, inputConfirmPassword: string, newPasswordValid: boolean, newUsernameValid: boolean) {
     console.table({ userAlreadyExists, inputUsername, inputPassword, inputConfirmPassword, newPasswordValid, newUsernameValid })

@@ -18,8 +18,8 @@ const BACK_END_CONTROLLER = new BackEndController();
   const userToken: string = req.body.userToken;
   const customChatKey: string = req.body.customChatKey;
 
-  const addedSucessfully: boolean = await BACK_END_CONTROLLER.handleAddCustomChatKey(userToken, customChatKey);
+  const addedSuccessfully: boolean = await BACK_END_CONTROLLER.handleAddCustomChatKey(userToken, customChatKey);
 
-  res.status(200).json({ wasSuccessfull: addedSucessfully });
+  res.status(200).json({ wasSuccessfull: addedSuccessfully });
 }
 export default addCustomChatKeyHandler;

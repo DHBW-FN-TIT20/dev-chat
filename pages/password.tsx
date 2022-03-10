@@ -57,6 +57,7 @@ class Password extends Component<PasswordProps, PasswordState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
+   * @param {any} event Event triggered by an Eventlistener
    */
   private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
@@ -82,6 +83,7 @@ class Password extends Component<PasswordProps, PasswordState> {
   /**
    * Handle of the Keypressed-Event from the Input
    * Checks if Enter was pressed
+   * @param {any} event Event triggered by an Eventlistener
    */
   private handleEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
@@ -109,6 +111,13 @@ class Password extends Component<PasswordProps, PasswordState> {
     }
   }
 
+  /**
+   * This method updates the feedBackMessage which the current user gets during changing password
+   * @param {boolean} oldPasswordIsCorrect checks if the old password is correct
+   * @param {string} inputOldPassword the input of the old password
+   * @param {string} inputNewPassword the input of the new password
+   * @param {string} inputConfirmPassword the input of the confirm password
+   */
   private updateFeedbackMessage(oldPasswordIsCorrect: boolean, inputOldPassword: string, inputNewPassword: string, inputConfirmPassword: string) {
     console.log("updateFeedbackMessage()");
     console.table({ oldPasswordIsCorrect, inputOldPassword, inputNewPassword, inputConfirmPassword });
@@ -224,7 +233,7 @@ class Password extends Component<PasswordProps, PasswordState> {
             {this.state.showPopup ?
               <Popup
                 headerText='Change Password'
-                textDisplay='The Password was changed sucessfully.'
+                textDisplay='The Password was changed successfully.'
                 closePopup={this.togglePopup.bind(this)}
               />
               : null

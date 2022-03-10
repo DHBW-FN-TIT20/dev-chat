@@ -19,9 +19,9 @@ async function changeExpirationDateHandler(req: NextApiRequest, res: NextApiResp
   const chatKeyToAlter: number = req.body.chatKeyToAlter;
   const expirationDate: Date = req.body.expirationDate;
   console.log(expirationDate)
-  const addedSucessfully = await BACK_END_CONTROLLER.handleChangeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
+  const addedSuccessfully = await BACK_END_CONTROLLER.handleChangeChatKeyExpirationDate(userToken, chatKeyToAlter, expirationDate);
 
-  res.status(200).json({ wasSuccessfull: addedSucessfully });
+  res.status(200).json({ wasSuccessfull: addedSuccessfully });
 }
 
 export default changeExpirationDateHandler;

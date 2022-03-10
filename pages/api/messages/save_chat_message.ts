@@ -19,8 +19,8 @@ async function saveChatMessageHandler(req: NextApiRequest, res: NextApiResponse<
   const userToken: string = req.body.userToken;
   const chatKey: string = req.body.chatKey;
 
-  const addedSucessfully = await BACK_END_CONTROLLER.handleSaveChatMessage(message, chatKey, userToken);
+  const addedSuccessfully = await BACK_END_CONTROLLER.handleSaveChatMessage(message, chatKey, userToken);
 
-  res.status(200).json({ wasSuccessfull: addedSucessfully });
+  res.status(200).json({ wasSuccessfull: addedSuccessfully });
 }
 export default saveChatMessageHandler;

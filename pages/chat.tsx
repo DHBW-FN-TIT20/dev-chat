@@ -108,6 +108,9 @@ class Chat extends Component<ChatProps, ChatState> {
         this.redoFetch = true;
       }
     });
+
+    // focus on chat line input
+    this.chatLine.focus();
   }
 
   /**
@@ -150,6 +153,7 @@ class Chat extends Component<ChatProps, ChatState> {
 
   /**
   * Handle of the Keypressed-Event from the Input
+  * @param {any} event Event triggered by an Eventlistener
   */
   private handleEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
@@ -178,6 +182,7 @@ class Chat extends Component<ChatProps, ChatState> {
   /**
    * Handle of KeyDown-Event from the Input
    * Checks if Arrow up or down is pressed to load the History
+   * @param {any} event Event triggered by an Eventlistener
    */
   private handleKeyDown = (event: any) => {
     if (this.historyMessage.length == 1) {

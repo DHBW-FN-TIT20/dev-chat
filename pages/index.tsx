@@ -49,6 +49,7 @@ class Main extends Component<MainProps, MainState> {
 
   /**
    * This method checks whether the event contains a change in the user-token. If it does, it revalidates the login state.
+   * @param {any} event Event triggered by an Eventlistener
    */
   private storageTokenListener = async (event: any) => {
     if (event.key === "DevChat.auth.token") {
@@ -73,6 +74,7 @@ class Main extends Component<MainProps, MainState> {
 
   /**
    * This method updates the feedback-message in the chatKey error div
+   * @param {boolean} doesChatKeyExists tells if chat Key Exists 
    */
   private updateFeedbackMessage(doesChatKeyExists: boolean) {
     console.log("updateFeedbackMessage()");
@@ -88,6 +90,7 @@ class Main extends Component<MainProps, MainState> {
 
   /**
    * Handle of the Keypressed-Event from the chatKey Input
+   * @param {any} event Event triggered by an Eventlistener
    */
   private handleJoinEnterKeyPress = async (event: any) => {
     if (event.key === 'Enter') {
@@ -207,6 +210,12 @@ class Main extends Component<MainProps, MainState> {
                   }
                 }}>
                   Delete Account
+                </button>
+                <h1>
+                  Getting Started
+                </h1>
+                <button onClick={() => router.push("/getting-started")}>
+                  Getting Started
                 </button>
               </div>
               <div className={styles.right}>
