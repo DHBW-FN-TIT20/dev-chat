@@ -156,6 +156,12 @@ class Login extends Component<LoginProps, LoginState> {
                   </a>
                   &nbsp;instead.
                 </div>
+                <div className={styles.gettingStarted}>
+                  <h2>Don&apos;t know what to do?</h2>
+                  <button onClick={() => {router.push("/getting-started")}}>
+                    Getting Started
+                  </button>
+                </div>
               </div>
 
               <div className={styles.right}>

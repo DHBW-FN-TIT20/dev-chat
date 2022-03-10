@@ -1,8 +1,6 @@
 /** Background */
-@media screen and (max-height: 830px) {
-  html {
-    overflow: hidden !important;
-  }
+html, body {
+  overflow: hidden;
 }
 
 @media screen and (max-width: 900px) {
@@ -46,40 +44,39 @@
 /** Text */
 
 p {
-  margin: 2pt;
+  margin: 2pt 0;
   display: inline;
   overflow-wrap: break-word;
   white-space: pre-wrap;
   color: white;
 }
 
-ul {
+ul, ol {
   color: white;
 }
 
 /** Headlines */
 
+h1, h2, h3, h4, h5 {
+  color: #D7BA7D;
+  margin: 8pt 0;
+}
+
 @media screen and (max-width: 900px) {
   h1 {
-    color: #D7BA7D;
-    font-size: 20pt;
-    margin: 2pt;
+    font-size: 25pt;
   }
 }
 
 @media screen and (min-width: 900px) {
   h1 {
-    color: #D7BA7D;
     font-size: 30pt;
-    margin: 2pt;
   }
 }
 
 @media screen and (min-width: 1280px) {
   h1 {
-    color: #D7BA7D;
     font-size: 40pt;
-    margin: 2pt;
   }
 }
 

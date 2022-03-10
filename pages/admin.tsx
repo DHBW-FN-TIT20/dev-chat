@@ -73,7 +73,7 @@ class Admin extends Component<AdminProps, AdminState> {
   }
 
   /**
-   * This method checks and verifys the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
+   * This method checks and verifies the current user-token. If invalid, it routes to login, if not, the isLoggedIn state is set to true.
    */
   private async checkLoginState() {
     const currentToken = FrontEndController.getUserToken();
