@@ -47,6 +47,8 @@
   display: inline-block;
   text-align: left;
   max-width: calc(100vw - 4ch);
+  word-wrap: break-all;
+  white-space: normal;
 }
 
 .tableUser {
@@ -54,7 +56,7 @@
   padding: 0;
   margin: 0;
   color: #FF9933;
-  white-space: nowrap;
+  white-space: pre-wrap;
 }
 
 .tableAt {
@@ -62,29 +64,28 @@
   padding: 0;
   margin: 0;
   color: #666666;
-  white-space: nowrap;
+  white-space: pre-wrap;
 }
 
 .tableDate {
-  width: 17ch;
+  width: 21ch;
   padding: 0;
   margin: 0;
   color: #666666;
-  white-space: nowrap;
+  white-space: pre;
 }
 
 .tableArrow {
-  width: 4ch;
+  width: 3ch;
   padding: 0;
   margin: 0;
-  white-space: nowrap;
+  white-space: pre-wrap;
 }
 
 .tableMessage {
-  max-width: calc(100vw - 41ch - 4ch);
+  max-width: calc(100vw - 41ch - 3ch);
   padding: 0;
   margin: 0;
-  word-wrap: break-all;
 }
 
 .chatBox {

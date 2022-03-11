@@ -13,7 +13,7 @@ export function setStringOnFixLength(input: string, fixLength: number): string {
   } else {
     const spacesToAdd = fixLength - input.length;
     for (let i = 0; i < spacesToAdd; i++) {
-      input += " ";
+      input += "\u00A0";
     }
     return input;
   }

@@ -228,10 +228,8 @@ class Chat extends Component<ChatProps, ChatState> {
                           <p className={styles.tableUser}>
                             {setStringOnFixLength(String(message.username), 16)}
                           </p>
-                          <p className={styles.tableAt}>
-                            &nbsp;at&nbsp;
-                          </p>
                           <p className={styles.tableDate}>
+                            &nbsp;at&nbsp;
                             {new Date(message.dateSend).toLocaleDateString('de-DE', {
                               day: '2-digit',
                               month: '2-digit',
@@ -242,7 +240,7 @@ class Chat extends Component<ChatProps, ChatState> {
                             })}
                           </p>
                           <p className={styles.tableArrow}>
-                            &nbsp;-&gt;&nbsp;
+                            &nbsp;&#8594;&nbsp;
                           </p>
                           <p className={styles.tableMessage}>
                             {message.message}
