@@ -100,9 +100,7 @@ class Register extends Component<RegisterProps, RegisterState> {
     let vNewPasswordValid: boolean = true;
     this.setState({ userAlreadyExists: userAlreadyExists });
     if (!this.state.userAlreadyExists && this.state.inputConfirmPassword === this.state.inputPassword) {
-      console.log("Pressed Register Button")
       const registerUserReturnString: string = await FrontEndController.registerUser(this.state.inputUsername, this.state.inputPassword);
-      console.log(registerUserReturnString)
       if (registerUserReturnString == "True") {
         this.setState({ newPasswordValid: true, newUsernameValid: true });
         router.push("/");
@@ -148,7 +146,6 @@ class Register extends Component<RegisterProps, RegisterState> {
    * @param {boolean} newUsernameValid check if the new username is valid
    */
   private updateFeedbackMessage(userAlreadyExists: boolean, inputUsername: string, inputPassword: string, inputConfirmPassword: string, newPasswordValid: boolean, newUsernameValid: boolean) {
-    console.table({ userAlreadyExists, inputUsername, inputPassword, inputConfirmPassword, newPasswordValid, newUsernameValid })
     let feedbackMessage: string = "";
 
     const regexFeedbackMessage: string = checkPasswordOnRegex(inputPassword);

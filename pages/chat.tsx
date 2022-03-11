@@ -78,14 +78,13 @@ class Chat extends Component<ChatProps, ChatState> {
 
     // register connection event
     this.socket.on("connect", () => {
-      console.log("SOCKET CONNECTED!", this.socket.id);
+      // console.log("SOCKET CONNECTED!", this.socket.id);
     });
 
     // register message event
     this.socket.on("message", async (chatKey: string) => {
       if (!this.blockFetchMessages && chatKey === this.currentChatKeyCookie) {
         this.blockFetchMessages = true;
-        console.log("SOCKET MESSAGE!");
         // get table scroll level for auto scroll
         const elem = document.getElementById("chatTable");
         let elemHeight: number = NaN;
@@ -94,7 +93,6 @@ class Chat extends Component<ChatProps, ChatState> {
         }
         // fetch new messages
         do {
-          console.log("-----------------FETCH------------------")
           this.redoFetch = false;
           const tempChatMessages: IFChatMessage[] = await FrontEndController.updateChatMessages();
           this.setState({ messages: tempChatMessages });
@@ -160,7 +158,6 @@ class Chat extends Component<ChatProps, ChatState> {
       this.historyMessage[this.historyMessage.length - 1] = this.chatLineInput;
       this.historyMessage.push("");
       this.historyIndex = this.historyMessage.length - 1;
-      console.log("Entered new Message: " + this.chatLineInput);
       this.setState({isSendingMessage: true});
       await FrontEndController.enteredNewMessage(this.chatLineInput);
       this.setState({isSendingMessage: false});

@@ -119,8 +119,6 @@ class Password extends Component<PasswordProps, PasswordState> {
    * @param {string} inputConfirmPassword the input of the confirm password
    */
   private updateFeedbackMessage(oldPasswordIsCorrect: boolean, inputOldPassword: string, inputNewPassword: string, inputConfirmPassword: string) {
-    console.log("updateFeedbackMessage()");
-    console.table({ oldPasswordIsCorrect, inputOldPassword, inputNewPassword, inputConfirmPassword });
     let feedBackMessage: string = "";
 
     const regexFeedbackMessage: string = checkPasswordOnRegex(inputNewPassword);

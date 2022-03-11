@@ -23,7 +23,6 @@ export class FrontEndController {
   //#region Constructor
 
   constructor() {
-    console.log("DevChatController.constructor()");
     this.data = {
       message: 'Hello, this is the controller of the DEV-CHAT-APP.'
     };
@@ -53,7 +52,6 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("addChatMessage(" + message + "): " + data.wasSuccessfull);
     return data.wasSuccessfull;
   }
 
@@ -65,7 +63,7 @@ export class FrontEndController {
    * @returns {Promise<IChatMessage[]>} Fetched messages from database
    */
   public fetchChatMessages = async (token: string, chatKey: string, lastMessageID: number = 0): Promise<IFChatMessage[]> => {
-    console.log("DevChatController.fetchChatMessages()");
+
     let chatMessages: IFChatMessage[] = [];
 
     let response = await fetch('./api/messages/get_chat_messages', {
@@ -91,7 +89,6 @@ export class FrontEndController {
    * @returns {Promise<IChatMessage[]>} The updated chat messages.
    */
   public async updateChatMessages(): Promise<IFChatMessage[]> {
-    console.log("DevChatController.updateChatMessages()");
 
     // get the highest id of the chat messages to only get the new messages
     let lastMessageId: number = 0;
@@ -128,7 +125,6 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("joinRoomMessage(): " + data.wasSuccessfull);
   }
 
   /**
@@ -149,7 +145,6 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("leaveRoomMessage(): " + data.wasSuccessfull);
   }
 
   /**
@@ -157,7 +152,6 @@ export class FrontEndController {
    */
   public async startMessageFetch() {
     while (true) {
-      console.log("Start updateChatMessage in while loop.")
       await this.updateChatMessages();
     }
   }
@@ -168,8 +162,6 @@ export class FrontEndController {
    * @returns — true if the message was send, false if not
    */
   public async enteredNewMessage(message: string) {
-    console.log("DevChatController.enteredNewMessage()");
-    console.log("in Controller: " + message);
     return await this.addChatMessage(message, this.getUserToken(), this.getChatKeyFromCookie());
   }
 
@@ -210,7 +202,6 @@ export class FrontEndController {
       },
     });
     let data = await response.json();
-    console.log("addChatKey(): " + data.newChatKey);
     if (data.newChatKey !== "") {
       this.setChatKeyCookie(data.newChatKey);
       return true;
@@ -313,7 +304,6 @@ export class FrontEndController {
    * @param {string} chatKey Value for cookie
    */
   public setChatKeyCookie(chatKey: string) {
-    console.log("setChatKeyCookie(" + chatKey + ")")
     setCookies(this.chatKeyCookieName, chatKey);
   }
 
@@ -640,7 +630,6 @@ export class FrontEndController {
       })
     });
     let data = await response.json();
-    console.log("Controller.data.returnString " + data.returnString)
     if (data.returnString == "True") {
       let controller = new FrontEndController;
       await controller.loginUser(username, password);
