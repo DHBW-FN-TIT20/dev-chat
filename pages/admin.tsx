@@ -95,13 +95,10 @@ class Admin extends Component<AdminProps, AdminState> {
     const wantedExpirationDate = new Date((document.getElementById("ChatKey" + String(chatKeyID)) as HTMLInputElement).value);
     wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
 
-    console.log("wantedExpirationDate: " + wantedExpirationDate);
-
     const currentToken = FrontEndController.getUserToken();
     const wasSuccessful = await FrontEndController.changeChatKeyExpirationDate(currentToken, chatKeyID, wantedExpirationDate);
 
     if (wasSuccessful) {
-      console.log("Das expirationDate von Raum Nummer " + chatKeyID + " wurde geändert.");
       const tempAllChatKeys = await FrontEndController.getAllChatKeys();
       this.setState({ allChatKeysState: tempAllChatKeys });
     }
@@ -115,13 +112,10 @@ class Admin extends Component<AdminProps, AdminState> {
     const wantedExpirationDate = new Date((document.getElementById("Survey" + String(surveyID)) as HTMLInputElement).value);
     wantedExpirationDate.setHours(wantedExpirationDate.getHours() + 1);
 
-    console.log("wantedExpirationDate: " + wantedExpirationDate);
-
     const currentToken = FrontEndController.getUserToken();
     const wasSuccessful = await FrontEndController.changeSurveyExpirationDate(currentToken, surveyID, wantedExpirationDate);
 
     if (wasSuccessful) {
-      console.log("Das expirationDate von Survey Nummer " + surveyID + " wurde geändert.");
       const tempAllSurveys = await FrontEndController.getAllSurveys();
       this.setState({ allSurveysState: tempAllSurveys });
     }
@@ -131,8 +125,6 @@ class Admin extends Component<AdminProps, AdminState> {
    * This function handles the click of the "Add" Button in the ChatKey Section
    */
   private handleAddKeyClick = async () => {
-    console.log("ChatKey ist: " + this.inputChatKey);
-
     const currentToken = FrontEndController.getUserToken();
     const wasSuccessful = await FrontEndController.addCustomChatKey(currentToken, this.inputChatKey);
 
@@ -140,7 +132,6 @@ class Admin extends Component<AdminProps, AdminState> {
     (document.getElementById("inputAddCustomChatKey") as HTMLInputElement).value = "";
 
     if (wasSuccessful) {
-      console.log("Der Raum: " + this.inputChatKey + " wurde erstellt.");
       const tempAllChatKeys = await FrontEndController.getAllChatKeys();
       this.setState({ allChatKeysState: tempAllChatKeys });
     }
@@ -189,11 +180,9 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.changeSolvedState(currentToken, ticketID, currentState);
 
     if (wasSuccessful) {
-      console.log("Das Ticket mit der Nummer " + ticketID + " wurde auf " + currentState ? "To-Do" : "Done" + " geändert.");
       const tempAllTickets = await FrontEndController.getAllTickets();
       this.setState({ allTicketsState: tempAllTickets });  
     } else {
-      console.log("Beim ändern des Tickets ging etwas schief.");
     }
     return wasSuccessful;
   }
@@ -236,7 +225,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.deleteUser(currentToken, name);
 
     if (wasSuccessful) {
-      console.log("Der User mit dem Namen " + name + " wurde gelöscht.");
       const tempAllUsers = await FrontEndController.getAllUsers();
       this.setState({ allUsersState: tempAllUsers });
     }
@@ -251,7 +239,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.deleteChatKey(currentToken, chatID);
 
     if (wasSuccessful) {
-      console.log("Der Chat mit dem Namen " + chatID + " wurde gelöscht.");
       const tempAllChatKeys = await FrontEndController.getAllChatKeys();
       this.setState({ allChatKeysState: tempAllChatKeys });
     }
@@ -266,7 +253,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.deleteSurvey(currentToken, surveyID);
 
     if (wasSuccessful) {
-      console.log("Die Survey mit der ID " + surveyID + " wurde gelöscht.");
       const tempAllSurveys = await FrontEndController.getAllSurveys();
       this.setState({ allSurveysState: tempAllSurveys });
     }
@@ -281,7 +267,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.promoteUser(currentToken, name);
 
     if (wasSuccessful) {
-      console.log("Der User mit dem Namen " + name + " wurde promoted.");
       const tempAllUsers = await FrontEndController.getAllUsers();
       this.setState({ allUsersState: tempAllUsers });
     }
@@ -296,7 +281,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const wasSuccessful = await FrontEndController.demoteUser(currentToken, name);
 
     if (wasSuccessful) {
-      console.log("Der User mit dem Namen " + name + " wurde demoted.");
       const tempAllUsers = await FrontEndController.getAllUsers();
       this.setState({ allUsersState: tempAllUsers });
     }
@@ -310,7 +294,6 @@ class Admin extends Component<AdminProps, AdminState> {
     const currentToken = FrontEndController.getUserToken();
     const wasSuccessful = await FrontEndController.resetPassword(currentToken, name);
     if (wasSuccessful) {
-      console.log("Das Passwort des Users mit dem Namen " + name + " wurde resettet.");
       const tempAllUsers = await FrontEndController.getAllUsers();
       this.setState({ allUsersState: tempAllUsers });
     }

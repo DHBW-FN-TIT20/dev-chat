@@ -77,13 +77,11 @@ class Main extends Component<MainProps, MainState> {
    * @param {boolean} doesChatKeyExists tells if chat Key Exists 
    */
   private updateFeedbackMessage(doesChatKeyExists: boolean) {
-    console.log("updateFeedbackMessage()");
     let feedbackMessage: string = "";
 
     if (!doesChatKeyExists) {
       feedbackMessage = "Chat-Key does not exists";
     }
-    console.log("This in updateMessage " + this);
 
     this.setState({ feedbackMessage: feedbackMessage });
   }
@@ -107,11 +105,9 @@ class Main extends Component<MainProps, MainState> {
     const doesChatKeyExists = await FrontEndController.doesChatKeyExists(this.state.inputChatKey);
     this.setState({ doesChatKeyExists: doesChatKeyExists });
     if (this.state.doesChatKeyExists) {
-      console.log("EXISTS")
       FrontEndController.setChatKeyCookie(this.state.inputChatKey);
       router.push("/chat");
     } else {
-      console.log("NOT EXISTS");
       this.setState({ inputChatKey: "" });
     }
     this.updateFeedbackMessage(this.state.doesChatKeyExists);
@@ -132,11 +128,9 @@ class Main extends Component<MainProps, MainState> {
       const { router } = this.props
       const doesChatKeyExists = await FrontEndController.doesChatKeyExists(chatKey)
       if (doesChatKeyExists) {
-        console.log("EXISTS")
         FrontEndController.setChatKeyCookie(chatKey);
         router.push("/chat")
       } else {
-        console.log("NOT EXISTS")
       }
     }
   }
