@@ -63,7 +63,7 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
                   88316 Isny <br />
                   <br />
                   Tel: +49 163 7292914 <br />
-                  E-Mail: devchat.contact@gmail.com <br />
+                  E-Mail: <a href="mailto:devchat.contact@gmail.com">devchat.contact@gmail.com</a> <br />
                 </p>
                 <br></br>
                 <h1>Datenschutzerklärung</h1>
@@ -77,7 +77,7 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
                   88316 Isny <br />
                   <br />
                   Tel: +49 163 7292914 <br />
-                  E-Mail: devchat.contact@gmail.com <br />
+                  E-Mail <a href="mailto:devchat.contact@gmail.com">devchat.contact@gmail.com</a> <br />
                 </p>
 
                 <h2>Ihre Betroffenenrechte</h2>
@@ -270,7 +270,7 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
                   88316 Isny <br />
                   <br />
                   Tel: +49 163 7292914 <br />
-                  E-Mail: devchat.contact@gmail.com <br />
+                  E-Mail: <a href="mailto:devchat.contact@gmail.com">devchat.contact@gmail.com</a> <br />
                 </p>
 
                 <h2>Änderung unserer Datenschutzbestimmungen</h2>
@@ -288,7 +288,7 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
                   88316 Isny <br />
                   <br />
                   Tel: +49 163 7292914 <br />
-                  E-Mail: devchat.contact@gmail.com <br /><br />
+                  E-Mail: <a href="mailto:devchat.contact@gmail.com">devchat.contact@gmail.com</a> <br /><br />
                 </p>
 
                 <p><em>Die Datenschutzerklärung wurde mithilfe der activeMind AG erstellt, den Experten für <a href="https://www.activemind.de/datenschutz/datenschutzbeauftragter/">externe Datenschutzbeauftragte</a> (Version #2020-09-30).</em></p>
@@ -303,9 +303,6 @@ class Impressum extends Component<ImpressumProps, ImpressumState> {
                   objectFit='contain'
                   sizes='fitContent'
                   layout="fill"
-                  // width="100%"
-                  // height="100%"
-                  // layout="responsive"
                 />
               </div>
             </div>
